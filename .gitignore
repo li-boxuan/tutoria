@@ -1,3 +1,6 @@
+# Tmp files for OSX
+.DS_Store
+
 # Tmp files for vim
 *.swp
 *.bak
