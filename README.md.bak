@@ -5,11 +5,11 @@
 **You just found Tutoria.**
 
 Tutoria is a university-based professional online platform for regular and private
-campus tutoring that seamlessly supports
-easy management of booking and sharing feedback. Latest technologies
-are incorporated for granting state-of-the-art experience.
+campus tutoring that seemelessly supports
+easy management of booking and sharing feedbacks. Latest technologies
+are incorprated for granting state-of-the-art experience.
 
-Tutoria is proudly powered by [Django<sup>®</sup>(https://www.djangoproject.com/).
+Tutoria is proundly powered by [Django<sup>®</sup>(https://www.djangoproject.com/).
 
 ## Contributors
 
@@ -22,7 +22,7 @@ Tutoria is proudly powered by [Django<sup>®</sup>(https://www.djangoproject.com
 [Department of Computer Science](https://www.cs.hku.hk/),
 [The University of Hong Kong](https://www.hku.hk/). *Equally contributed*.
 
-## Acknowledgment
+## Acknowlegement
 
 The contributors to this project wish to thank
 [Mr. George Mitcheson](http://www.cs.hku.hk/people/profile.jsp?teacher=georgem)
