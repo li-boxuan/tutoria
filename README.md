@@ -4,8 +4,8 @@
 
 **You just found Tutoria.**
 
-Tutoria is a university-based profession platform for regular/priavte
-tutoring that allows students and tutors to easily manage their
+Tutoria is a university-based professional platform for regular and private
+campus tutoring that allows students and tutors to easily manage their
 booking and share feedbacks.
 
 Tutoria is proundly powered by Django<sup>®</sup>.
