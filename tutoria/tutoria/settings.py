@@ -54,7 +54,7 @@ ROOT_URLCONF = 'tutoria.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join('..', 'templates')],
+        'DIRS': [os.path.abspath(os.path.join(BASE_DIR, 'templates'))],
         'APP_DIRS': False,
         'OPTIONS': {
             'context_processors': [
