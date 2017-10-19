@@ -9,7 +9,7 @@ campus tutoring that seamlessly supports
 easy management of booking and sharing feedback. Latest technologies
 are incorporated for granting state-of-the-art experience.
 
-Tutoria is proudly powered by [Django<sup>®</sup>(https://www.djangoproject.com/).
+Tutoria is proudly powered by [Django<sup>®</sup>](https://www.djangoproject.com/).
 
 ## Contributors
 
@@ -18,7 +18,7 @@ Tutoria is proudly powered by [Django<sup>®</sup>(https://www.djangoproject.com
 [Jiayao Zhang](https://i.cs.hku.hk/~jyzhang/)<sup>&ast;</sup> and
 [Jingran Zhou](https://jrchow.github.io/)<sup>&ast;</sup>
 
-<sup>&ast;</sup> The contributors are with the
+<sup>&ast;</sup>The contributors are with the
 [Department of Computer Science](https://www.cs.hku.hk/),
 [The University of Hong Kong](https://www.hku.hk/). *Equally contributed*.
 
