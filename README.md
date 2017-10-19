@@ -3,7 +3,7 @@ A tutoring platform implemented by Django.
 
 # Authors
 
-Boxuan Li](https://li-boxuan.github.io/)<sup>*</sup>
+[Boxuan Li](https://li-boxuan.github.io/)<sup>*</sup>
 
 [Jinyu Cai](https://www.linkedin.com/in/金雨-蔡-170b75108)<sup>*</sup>
 
