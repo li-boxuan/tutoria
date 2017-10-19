@@ -12,10 +12,10 @@ Tutoria is proundly powered by Django<sup>®</sup>.
 
 # Authors
 
-[Boxuan Li](https://li-boxuan.github.io/)<sup>*</sup>,
-[Jinyu Cai](https://www.linkedin.com/in/金雨-蔡-170b75108)<sup>*</sup>,
-[Jiayao Zhang](https://i.cs.hku.hk/~jyzhang/)<sup>*</sup> and
-[Jingran Zhou](https://jrchow.github.io/)<sup>*</sup>
+[Boxuan Li](https://li-boxuan.github.io/) <sup>*</sup>,
+[Jinyu Cai](https://www.linkedin.com/in/金雨-蔡-170b75108) <sup>*</sup>,
+[Jiayao Zhang](https://i.cs.hku.hk/~jyzhang/) <sup>*</sup> and
+[Jingran Zhou](https://jrchow.github.io/) <sup>*</sup>
 
 <sup>*</sup> The aurthos are with the [Department of Computer Science](https://www.cs.hku.hk/),
 [The University of Hong Kong](https://www.hku.hk/). *Equally contributed*.
