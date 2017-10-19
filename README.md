@@ -1,5 +1,7 @@
 # Tutoria
 
+![Hola the Monkey](./favicon/hola.png)
+
 **You just found Tutoria.**
 
 Tutoria is a university-based profession platform for regular/priavte
