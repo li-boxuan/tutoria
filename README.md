@@ -1,5 +1,12 @@
 # Tutoria
-A tutoring platform implemented by Django.
+
+**You just found Tutoria.**
+
+Tutoria is a university-based profession platform for regular/priavte
+tutoring that allows students and tutors to easily manage their
+booking and share feedbacks.
+
+Tutoria is proundly powered by Django<sup>®</sup>.
 
 # Authors
 
