@@ -7,14 +7,14 @@
 Tutoria is a university-based professional online platform for regular and private
 campus tutoring that seamlessly supports
 easy management of booking and sharing feedback. Latest technologies
-are incorporated for granting state-of-the-art experience.
+are incorporated for granting state-of-the-art user experience.
 
-Tutoria is proudly powered by [Django<sup>®</sup>](https://www.djangoproject.com/).
+Tutoria is proudly powered by [Django](https://www.djangoproject.com/)<sup>®</sup>.
 
 ## Contributors
 
-[Boxuan Li](https://li-boxuan.github.io/)<sup>&ast;</sup>,
 [Jinyu Cai](https://www.linkedin.com/in/金雨-蔡-170b75108)<sup>&ast;</sup>,
+[Boxuan Li](https://li-boxuan.github.io/)<sup>&ast;</sup>,
 [Jiayao Zhang](https://i.cs.hku.hk/~jyzhang/)<sup>&ast;</sup> and
 [Jingran Zhou](https://jrchow.github.io/)<sup>&ast;</sup>
 
