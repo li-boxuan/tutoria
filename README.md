@@ -3,15 +3,15 @@ A tutoring platform implemented by Django.
 
 # Authors
 
-[Boxuan Li](https://li-boxuan.github.io/)<sup>$^\dagger$</sup>
+Boxuan Li](https://li-boxuan.github.io/)<sup>*</sup>
 
-[Jinyu Cai](https://www.linkedin.com/in/金雨-蔡-170b75108)<sup>$^\dagger$</sup>
+[Jinyu Cai](https://www.linkedin.com/in/金雨-蔡-170b75108)<sup>*</sup>
 
-[Jiayao Zhang](https://i.cs.hku.hk/~jyzhang/)<sup>$^\dagger$</sup>
+[Jiayao Zhang](https://i.cs.hku.hk/~jyzhang/)<sup>*</sup>
 
-[Jingran Zhou](https://jrchow.github.io/)<sup>$^\dagger$</sup>
+[Jingran Zhou](https://jrchow.github.io/)<sup>*</sup>
 
-<sup>$^\dagger$</sup> *Equally contributed*
+<sup>*</sup> *Equally contributed*
 
 # Cite this Project
 
