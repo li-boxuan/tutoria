@@ -27,27 +27,24 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a href="{% url 'homepage' %}" class="navbar-brand">Library</a>
+            <a href="{% url 'homepage' %}" class="navbar-brand">Tutoria</a>
         </div>
 
         <div class="collapse navbar-collapse" id="navbar-collapse-basepage">
             <ul class="nav navbar-nav">
-                <li id="homepage"><a href="{% url 'homepage' %}">主页</a></li>
-                {% if user.myuser.permission > 1 %}
-                    <li id="add_book"><a href="">添加图书</a></li>
-                    <li id="add_img"><a href="">添加图片</a></li>
-                {% endif %}
-                <li id="view_book"><a href="">查看图书</a></li>
+                <li id="homepage"><a href="{% url 'homepage' %}">Search</a></li>
+                <!--
+                    <li id="add_book"><a href=""></a></li>
+                -->
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 {% if user %}
-                    <li><p class="navbar-text">欢迎你&nbsp;&nbsp;<span id="base_name">{{ user.myuser.nickname }}</span></p>
                     </li>
-                    <li><a href="">注销</a></li>
-                    <li><a href="">修改密码</a></li>
+                    <li><a href="">Logout</a></li>
+                    <li><a href="">My Account</a></li>
                 {% else %}
-                    <li><a href="">注册</a></li>
-                    <li><a href="">登录</a></li>
+                    <li><a href="">Register</a></li>
+                    <li><a href="">Login</a></li>
                 {% endif %}
             </ul>
         </div>
@@ -58,8 +55,7 @@
 <!-- header -->
 <header class="jumbotron subhead" id="header-base">
     <div class="container">
-        <h1>图书管理系统</h1>
-        <h3>&emsp;&emsp;知识改变命运</h3>
+        <h1>Tutoria</h1>
     </div>
 </header>
 <!-- /.header -->
@@ -71,9 +67,10 @@
 <footer class="footer" role="contentinfo">
     <hr>
     <div class="container">
-        <p class="text-center"><strong>HIT-CS</strong></p>
-        <p class="text-center">©All rights reserved</p>
-        <h5 class="text-center"> Powered by&nbsp;<a href="http://yumendy.com/">Duan Yi</a></h5>
+        <p class="text-center"><strong>Hola Inc.</strong></p>
+        <p class="text-center">© 2017 All rights reserved</p>
+        <h5 class="text-center"> Powered by&nbsp;<a
+            href="https://www.the djangoproject.com/">Django</a></h5>
     </div>
 </footer>
 <!-- /.footer-->
