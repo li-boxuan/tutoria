@@ -9,11 +9,11 @@
             <div class="col-md-10 col-md-offset-1">
                 <div class="col-md-2">
                     <div class="list-group">
-                        <a href="{% url 'search::index' %}" class="list-group-item" id="id_category_all">
+                        <a href="{% url 'search:index' %}" class="list-group-item" id="id_category_all">
                             全部图书
                         </a>
                         {% for category in category_list %}
-                            <a href="{% url 'search::index' %}?category={{ category }}" class="list-group-item"
+                            <a href="{% url 'search:index' %}?category={{ category }}" class="list-group-item"
                                id="id_category_{{ category }}">
                                 {{ category }}
                             </a>
