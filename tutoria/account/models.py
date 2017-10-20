@@ -11,13 +11,19 @@ import django.contrib.auth.models as auth_models
 
 class SubjectTag(models.Model):
     """Models subject tags."""
-    tag = models.CharField(max_length=128, unique=True)
+    tag = models.CharField(max_length=128)
+
+    def __str__(self):
+        return self.tag
 
 
 class Course(models.Model):
     """Models courses."""
-    course_name = models.CharField(max_length=128, unique=True)
-    course_code = models.CharField(max_length=8, unique=True)
+    course_name = models.CharField(max_length=128)
+    course_code = models.CharField(max_length=8)
+
+    def __str__(self):
+        return self.course_code + " " + self.course_name
 
 
 class User(auth_models.User):
@@ -31,6 +37,7 @@ class User(auth_models.User):
 
 
 class Tutor(models.Model):
+    """Models the tutor."""
     CONTRACTED_TUTOR = 'CT'
     PRIVATE_TUTOR = 'PT'
     TUTOR_TYPE_CHOICES = (
@@ -50,6 +57,12 @@ class Tutor(models.Model):
 
     bio = models.TextField(default='')
     hourly_rate = models.PositiveIntegerField(default=0)
+    tags = models.ManyToManyField(SubjectTag)
+    courses = models.ManyToManyField(Course)
+    sessions = models.ManyToManyField('scheduler.session')
+
+    def __str__(self):
+        return "{}: {}".format(self.user.username, self.tutor_type)
 
 
 class Student(models.Model):
@@ -57,5 +70,8 @@ class Student(models.Model):
         User,
         on_delete=models.CASCADE,
     )
+
+    def __str__(self):
+        return self.user.username
 
 
