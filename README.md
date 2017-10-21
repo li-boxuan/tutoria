@@ -33,7 +33,7 @@ for his generous help and advice throughout this project.
     @misc{tutoria:2017,
         title = {Tutoria},
         year = {2017},
-        author = {Jinyu Cai, Boxuan Li, Jiayao Zhang and Jingran Zhou},
+        author = {Cai, Jinyu and Li, Boxuan and Zhang, Jiayao and Zhou, Jingran},
         publisher = {GitHub},
         journal = {GitHub Repository},
         howpublished= {\url{https://github.com/li-boxuan/tutoria}}
