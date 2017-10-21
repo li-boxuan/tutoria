@@ -6,7 +6,7 @@ from django.views import generic
 from account.models import (User, Tutor)
 
 class IndexView(generic.TemplateView):
-    template_name = 'search.html'
+    template_name = 'result.html'
     # context_object_name = 'index_context'
 
 class ResultView(generic.TemplateView):
