@@ -22,4 +22,5 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls, name='admin'),
     url(r'^$', views.IndexView.as_view(), name='homepage'),
     url(r'^search/', include('search.urls', namespace="search")),
+    url(r'^tutor/', include('tutor.urls', namespace="tutor")),
 ]
