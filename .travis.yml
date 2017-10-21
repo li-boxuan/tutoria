@@ -13,3 +13,13 @@ install:
 # command to run tests
 script:
   - python ./tutoria/manage.py check
+
+notifications:
+  email:
+    recipients:
+      - dev-ci@hola-inc.top
+    on_success: always
+    on_failure: always
+  slack: holainc:bUcUkVVHxP81FBflZTLaSTu3
+    on_success: change
+    on_failure: always
