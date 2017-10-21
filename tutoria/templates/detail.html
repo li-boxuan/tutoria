@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load staticfiles %}
-{% block title %}查看图书{% endblock %}
+{% block title %}Tutoria{% endblock %}
 
 {% block content %}
 
@@ -8,7 +8,7 @@
         <div class="row">
             <div class="col-md-10 col-md-offset-1">
                 <div class="col-md-5">
-                    {% if book.img_set.all %}
+                    {% if tutor_set.all %}
                         <div id="carousel-generic" class="carousel slide" data-ride="carousel">
                             <ol class="carousel-indicators">
                                 {% for img in book.img_set.all %}

@@ -1,18 +1,20 @@
 {% extends "base.html" %}
 {% load staticfiles %}
-{% block title %}查看图书{% endblock %}
+{% block title %}Tutoria{% endblock %}
 
 {% block content %}
+
+{% if results %}
 
     <div class="container">
         <div class="row">
             <div class="col-md-10 col-md-offset-1">
                 <div class="col-md-2">
                     <div class="list-group">
-                        <a href="{% url 'search:index' %}" class="list-group-item" id="id_category_all">
-                            全部图书
+                        <a href="{% url 'search:index' %}"
+                          class="list-group-item" id="id_category_all">All Tutors
                         </a>
-                        {% for category in category_list %}
+                        <!--{% for category in category_list %}
                             <a href="{% url 'search:index' %}?category={{ category }}" class="list-group-item"
                                id="id_category_{{ category }}">
                                 {{ category }}
@@ -32,6 +34,7 @@
                                    autofocus>
                         </form>
                     </div>
+                    -->
                     <script type="text/javascript">
                         function key_up() {
                             var old_value = $('#id_search_input').val();
@@ -47,28 +50,39 @@
                         <thead>
                         <tr>
                             <th>#</th>
-                            <th>书名</th>
-                            <th>作者</th>
-                            <th>出版日期</th>
-                            <th>定价</th>
+                            <th>Tutor</th>
+                            <th>Course</th>
+                            <th>Hourly Rate</th>
+                            <th>Tags</th>
                         </tr>
                         </thead>
                         <tbody>
-                        {% for book in book_list %}
+                        {% for tutor in results_list %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
-                                <td><a href="{% url 'detail' %}?id={{ book.id }}">{{ book.name }}</a></td>
-                                <td>{{ book.author }}</td>
-                                <td>{{ book.publish_date|date:"Y-m-d" }}</td>
-                                <td>{{ book.price|floatformat:2 }}</td>
+                                <td><a href="{% url 'tutor:detail' tutor.id
+                                %}">{{ tutor.user.first_name }} {{
+                                tutor.user.last_name }}</a></td>
+                                <tr>
+                                  {% for course in tutor.courses.all %}
+                                  <td> {{ course.course_code }}:{{
+                                    course.course_name }} </td>
+                                  {% endfor %}
+                                </tr>
+                                <td>{{ tutor.hourly_rate }}</td>
+                                <tr>
+                                  {% for tag in tutor.tags.all %}
+                                  <td> {{ tag.tag }} </td>
+                                </tr>
                             </tr>
                         {% empty %}
                             <tr>
-                                <td>暂无图书</td>
+                                <td>No tutor available for your query =(</td>
                             </tr>
                         {% endfor %}
                         </tbody>
                     </table>
+                    <!--
                     <nav>
                         <ul class="pager">
                             {% if book_list.has_previous %}
@@ -76,7 +90,8 @@
                                         href="?typ={{ query_category }}&page={{ book_list.previous_page_number }}">上一页</a>
                                 </li>
                             {% else %}
-                                <li class="previous disabled"><a href="#">上一页</a></li>
+                                <li class="previous disabled"><a
+                                    href="#">Previous Page</a></li>
                             {% endif %}
                             第 {{ book_list.number }} / {{ book_list.paginator.num_pages }}页
                             {% if book_list.has_next %}
@@ -84,14 +99,21 @@
                                         href="?typ={{ query_category }}&page={{ book_list.next_page_number }}">下一页</a>
                                 </li>
                             {% else %}
-                                <li class="next disabled"><a href="#">下一页</a></li>
+                                <li class="next disabled"><a href="#">Next Page</a></li>
                             {% endif %}
                         </ul>
                     </nav>
+                    -->
+
                 </div>
             </div>
         </div>
     </div>
 
+{% else %}
+
+  <h3> No tutor availabel for your query. Would you want to search again? </h3>
+
+{% endif %}
 
 {% endblock %}
