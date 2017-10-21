@@ -5,7 +5,5 @@ from django.views import generic
 
 from account.models import (User, Tutor)
 
-class IndexView(generic.TemplateView):
+class DetailView(generic.TemplateView):
     template_name = 'result.html'
-    # context_object_name = 'index_context'
-
