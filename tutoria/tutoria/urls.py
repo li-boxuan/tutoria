@@ -21,6 +21,6 @@ from . import views
 urlpatterns = [
     url(r'^admin/', admin.site.urls, name='admin'),
     url(r'^$', views.IndexView.as_view(), name='homepage'),
-    url(r'^search/', include('search.urls', namespace="search")),
-    url(r'^tutor/', include('tutor.urls', namespace="tutor")),
+    url(r'^search/', include('search.urls', namespace='search'), name='search'),
+    url(r'^tutor/', include('tutor.urls', namespace='tutor'), name='tutor'),
 ]

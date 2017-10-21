@@ -7,3 +7,4 @@ from account.models import (User, Tutor)
 
 class DetailView(generic.TemplateView):
     template_name = 'result.html'
+
