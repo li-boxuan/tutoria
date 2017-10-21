@@ -1,9 +1,5 @@
 language: python
 python:
-  - "2.6"
-  - "2.7"
-  - "3.2"
-  - "3.3"
   - "3.4"
   - "3.5"
   - "3.5-dev" # 3.5 development branch
@@ -16,4 +12,16 @@ install:
   - pip install -r requirements.txt
 # command to run tests
 script:
-  - pytest # or py.test for Python versions 3.5 and below
+  - python ./tutoria/manage.py check
+
+notifications:
+  email:
+    recipients:
+      - dev-ci@hola-inc.top
+    on_success: always
+    on_failure: always
+  slack:
+    on_success: change
+    on_failure: always
+    rooms:
+      - holainc:bUcUkVVHxP81FBflZTLaSTu3#dev

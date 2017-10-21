@@ -1,4 +1,5 @@
 # Tutoria
+![build](https://travis-ci.com/li-boxuan/tutoria.svg?token=9cK4Kmeqpdioyfb1EXxS&branch=master)
 
 ![Hola the Monkey](./favicon/hola.png)
 
