@@ -31,6 +31,10 @@ audio:not([controls]) {
     display: none
 }
 
+ul {
+  list-style-type: none;
+}
+
 a {
     background: 0 0
 }
@@ -1407,7 +1411,9 @@ a.bg-danger:hover {
     margin: 40px 0 20px;
     border-bottom: 1px solid #eee
 }
-
+ul {
+  list-style-type: none;
+}
 ul, ol {
     margin-top: 0;
     margin-bottom: 10px
