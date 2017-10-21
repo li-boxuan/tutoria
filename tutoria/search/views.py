@@ -11,6 +11,5 @@ class IndexView(generic.TemplateView):
 
 class ResultView(generic.ListView):
     model = Tutor
-    # tutor_list = Tutor.objects()
     template_name = 'result.html'
     context_object_name = 'results'

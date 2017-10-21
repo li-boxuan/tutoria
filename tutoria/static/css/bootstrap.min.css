@@ -13,6 +13,19 @@ body {
     margin: 0
 }
 
+::-webkit-input-placeholder {
+   font-style: italic;
+}
+:-moz-placeholder {
+   font-style: italic;  
+}
+::-moz-placeholder {
+   font-style: italic;  
+}
+:-ms-input-placeholder {  
+   font-style: italic; 
+}
+
 article, aside, details, figcaption, figure, footer, header, hgroup, main, nav, section, summary {
     display: block
 }

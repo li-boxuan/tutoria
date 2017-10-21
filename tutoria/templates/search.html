@@ -8,8 +8,14 @@
         <div class="row">
             <div class="col-md-8 col-md-offset-2 well">
                 <h2>&emsp;&emsp;Search</h2>
-                <!--<h3 class="text-center">Email:<span
-                  class="text-info">Duanyi@hit.edu.cn</span></h3>-->
+                <form action="{% url 'search:result' %}"
+                  method="GET" role="form" class="form-horizontal">
+                  <div class="form-group">
+                    <div class="col-md-12">
+                       <input type="text" class="form-control" name="keywords"
+                        autofocus placeholder="Software Engineering">
+                    </div>
+                  </div>
             </div>
         </div>
     </div>
