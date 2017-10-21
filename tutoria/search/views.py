@@ -10,6 +10,6 @@ class IndexView(generic.TemplateView):
     # context_object_name = 'index_context'
 
 class ResultView(generic.TemplateView):
-    # tutor_list = Tutor.objects()
-    template_name = 'result.html'
-    context_object_name = 'results'
+     # tutor_list = Tutor.objects()
+     template_name = 'result.html'
+     context_object_name = 'results'
