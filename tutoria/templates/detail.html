@@ -31,16 +31,19 @@
                             </a>
                         </div>
                     {% else %}
-                        <p class="text-center">暂无图片</p>
+                    <p class="text-center">No Avator</p>
                     {% endif %}
                 </div>
                 <div class="col-md-6 col-md-offset-1">
                     <h2 class="text-center">{{ book.name }}</h2>
                     <br>
-                    <h3>作者：{{ book.author }}</h3>
-                    <h3>类别：{{ book.category }}</h3>
-                    <h3>出版日期：{{ book.publish_date|date:"Y-m-d" }}</h3>
-                    <h3>价格：{{ book.price|floatformat:2 }}</h3>
+                    <h3>Name: {{ tutor.user.first_name }} {{tutor.user.last_name }}</h3>
+                    <h3>Type：{{ tutor.tutor_type }}</h3>
+                    <h3>Biography：{{ tutor.tutor_bio }}</h3>
+                    <h3>Hourly Rate：{{ tutor.hourly_rate }}</h3>
+                    <h3>Tags：{{ tutor.tags }}</h3>
+                    <h3>Courses：{{ tutor.courses }}</h3>
+                    <h3>Sessions：{{ tutor.sessions }}</h3>
                 </div>
             </div>
         </div>

@@ -13,6 +13,19 @@ body {
     margin: 0
 }
 
+::-webkit-input-placeholder {
+   font-style: italic;
+}
+:-moz-placeholder {
+   font-style: italic;  
+}
+::-moz-placeholder {
+   font-style: italic;  
+}
+:-ms-input-placeholder {  
+   font-style: italic; 
+}
+
 article, aside, details, figcaption, figure, footer, header, hgroup, main, nav, section, summary {
     display: block
 }
@@ -29,6 +42,10 @@ audio:not([controls]) {
 
 [hidden], template {
     display: none
+}
+
+ul {
+  list-style-type: none;
 }
 
 a {
@@ -1407,7 +1424,9 @@ a.bg-danger:hover {
     margin: 40px 0 20px;
     border-bottom: 1px solid #eee
 }
-
+ul {
+  list-style-type: none;
+}
 ul, ol {
     margin-top: 0;
     margin-bottom: 10px

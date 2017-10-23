@@ -1,4 +1,6 @@
 # Tutoria
+[![Build Status](https://travis-ci.com/li-boxuan/tutoria.svg?token=9cK4Kmeqpdioyfb1EXxS&branch=master)](https://travis-ci.com/li-boxuan/tutoria)
+[![Chat on Gitter](https://badges.gitter.im/Hola-Inc/Tutoriac.svg)](https://gitter.im/Hola-Inc/Tutoria)
 
 ![Hola the Monkey](./favicon/hola.png)
 

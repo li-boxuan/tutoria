@@ -8,33 +8,12 @@
 
     <div class="container">
         <div class="row">
-            <div class="col-md-10 col-md-offset-1">
-                <div class="col-md-2">
+            <div class="col-md-11 col-md-offset-1">
+                <div class="col-md-11">
                     <div class="list-group">
-                        <a href="{% url 'search:index' %}"
+                        <a href="{% url 'search:result' %}"
                           class="list-group-item" id="id_category_all">All Tutors
                         </a>
-                        <!--{% for category in category_list %}
-                            <a href="{% url 'search:index' %}?category={{ category }}" class="list-group-item"
-                               id="id_category_{{ category }}">
-                                {{ category }}
-                            </a>
-                        {% endfor %}
-                    </div>
-                    <script type="text/javascript">
-                        $('#id_category_{{ query_category }}').addClass("active");
-                    </script>
-                </div>
-                <div class="col-md-9 col-md-offset-1">
-                    <div class="col-md-4 col-md-offset-8">
-                        <form role="form" method="post" name="search_form">
-                            {% csrf_token %}
-                            <input type="search" class="form-control" name="keyword"
-                                   placeholder="Enter keywords to search" id="id_search_input" onkeyup="key_up()"
-                                   autofocus>
-                        </form>
-                    </div>
-                    -->
                     <script type="text/javascript">
                         function key_up() {
                             var old_value = $('#id_search_input').val();
@@ -46,7 +25,7 @@
                             }, 1500);
                         }
                     </script>
-                    <table class="table table-hover">
+                    <table class="table table-hover" width="80%">
                         <thead>
                         <tr>
                             <th>#</th>
@@ -57,23 +36,25 @@
                         </tr>
                         </thead>
                         <tbody>
-                        {% for tutor in results_list %}
+                        {% for tutor in results %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
-                                <td><a href="{% url 'tutor:detail' tutor.id
-                                %}">{{ tutor.user.first_name }} {{
-                                tutor.user.last_name }}</a></td>
-                                <tr>
+                                <td><a href="{% url 'tutor:detail' tutor.id %}">{{ tutor.user.first_name }}
+                                {{tutor.user.last_name }}</a></td>
+                                <td> <ul>
                                   {% for course in tutor.courses.all %}
-                                  <td> {{ course.course_code }}:{{
-                                    course.course_name }} </td>
+                                  <li> {{course.course_code}} {{course.course_name }}<br>
                                   {% endfor %}
-                                </tr>
+                                  </ul>
+                                </td>
                                 <td>{{ tutor.hourly_rate }}</td>
-                                <tr>
+                                <td>
+                                  <ul>
                                   {% for tag in tutor.tags.all %}
-                                  <td> {{ tag.tag }} </td>
-                                </tr>
+                                  <li> {{ tag.tag }} <br>
+                                  {% endfor %}
+                                  </ul>
+                                </td>
                             </tr>
                         {% empty %}
                             <tr>
