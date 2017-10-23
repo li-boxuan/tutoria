@@ -5,6 +5,7 @@ from django.views import generic
 
 from account.models import (User, Tutor)
 
-class DetailView(generic.TemplateView):
-    template_name = 'result.html'
+def detail(request, tutor_id):
+    tutor = get_object_or_404(Tutor, id=tutor_id)
+    return render(request, 'detail.html', {'tutor': tutor})
 
