@@ -23,4 +23,6 @@ urlpatterns = [
     url(r'^$', views.IndexView.as_view(), name='homepage'),
     url(r'^search/', include('search.urls', namespace='search'), name='search'),
     url(r'^tutor/', include('tutor.urls', namespace='tutor'), name='tutor'),
+    # app_name: authentication namespace: auth
+    url(r'^auth/', include('authentication.urls', namespace='auth'), name='auth'),
 ]
