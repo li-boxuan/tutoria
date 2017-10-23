@@ -39,8 +39,7 @@
                         {% for tutor in results %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
-                                <td><a href="{% url 'tutor:detail' tutor.id
-                                %}">{{ tutor.user.first_name }}
+                                <td><a href="{% url 'tutor:detail' tutor.id %}">{{ tutor.user.first_name }}
                                 {{tutor.user.last_name }}</a></td>
                                 <td> <ul>
                                   {% for course in tutor.courses.all %}
