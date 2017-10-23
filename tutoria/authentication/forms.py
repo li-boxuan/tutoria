@@ -11,6 +11,9 @@ from django import forms
 from account.models import (User, Tutor, Student, Course, SubjectTag)
 
 
+WIDGET_STYLE_CLASS = {'class' : 'form-control' }
+
+
 class UserForm(forms.ModelForm):
     """Models the form for User registration."""
     SIGNUP_CHOICE = (('S', 'I am a Student'),
@@ -30,6 +33,14 @@ class UserForm(forms.ModelForm):
         widget=forms.RadioSelect(),
         choices=SIGNUP_CHOICE,
     )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for name, filed in self.fields.items():
+            if 'class' in field.widget.attrs:
+                field.widget.attrs['class'] += WIDGET_STYLE_CLASS['class']
+            else:
+                field.widget.attrs.update(WIDGET_STYLE_CLASS)
 
     class Meta:
         model = User
