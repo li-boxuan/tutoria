@@ -1,0 +1,16 @@
+{% extends "base.html" %} {% load staticfiles %} {% block title %}查看图书{% endblock %} {% block content %}
+
+<div class="container">
+  <form method="post">
+    {% csrf_token %}
+    <input type="radio" name="choice_0" id="choice_0" value="choice_0" />
+    <label for="choice_0">8:30-9:00</label><br />
+    <input type="radio" name="choice_1" id="choice_1" value="choice_1" />
+    <label for="choice_1">9:00-9:30</label><br />
+    <input type="radio" name="choice_2" id="choice_2" value="choice_2" />
+    <label for="choice_2">9:30-10:00</label><br />
+    <input type="submit" value="Book" />
+  </form>
+</div>
+
+{% endblock %}

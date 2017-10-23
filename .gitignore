@@ -1,3 +1,6 @@
+# Database
+*.sqlite3
+
 # Tmp files for OSX
 .DS_Store
 
