@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 populate_db.py
 
@@ -9,7 +10,6 @@ by Jiayao
 """
 import os
 import numpy as np
-
 
 def add_user(username, password, email, first_name, last_name,
              student=None, tutor=None, hourly_rate=0,
