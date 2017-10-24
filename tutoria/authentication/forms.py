@@ -9,46 +9,36 @@ by Jiayao
 """
 from django import forms
 from account.models import (User, Tutor, Student, Course, SubjectTag)
+from django.core.urlresolvers import reverse_lazy
 
 
-WIDGET_STYLE_CLASS = {'class' : 'form-control' }
+WIDGET_STYLE_CLASS = {}#{'class' : 'form-control' }
 
 
 class UserForm(forms.ModelForm):
     """Models the form for User registration."""
-    SIGNUP_CHOICE = (('S', 'I am a Student'),
-                     ('T', 'I am a Tutor'),
-                     ('B', 'I can be both =D'),
-                    )
-    # email = forms.EmailField(
-    #     label='Enter your e-mail.',
-    #     widget=forms.EmailInput(),
-    # )
     password = forms.CharField(
         label='Password',
         widget=forms.PasswordInput(),
     )
-    signup_type = forms.ChoiceField(
-        label="Are you a student or a tutor?",
-        widget=forms.RadioSelect(),
-        choices=SIGNUP_CHOICE,
-    )
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for name, filed in self.fields.items():
-            if 'class' in field.widget.attrs:
-                field.widget.attrs['class'] += WIDGET_STYLE_CLASS['class']
-            else:
-                field.widget.attrs.update(WIDGET_STYLE_CLASS)
 
     class Meta:
         model = User
-        fields = ('username', 'password', 'signup_type', 'email', 'first_name', 'last_name')
+        fields = ('username', 'password', 'email', 'first_name', 'last_name')
+
+    def __init__(self, *args, **kwargs):
+        super(UserForm, self).__init__(*args, **kwargs)
+        for name, field in self.fields.items():
+            field.widget.attrs.update(WIDGET_STYLE_CLASS)
 
 
 class TutorForm(forms.ModelForm):
     """Models the form for Tutor profile."""
+    password = forms.CharField(
+        label='Password',
+        widget=forms.PasswordInput(),
+    )
+
     TUTOR_TYPE_CHOICES = (
         ('CT', 'Contracted Tutor'),
         ('PT', 'Private Tutor')
@@ -73,3 +63,4 @@ class TutorForm(forms.ModelForm):
     class Meta:
         model = Tutor
         fields = ('hourly_rate', 'bio', 'tutor_type')
+
