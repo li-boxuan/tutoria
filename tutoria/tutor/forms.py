@@ -1,7 +1,11 @@
+"""Form-related classes."""
+
 from django import forms
 
 
 class BookForm(forms.Form):
+    """A form for booking sessions."""
+
     FRUIT_CHOICES = [
         ('orange', 'Oranges'),
         ('cantaloupe', 'Cantaloupes'),
