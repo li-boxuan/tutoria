@@ -9,5 +9,5 @@ class BookForm(forms.Form):
         ('honeydew', 'Honeydews'),
         ]
 
-    naiveField = forms.CharField(label='Naive?', choices=FRUIT_CHOICES,
-                                 widget=forms.RadioSelect())
+    naive = forms.CharField(label='Naive?',
+                            widget=forms.RadioSelect(choices=FRUIT_CHOICES))
