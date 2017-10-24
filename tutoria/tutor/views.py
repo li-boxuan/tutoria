@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404, render
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.views import generic
 from .book_session_form import BookForm
 
@@ -18,4 +18,4 @@ class BookView(generic.edit.FormView):
 
 
 def send_book_request(request):
-    return HttpResponse("Booking request sent!")
+    return HttpResponseRedirect('/search')  # FIXME: redirect to correct place
