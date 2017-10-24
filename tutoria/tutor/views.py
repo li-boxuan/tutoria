@@ -1,21 +1,42 @@
-from django.shortcuts import get_object_or_404, render
-from django.http import HttpResponse, HttpResponseRedirect
+"""Views for the Tutor App."""
+from django.shortcuts import get_object_or_404, render, render_to_response
 from django.views import generic
-from .book_session_form import BookForm
+from django.template import RequestContext
+from .forms import BookForm
 
 from account.models import Tutor
 
 
 def detail(request, tutor_id):
+    """View for rendering a detailed profile of a tutor."""
     tutor = get_object_or_404(Tutor, id=tutor_id)
     return render(request, 'detail.html', {'tutor': tutor})
 
+# -----------------------------------------------------------------------------
+# ####### Book Session #######
+
 
 class BookView(generic.edit.FormView):
+    """Book View (class version)."""
+
     template_name = 'book.html'
     form_class = BookForm
     # success_url = '/thanks/'
 
 
-def send_book_request(request):
-    return HttpResponseRedirect('/search')  # FIXME: redirect to correct place
+# Adapted From Dangle with Django
+# def add_session(request):
+#     """Add a session."""
+#     context = RequestContext(request)
+#
+#     if request.method == 'POST':
+#         form = BookForm(request.POST)
+#         if form.is_valid():
+#             form.save(commit=True)
+# #            return index(request) # FIXME Call index() view, unavailable now
+#         else:
+#             print(form.errors)
+#     return render_to_response('book.html', {'form': form}, context)
+
+
+# -----------------------------------------------------------------------------
