@@ -12,6 +12,9 @@ install:
   - pip install -r requirements.txt
 # command to run tests
 script:
+  - cd tutoria
+  - make rebuild
+  - cd ..
   - python ./tutoria/manage.py check
 
 notifications:

@@ -1,5 +1,6 @@
 # Database
 *.sqlite3
+migrations/
 
 # Tmp files for OSX
 .DS_Store
