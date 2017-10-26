@@ -32,8 +32,10 @@ def add_user(username, password, email, first_name, last_name,
         from account.models import (SubjectTag, Course)
         course = Course.objects.get_or_create(course_code=course_code, course_name=course_name)[0]
         st = SubjectTag.objects.get_or_create(tag=tag)[0]
+        if hourly_rate is None:
+            hourly_rate = np.random.randint(1, 300) * 10
         t = Tutor(user=user, tutor_type=tutor, bio=bio,
-                  hourly_rate=np.random.randint(1, 300) * 10)
+                  hourly_rate=hourly_rate)
         t.save()
         t.tags.add(st)
         t.courses.add(course)
@@ -50,7 +52,7 @@ def populate_user():
 
     users.append(add_user(
         'clwang', 'choli', 'clwang@cs.hku.hk', 'Cho-Li', 'Wang', None,
-        'PT', 200,
+        'PT', None,
         r"Professor Cho-Li Wang received his B.S. degree in Computer Science and Information Engineering from National Taiwan University in 1985. He obtained his M.S. and Ph.D. degrees in Computer Engineering from University of Southern California in 1990 and 1995 respectively. He is currently a professor at the Department of Computer Science. Professor Wang's research interests include parallel architecture, software systems for Cluster and Grid computing, and virtualization techniques for Cloud computing. Recently, he starts working on software transaction memory for multicore/GPU clusters and multi-kernel operating systems for future single-chip manycore processor. Professor Wang has published more than 130 papers in various peer reviewed journals and conference proceedings. He is/was on the editorial boards of several international journals, including IEEE Transactions on Computers (TC), Multiagent and Grid Systems (MGS), Journal of Information Science and Engineering (JISE), International Journal of Pervasive Computing and Communications (JPCC), ICST Transactions on Scalable Information Systems (SIS). He was the program chair for Cluster’03, CCGrid'09, InfoScale’09, and ICPADS’09, ISPA’11, FCST’11, FutureTech’12, and Cluster2012; and the General Chair for IPDPS2012. He has also served as program committee members for numerous international conferences, including IPDPS, CCGrid, Cloud, CloudCom, Grid, HiPC, ICPP, and ICPADS. Professor Wang is the primary investigator of China 863 project 'Hong Kong University Grid Point' (2006-2011). The HKU Grid point consists of 3004 CPU cores (31.45 Teraflops), which offers parallel computing services for the China National Grid (CNGrid) and is used as a testbed for Cloud-related systems development. He has been invited to give keynote and plenary talk related to Distributed JVM design and Cloud Computing at various international conferences.", 'COMP3230', 'Operating Systems'))
 
     users.append(add_user(
@@ -58,7 +60,7 @@ def populate_user():
 
     users.append(add_user(
         'azero', 'azero', 'alphazero@deepmind.com', 'Alpha', 'Go',
-        1, 'PT', np.iinfo(np.int32),
+        1, 'PT', np.iinfo(np.int32).max,
         r'I learn by myself and I learnt so well. No human beats me.'))
 
     return users
