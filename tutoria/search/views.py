@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.views import generic
 
-from account.models import (User, Tutor)
+from account.models import Tutor
 
 class IndexView(generic.TemplateView):
     template_name = 'search.html'

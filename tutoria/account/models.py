@@ -25,18 +25,7 @@ class Course(models.Model):
     def __str__(self):
         return self.course_code + " " + self.course_name
 
-
-class User(auth_models.User):
-    """Models the user."""
-    # username = models.CharField(max_length=128, unique=True)
-    # email = models.EmailField(max_length=128, unique=True)
-    # first_name = models.CharField(max_length=64, unique=False)
-    # last_name = models.CharField(max_length=64, unique=False)
-    wallet_balance = models.PositiveIntegerField(default=0)
-    avator = models.ImageField()
-
-
-class Tutor(models.Model):
+class Tutor(auth_models.User):
     """Models the tutor."""
     CONTRACTED_TUTOR = 'CT'
     PRIVATE_TUTOR = 'PT'
@@ -44,11 +33,8 @@ class Tutor(models.Model):
         (CONTRACTED_TUTOR, 'Contracted Tutor'),
         (PRIVATE_TUTOR, 'Private Tutor'),
     )
-    user = models.OneToOneField(
-        User,
-        on_delete=models.CASCADE,
-    )
-
+    wallet_balance = models.PositiveIntegerField(default=0)
+    avator = models.ImageField()
     tutor_type = models.CharField(
         max_length=2,
         choices=TUTOR_TYPE_CHOICES,
@@ -59,19 +45,15 @@ class Tutor(models.Model):
     hourly_rate = models.PositiveIntegerField(default=0)
     tags = models.ManyToManyField(SubjectTag)
     courses = models.ManyToManyField(Course)
-    sessions = models.ManyToManyField('scheduler.session')
+    # sessions = models.ManyToManyField('scheduler.session')
 
     def __str__(self):
-        return "{}: {}".format(self.user.username, self.tutor_type)
+        return "{}: {}".format(self.username, self.tutor_type)
 
 
-class Student(models.Model):
-    user = models.OneToOneField(
-        User,
-        on_delete=models.CASCADE,
-    )
-
+class Student(auth_models.User):
     def __str__(self):
-        return self.user.username
-
+        return self.username
+    wallet_balance = models.PositiveIntegerField(default=0)
+    avator = models.ImageField()
 

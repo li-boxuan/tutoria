@@ -30,6 +30,7 @@
                         <tr>
                             <th>#</th>
                             <th>Tutor</th>
+                            <th>Type</th>
                             <th>Course</th>
                             <th>Hourly Rate</th>
                             <th>Tags</th>
@@ -39,8 +40,16 @@
                         {% for tutor in results %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
-                                <td><a href="{% url 'tutor:detail' tutor.id %}">{{ tutor.user.first_name }}
-                                {{tutor.user.last_name }}</a></td>
+                                <td><a href="{% url 'tutor:detail' tutor.id %}">{{ tutor.first_name }}
+                                {{tutor.last_name }}</a></td>
+                                <td>
+                                  {% if tutor.tutor_type == 'CT' %}
+                                    Contracted Tutor
+                                  {% else %}
+                                    Private Tutor
+                                  {% endif %}
+                                </td>
+
                                 <td> <ul>
                                   {% for course in tutor.courses.all %}
                                   <li> {{course.course_code}} {{course.course_name }}<br>
@@ -63,28 +72,6 @@
                         {% endfor %}
                         </tbody>
                     </table>
-                    <!--
-                    <nav>
-                        <ul class="pager">
-                            {% if book_list.has_previous %}
-                                <li class="previous"><a
-                                        href="?typ={{ query_category }}&page={{ book_list.previous_page_number }}">上一页</a>
-                                </li>
-                            {% else %}
-                                <li class="previous disabled"><a
-                                    href="#">Previous Page</a></li>
-                            {% endif %}
-                            第 {{ book_list.number }} / {{ book_list.paginator.num_pages }}页
-                            {% if book_list.has_next %}
-                                <li class="next"><a
-                                        href="?typ={{ query_category }}&page={{ book_list.next_page_number }}">下一页</a>
-                                </li>
-                            {% else %}
-                                <li class="next disabled"><a href="#">Next Page</a></li>
-                            {% endif %}
-                        </ul>
-                    </nav>
-                    -->
 
                 </div>
             </div>
