@@ -1,5 +1,5 @@
 """Views for the Tutor App."""
-from django.shortcuts import get_object_or_404, render, render_to_response
+from django.shortcuts import get_object_or_404, render, render_to_response, redirect
 from django.views import generic
 from django.template import RequestContext
 from .forms import BookForm
@@ -27,17 +27,15 @@ def detail(request, tutor_id):
 # # New experimental version
 def book_session(request, tutor_id):
     """Book a new session."""
-    form = BookForm
+    if request.method == 'POST':
+        form = BookForm(request.POST)
+        # if form.is_valid():
+        # booking = form.save(commit=False)
+        # # Save some other hidden attributes
+        # booking.save()
+        # return redirect('detail', tutor_id)
+    else:
+        form = BookForm()
     return render(request, 'book.html', {'form': form})
-#     context = RequestContext(request)
-#
-#     if request.method == 'POST':
-#         form = BookForm(request.POST)
-#         if form.is_valid():
-#             form.save(commit=True)
-# #            return index(request) # FIXME Call index() view, unavailable now
-#         else:
-#             print(form.errors)
-#     return render_to_response('book.html', {'form': form}, context)
 
 # -----------------------------------------------------------------------------
