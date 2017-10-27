@@ -8,7 +8,7 @@ Created on Oct. 23, 2017
 by Jiayao
 """
 from django import forms
-from account.models import (User, Tutor, Student, Course, SubjectTag)
+from account.models import (Tutor, Student, Course, SubjectTag)
 from django.core.urlresolvers import reverse_lazy
 
 
@@ -23,7 +23,7 @@ class UserForm(forms.ModelForm):
     )
 
     class Meta:
-        model = User
+        model = Student
         fields = ('username', 'password', 'email', 'first_name', 'last_name')
 
     def __init__(self, *args, **kwargs):

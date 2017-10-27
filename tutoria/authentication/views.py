@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.views import generic
-from account.models import (User, Tutor, Student, SubjectTag,
+from account.models import (Tutor, Student, SubjectTag,
                            Course)
 from .forms import (UserForm, TutorForm)
 
@@ -21,18 +21,11 @@ class IndexView(generic.TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['choice'] = True
-        context['user_form'] = None
-        context['student_form'] = None
-        context['tutor'] = None
+        context['form'] = None
         return context
 
 
 class StudentFormView(generic.edit.CreateView):
-    """Models the sign-up form."""
-    template_name = 'signup.html'
-    form_class = UserForm
-
-class UserFormView(generic.edit.CreateView):
     """Models the sign-up form."""
     template_name = 'signup.html'
     form_class = UserForm
@@ -49,9 +42,7 @@ class StudentView(generic.TemplateView):
     def get(self, req, *args, **kwargs):
         context = self.get_context_data(**kwargs)
         context['choice'] = False
-        context['user_form'] = None
-        context['student_form'] = UserForm()
-        context['tutor_form'] = None
+        context['form'] = UserForm()
         return self.render_to_response(context)
 
 
@@ -61,9 +52,7 @@ class TutorView(generic.TemplateView):
     def get(self, req, *args, **kwargs):
         context = self.get_context_data(**kwargs)
         context['choice'] = False
-        context['user_form'] = UserForm()
-        context['student_form'] = None
-        context['tutor_form'] = TutorForm()
+        context['form'] = TutorForm()
         return self.render_to_response(context)
 
 
@@ -75,9 +64,7 @@ class BothView(generic.TemplateView):
     def get(self, req, *args, **kwargs):
         context = self.get_context_data(**kwargs)
         context['choice'] = False
-        context['user_form'] = None
-        context['student_form'] = UserForm()
-        context['tutor_form'] = TutorForm()
+        context['form'] = TutorForm()
         return self.render_to_response(context)
 
 
