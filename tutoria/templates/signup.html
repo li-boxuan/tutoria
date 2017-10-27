@@ -34,22 +34,15 @@
                     </div>
                 </form>
 
-                {% else %}
+                {% elif form %}
+
                  <form method="POST" role="form" class="form-horizontal">
                     {% csrf_token %}
 
                     <div class="form-group">
                       <div class="col-md-9">
                         <table>
-                        {% if user_form %}
-                          {{ user_form.as_p }}
-                        {% endif %}
-                        {% if student_form %}
-                          {{ student_form.as_p }}
-                        {% endif %}
-                        {% if tutor_form %}
-                          {{ tutor_form.as_p }}
-                        {% endif %}
+                          {{ form.as_p }}
                         </table>
                       </div>
                     </div>
