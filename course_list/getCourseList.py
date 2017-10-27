@@ -2,14 +2,12 @@
 from bs4 import BeautifulSoup
 import requests
 import json
-# from pprint import pprint
+from pprint import pprint
 
 course_list = []  # Structure: [course1, course2, ...]
 url = "http://www.cs.hku.hk/programme/courses-offered.jsp"
 data = requests.get(url).text.encode('utf-8').decode('ascii', 'ignore')
 soup = BeautifulSoup(data, "html.parser")
-# print(soup.prettify().encode('utf-8')) # Print everything
-# print(soup.table)  # Print the first found table
 table = soup.find_all(name='table', border='1', width='99%', class_='table')[1]
 for tr in table.findAll('tr'):
     td_list = tr.findAll('td')
@@ -25,6 +23,6 @@ for tr in table.findAll('tr'):
             'staff': staff
         })
 
-# pprint(course_list)
+pprint(course_list[1:len(course_list)])
 with open('course_list.txt', 'w') as outfile:
     json.dump(course_list, outfile)
