@@ -15,18 +15,20 @@ def detail(request, tutor_id):
 # -----------------------------------------------------------------------------
 # ####### Book Session #######
 
+# # Old version. Working but shitty.
+# class BookView(generic.edit.FormView):
+#     """Book View (class version)."""
+#
+#     template_name = 'book.html'
+#     form_class = BookForm
+#     # success_url = '/thanks/'
 
-class BookView(generic.edit.FormView):
-    """Book View (class version)."""
 
-    template_name = 'book.html'
-    form_class = BookForm
-    # success_url = '/thanks/'
-
-
-# Adapted From Dangle with Django
-# def add_session(request):
-#     """Add a session."""
+# # New experimental version
+def book_session(request, tutor_id):
+    """Book a new session."""
+    form = BookForm
+    return render(request, 'book.html', {'form': form})
 #     context = RequestContext(request)
 #
 #     if request.method == 'POST':
@@ -37,6 +39,5 @@ class BookView(generic.edit.FormView):
 #         else:
 #             print(form.errors)
 #     return render_to_response('book.html', {'form': form}, context)
-
 
 # -----------------------------------------------------------------------------
