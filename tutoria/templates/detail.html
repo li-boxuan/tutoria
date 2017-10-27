@@ -35,15 +35,29 @@
                     {% endif %}
                 </div>
                 <div class="col-md-6 col-md-offset-1">
-                    <h2 class="text-center">{{ book.name }}</h2>
+                    <h2 class="text-center">Detail</h2>
                     <br>
-                    <h3>Name: {{ tutor.user.first_name }} {{tutor.user.last_name }}</h3>
-                    <h3>Type：{{ tutor.tutor_type }}</h3>
-                    <h3>Biography：{{ tutor.bio }}</h3>
-                    <h3>Hourly Rate：{{ tutor.hourly_rate }}</h3>
-                    <h3>Tags：{% for tag in tutor.tags.all %} {{ tag.tag }} &nbsp; {% endfor %} </h3>
-                    <h3>Courses：{{ tutor.courses }}</h3>
-                    <h3>Sessions：{{ tutor.sessions }}</h3>
+                    <h3>Name </h3>
+                        <h5>{{ tutor.user.first_name }} {{tutor.user.last_name }}</h5>
+                    <h3>Type</h3>
+                        <h5>{{ tutor.tutor_type }}</h5>
+                    <h3>Biography</h3>
+                        <h5> {{ tutor.bio }} </h5>
+                    <h3>Hourly Rate</h3>
+                        <h5> {{ tutor.hourly_rate }} </h5>
+                    <h3>Tags</h3>
+                        {% for tag in tutor.tags.all %}
+                        <h5> {{ tag.tag }} &nbsp; </h5>
+                        {% endfor %}
+                    <h3>Courses</h3>
+                        {% for course in tutor.courses.all %} 
+                        <h5> {{ course.course_name }} &nbsp; {{ course.course_code }} </h5>
+                        {% endfor %}
+                    <h3>Sessions</h3>
+                        {% for session in tutor.sessions.all %}
+                        <h5> start_time : {{ session.start_date }} &nbsp; {{ session.start_hour }}:{{ session.start_minute }} </h5>
+                        <h5> status : {{ session.status }} </h5>
+                        {% endfor %}
                 </div>
             </div>
         </div>
