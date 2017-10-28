@@ -28,6 +28,6 @@ class MybookingsView(generic.ListView):
         else:
             ursn=self.request.session['username']
             urs = get_object_or_404(Student, username=ursn)
-            context=urs.bookingRecord_set.all
+            context=urs.BookingRecord_set.all()
             #context= BookingRecord.objects.filter(student.username==ursn)
             return context        

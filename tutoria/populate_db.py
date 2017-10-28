@@ -9,7 +9,7 @@ Created on Oct. 20, 2017
 by Jiayao
 """
 import os
-import numpy as np
+import random
 from scheduler.models import Session
 from datetime import (datetime, timedelta, time, date)
 import django.utils.timezone as tz
@@ -23,7 +23,7 @@ def add_student(username, password, email, first_name, last_name,
                 wallet_balance=-1, avatar='default_avatar.png'):
     from account.models import Student
     if wallet_balance < 0:
-        wallet_balance = np.random.randint(1, 300) * 10
+        wallet_balance = random.randint(1, 300) * 10
 
     student = Student.objects.create_user(username, email, password,
                                          first_name=first_name,
@@ -43,11 +43,11 @@ def add_tutor(username, password, email, first_name, last_name,
                         sessions=None):
     from account.models import (Tutor, Course, SubjectTag)
     if wallet_balance < 0:
-        wallet_balance = np.random.randint(1, 300) * 10
+        wallet_balance = random.randint(1, 300) * 10
     if tutor_type == 'CT':
         hourly_rate = 0
     elif hourly_rate < 0:
-        hourly_rate = np.random.randint(1, 300) * 10
+        hourly_rate = random.randint(1, 300) * 10
 
     tutor = Tutor.objects.create_user(username, email, password,
                                          first_name=first_name,
@@ -106,7 +106,7 @@ r"Professor Cho-Li Wang received his B.S. degree in Computer Science and Informa
 
     tutors.append(add_tutor(
         'azero', 'azero', 'alpha_zero@deepmind.com', 'AlphaGo', 'Zero', 'PT',
-        np.iinfo(np.int32).max,
+        99999999,
         r'I learn by meself so well. No human beats me.',
         [['COMP3314', 'Machine Learning']],
         ['Go', 'Deep Learning']
