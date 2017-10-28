@@ -58,6 +58,42 @@ class Tutor(models.Model):
         return self.user.username
 
     @property
+    def first_name(self):
+        return self.user.first_name
+
+    @first_name.setter
+    def first_name(self, val):
+        self.user.first_name = val
+        self.user.save()
+
+    @property
+    def last_name(self):
+        return self.user.last_name
+
+    @last_name.setter
+    def last_name(self, val):
+        self.user.last_name = val
+        self.user.save()
+
+    @property
+    def email(self):
+        return self.user.email
+
+    @email.setter
+    def email(self, val):
+        self.user.email = val
+        self.user.save()
+
+    @property
+    def password(self):
+        return self.user.password
+
+    @password.setter
+    def password(self, val):
+        self.user.password = val
+        self.user.save()
+
+    @property
     def wallet_balance(self):
         return self.user.wallet_balance
 
@@ -90,6 +126,42 @@ class Student(models.Model):
         return self.user.username
 
     @property
+    def first_name(self):
+        return self.user.first_name
+
+    @first_name.setter
+    def first_name(self, val):
+        self.user.first_name = val
+        self.user.save()
+
+    @property
+    def last_name(self):
+        return self.user.last_name
+
+    @last_name.setter
+    def last_name(self, val):
+        self.user.last_name = val
+        self.user.save()
+
+    @property
+    def email(self):
+        return self.user.email
+
+    @email.setter
+    def email(self, val):
+        self.user.email = val
+        self.user.save()
+
+    @property
+    def password(self):
+        return self.user.password
+
+    @password.setter
+    def password(self, val):
+        self.user.password = val
+        self.user.save()
+
+    @property
     def wallet_balance(self):
         return self.user.wallet_balance
 
@@ -109,6 +181,8 @@ class Student(models.Model):
     def avatar(self, avt):
         self.user.avatar = avt
         self.user.save()
+
+
 
     def __str__(self):
         return self.username
