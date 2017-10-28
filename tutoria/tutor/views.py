@@ -19,15 +19,23 @@ def detail(request, tutor_id):
 # ####### Book Session #######
 
 
-# # New experimental version
 def book_session(request, tutor_id):
-    """Book a new session."""
+    """Confirm booking a new session."""
     if request.method == 'POST':
         session_id = request.POST.get('session_id', '')
         tutor = Tutor.objects.get(pk=tutor_id)
         session = Session.objects.get(pk=session_id)
-        return HttpResponse(tutor.get_full_name() + " | session = "
-                            + session_id)
+        return render(request, 'book.html', {'tutor': tutor,
+                                             'session': session})
     else:
-        return HttpResponse("In ELSE")
+        return HttpResponse("not a POST request!")
+
+
+def save_booking(request, tutor_id):
+    """Save booking record and redirect to the dashboard."""
+    if request.method == 'POST':
+        return HttpResponse("received the request!")
+    else:
+        return HttpResponse("not a POST request!")
+
 # -----------------------------------------------------------------------------
