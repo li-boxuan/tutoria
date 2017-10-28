@@ -37,26 +37,31 @@ OFFICE_HOUR_STEP = {'CT': timedelta(hours=0.5),
 
 def add_student(username, password, email, first_name, last_name,
                 wallet_balance=-1, avatar='default_avatar.png'):
-    from account.models import Student
+    from account.models import (User, Student)
     if wallet_balance < 0:
         wallet_balance = np.random.randint(1, 300) * 10
 
-    student = Student.objects.create_user(username, email, password,
-                                          first_name=first_name,
-                                          last_name=last_name)
+    user, _ = User.objects.get_or_create(username=username, email=email,
+									  password=password,
+                                         first_name=first_name,
+                                         last_name=last_name)
+    student, _ = Student.objects.get_or_create(user=user)
     student.wallet_balance = wallet_balance
     student.avatar = avatar
+    user.save()
     student.save()
     return student
 
 
 def add_tutor(username, password, email, first_name, last_name,
-              tutor_type='CT', hourly_rate=0, bio='',
-              courses=[['COMP3297', 'Software Engineering']],
-              tags=['Software Engineering'],
-              wallet_balance=-1, avatar='default_avatar.png',
-              sessions=None):
-    from account.models import (Tutor, Course, SubjectTag)
+                          tutor_type = 'CT',
+                          hourly_rate=0,
+                          bio='',
+                          courses=[['COMP3297', 'Software Engineering']],
+                            tags=['Software Engineering'],
+                          wallet_balance=-1, avatar='default_avatar.png',
+                        sessions=None):
+    from account.models import (User, Tutor, Course, SubjectTag)
     if wallet_balance < 0:
         wallet_balance = np.random.randint(1, 300) * 10
     if tutor_type == 'CT':
@@ -64,9 +69,11 @@ def add_tutor(username, password, email, first_name, last_name,
     elif hourly_rate < 0:
         hourly_rate = np.random.randint(1, 300) * 10
 
-    tutor = Tutor.objects.create_user(username, email, password,
-                                      first_name=first_name,
-                                      last_name=last_name)
+    user, _ = User.objects.get_or_create(username=username, email=email,
+									  password=password,
+                                         first_name=first_name,
+                                         last_name=last_name)
+    tutor, _ = Tutor.objects.get_or_create(user=user)
     tutor.tutor_type = tutor_type
     tutor.wallet_balance = wallet_balance
     tutor.avatar = avatar
@@ -84,7 +91,7 @@ def add_tutor(username, password, email, first_name, last_name,
         for session in sessions:
             session.tutor = tutor
             session.save()
-
+    user.save()
     tutor.save()
     return tutor
 
@@ -158,6 +165,9 @@ def populate_session(tutors):
 
 def populate_student():
     students = []
+    students.append(add_student(
+        'kpwat', 'kpwat', 'watkp@hku.hk', 'Kam Pui', 'Wat'
+    ))
     students.append(add_student(
         'ckchui', 'ckchui', 'ckchui@cs.hku.hk', 'Chun-Kit', 'Chui'
     ))
