@@ -16,6 +16,8 @@ Including another URLconf
 from __future__ import (absolute_import, print_function)
 from django.conf.urls import url, include
 from django.contrib import admin
+from django.conf import settings
+from django.conf.urls.static import static
 from . import views
 
 urlpatterns = [
@@ -25,4 +27,5 @@ urlpatterns = [
     url(r'^tutor/', include('tutor.urls', namespace='tutor'), name='tutor'),
     # app_name: authentication namespace: auth
     url(r'^auth/', include('authentication.urls', namespace='auth'), name='auth'),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
