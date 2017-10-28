@@ -25,9 +25,9 @@ class Transaction(models.Model):
 class Coupon(models.Model):
     """Models a coupon."""
     import uuid
-    start_data = models.DateTimeField()
-    end_data = models.DateTimeField()
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
     code = models.UUIDField(primary_key=True,
                            default=uuid.uuid4, editable=False)
-    transaction = models.ForeignKey(Transaction)
+    transaction = models.ForeignKey(Transaction, null=True)
 

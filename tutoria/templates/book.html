@@ -13,8 +13,7 @@
       <p>{{ tag.tag }}</p> {% endfor %}
       <h3>Course</h3> {% for course in tutor.courses.all %}
       <p>{{ course.course_code }}</p> {% endfor %}
-      <h2>Fee</h2>
-      <p><strong>${{tutor.hourly_rate}}</strong></p>
+      <h2>Total: ${{tutor.hourly_rate}}</h2>
     </div>
   </div>
 
