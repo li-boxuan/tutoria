@@ -1,16 +1,11 @@
-{% extends "base.html" %} {% load staticfiles %} {% block title %}Book Session{% endblock %} {% block content %}
+{% extends "base.html" %} {% load staticfiles %} {% block title %}Book Session{% endblock %}
 
-<div class="container">
-  <form method="post">
-    {% csrf_token %}
-    <input type="radio" name="choice_0" id="choice_0" value="choice_0" />
-    <label for="choice_0">8:30-9:00</label><br />
-    <input type="radio" name="choice_1" id="choice_1" value="choice_1" />
-    <label for="choice_1">9:00-9:30</label><br />
-    <input type="radio" name="choice_2" id="choice_2" value="choice_2" />
-    <label for="choice_2">9:30-10:00</label><br />
-    <input type="submit" value="Book" />
-  </form>
-</div>
+{% block content %}
+
+<h1>Book Session</h1>
+<form method="post" class='book_form'> {% csrf_token %}
+  {{ form.as_p }}
+  <input type="submit" value="Book" />
+</form>
 
 {% endblock %}
