@@ -41,6 +41,7 @@ class LoginView(generic.TemplateView):
                            password=req.POST['password'])
         if user is not None:
             login(req, user)
+            req.session['username'] = req.POST['username']
             return HttpResponseRedirect(reverse('homepage'))
         else:
             return render(req, self.template_name, {'status': 0})
@@ -48,6 +49,7 @@ class LoginView(generic.TemplateView):
 @login_required
 def logout_view(req):
     logout(req)
+    req.session['username'] = None
     return HttpResponseRedirect(reverse('homepage'))
 
 class StudentFormView(generic.edit.CreateView):

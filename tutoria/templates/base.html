@@ -39,11 +39,10 @@
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 {% if user.is_authenticated %}
-                    <li>{{ user.username }}<li>
-                    <li><a href="">My Account</a></li>
+                    <li><a href="">{{ user.first_name }}</a></li>
                     <li><a href="{% url 'auth:logout' %}">Logout</a></li>
                 {% else %}
-                    <li><a href="{% url 'auth:signup' %}">Register</a></li>
+                    <li><a href="{% url 'auth:signup' %}">Sign Up</a></li>
                     <li><a href="{% url 'auth:login' %}">Login</a></li>
                 {% endif %}
             </ul>
