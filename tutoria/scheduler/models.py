@@ -19,6 +19,7 @@ class Session(models.Model):
 		(BOOKABLE, 'BOOKABLE'),
     )
     start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
     tutor = models.ForeignKey('account.Tutor', on_delete=models.CASCADE)
     status = models.CharField(max_length=1,
                               choices=STATUS_CHOICES,
