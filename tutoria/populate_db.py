@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-populate_db.py
+populate_db.py.
 
 For populating demo database
 data.
@@ -8,16 +8,32 @@ data.
 Created on Oct. 20, 2017
 by Jiayao
 """
-import os
 import numpy as np
 from scheduler.models import Session
 from datetime import (datetime, timedelta, time, date)
 import django.utils.timezone as tz
+from uuid import uuid4
+
+
+def add_coupon(start_date, end_date, coupon_code):
+    """Add a new coupon."""
+    from django.utils import timezone
+    from wallet.models import Coupon
+    coupon, _ = Coupon.objects.get_or_create(
+        start_date=timezone.make_aware(start_date,
+                                       timezone.get_current_timezone()),
+        end_date=timezone.make_aware(end_date,
+                                     timezone.get_current_timezone()),
+        code=coupon_code)
+    coupon.save()
+    return coupon
+
 
 OFFICE_HOURS = {'begin': time(9, 30),
                 'end': time(18, 30)}
 OFFICE_HOUR_STEP = {'CT': timedelta(hours=0.5),
                     'PT': timedelta(hours=1.0)}
+
 
 def add_student(username, password, email, first_name, last_name,
                 wallet_balance=-1, avatar='default_avatar.png'):
@@ -35,6 +51,7 @@ def add_student(username, password, email, first_name, last_name,
     user.save()
     student.save()
     return student
+
 
 def add_tutor(username, password, email, first_name, last_name,
                           tutor_type = 'CT',
@@ -78,11 +95,13 @@ def add_tutor(username, password, email, first_name, last_name,
     tutor.save()
     return tutor
 
+
 def add_tag(tag):
     from account.models import SubjectTag
     t, _ = SubjectTag.objects.get_or_create(tag=tag)
     t.save()
     return t
+
 
 def add_course(code, name):
     from account.models import Course
@@ -90,11 +109,11 @@ def add_course(code, name):
     c.save()
     return c
 
+
 def populate_tutor():
     tutors = []
     tutors.append(add_tutor(
-        'georgem', 'georgem', 'georgem@cs.hku.hk', 'George', 'Michetson', 'CT', 0,
-r'Before joining HKU, George accumulated many years of experience in large-scale software engineering and in R&D for real-time systems. He has headed or contributed to development of a wide range of systems spanning fields such as scientific computation, telecommunications, database management systems, control systems and autonomous robotics. This work was carried out principally in Europe and the USA. Between the two he taught for several years at the University of Puerto Rico.',
+        'georgem', 'georgem', 'georgem@cs.hku.hk', 'George', 'Michetson', 'CT', 0, r'Before joining HKU, George accumulated many years of experience in large-scale software engineering and in R&D for real-time systems. He has headed or contributed to development of a wide range of systems spanning fields such as scientific computation, telecommunications, database management systems, control systems and autonomous robotics. This work was carried out principally in Europe and the USA. Between the two he taught for several years at the University of Puerto Rico.',
         [['COMP3297', 'Software Engineering'],
          ['COMP3403', 'Software Implmentation, Testing and Maintainence']],
         ['Software Engineering', 'Evolutionary Computing'],
@@ -128,6 +147,7 @@ r"Professor Cho-Li Wang received his B.S. degree in Computer Science and Informa
 
     return tutors
 
+
 def populate_session(tutors):
     DEMO_DATE = date(2017, 11, 1)
     if tutors is not None:
@@ -135,10 +155,11 @@ def populate_session(tutors):
             d = datetime.combine(DEMO_DATE, OFFICE_HOURS['begin'])
             while d.time() <= OFFICE_HOURS['end']:
                 dn = d + OFFICE_HOUR_STEP[tutor.tutor_type]
-                s, _ = Session.objects.get_or_create(start_time=tz.make_aware(d),
-                                                     end_time=tz.make_aware(dn),
-                                                    tutor=tutor,
-                                                    status=Session.BOOKABLE)
+                s, _ = Session.objects.get_or_create(
+                        start_time=tz.make_aware(d),
+                        end_time=tz.make_aware(dn),
+                        tutor=tutor,
+                        status=Session.BOOKABLE)
                 d = dn
 
 
@@ -155,10 +176,23 @@ def populate_student():
         'atam', 'atam', 'atam@cs.hku.hk', 'Anthony', 'Tam'
     ))
 
+
+def populate_coupon():
+    coupon_list = []
+    coupon_list.append(add_coupon(datetime(1997, 6, 15), datetime(2097, 6, 15),
+                                  uuid4()))
+    coupon_list.append(add_coupon(datetime(2025, 6, 15), datetime(2035, 6, 15),
+                                  uuid4()))
+    coupon_list.append(add_coupon(datetime(1960, 6, 15), datetime(1997, 6, 15),
+                                  uuid4()))
+    return coupon_list
+
+
 def populate():
     tutors = populate_tutor()
     students = populate_student()
     populate_session(tutors)
+    coupons = populate_coupon()
     return [tutors, students]
 
 
