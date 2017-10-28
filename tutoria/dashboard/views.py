@@ -16,13 +16,17 @@ from scheduler.models import BookingRecord
 
 
 class MybookingsView(generic.ListView):
-    model = scheduler
+    model = BookingRecord
     template_name = 'my_bookings.html'
     context_object_name = 'my_booking_records'
     
-    
+
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context.objects.filter(user=self.request.user)
-        return context
-        
+        #context = super(MybookingsView,self).get_context_data(**kwargs)
+        #context.objects.filter(user=self.request.user)
+	if 'username' not in self.request.session:
+	    return None
+	else:
+	    ursn=self.request.session['username']
+            context= BookingRecord.objects.filter(student_name==ursn)
+	    return context        
