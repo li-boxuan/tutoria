@@ -62,5 +62,5 @@ class TutorForm(forms.ModelForm):
 
     class Meta:
         model = Tutor
-        fields = ('hourly_rate', 'bio', 'tutor_type')
+        fields = ('username', 'password', 'email', 'first_name', 'last_name', 'hourly_rate', 'bio', 'tutor_type')
 
