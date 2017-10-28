@@ -3,10 +3,13 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.views import generic
 
-from account.models import (User,Tutor, Student)
+from scheduler.models import BookingRecord
 
 
-class MybookingsView(generic.ListView):
-    model = Account
-    template_name = 'dashboard.html'
-    context_object_name = 'mybookings'
+
+def MybookingsView(request):
+    #model = scheduler
+    record = student.BookingRecord_set.all
+    #template_name = 'my_bookings.html'
+    #context_object_name = 'mybookings'
+    return render(request, 'my_bookings.html', {'record': record})
