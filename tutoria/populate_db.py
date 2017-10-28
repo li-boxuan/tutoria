@@ -93,13 +93,15 @@ r'Before joining HKU, George accumulated many years of experience in large-scale
         [['COMP3297', 'Software Engineering'],
          ['COMP3403', 'Software Implmentation, Testing and Maintainence']],
         ['Software Engineering', 'Evolutionary Computing'],
+        avator='georgem.png'
     ))
 
     tutors.append(add_tutor(
         'clwang', 'choli', 'clwang@cs.hku.hk', 'Cho-Li', 'Wang', 'CT', 0,
 r"Professor Cho-Li Wang received his B.S. degree in Computer Science and Information Engineering from National Taiwan University in 1985. He obtained his M.S. and Ph.D. degrees in Computer Engineering from University of Southern California in 1990 and 1995 respectively. He is currently a professor at the Department of Computer Science. Professor Wang's research interests include parallel architecture, software systems for Cluster and Grid computing, and virtualization techniques for Cloud computing. Recently, he starts working on software transaction memory for multicore/GPU clusters and multi-kernel operating systems for future single-chip manycore processor. Professor Wang has published more than 130 papers in various peer reviewed journals and conference proceedings. He is/was on the editorial boards of several international journals, including IEEE Transactions on Computers (TC), Multiagent and Grid Systems (MGS), Journal of Information Science and Engineering (JISE), International Journal of Pervasive Computing and Communications (JPCC), ICST Transactions on Scalable Information Systems (SIS). He was the program chair for Cluster’03, CCGrid'09, InfoScale’09, and ICPADS’09, ISPA’11, FCST’11, FutureTech’12, and Cluster2012; and the General Chair for IPDPS2012. He has also served as program committee members for numerous international conferences, including IPDPS, CCGrid, Cloud, CloudCom, Grid, HiPC, ICPP, and ICPADS. Professor Wang is the primary investigator of China 863 project 'Hong Kong University Grid Point' (2006-2011). The HKU Grid point consists of 3004 CPU cores (31.45 Teraflops), which offers parallel computing services for the China National Grid (CNGrid) and is used as a testbed for Cloud-related systems development. He has been invited to give keynote and plenary talk related to Distributed JVM design and Cloud Computing at various international conferences.",
         [['COMP3230', 'Operating Systems']],
-        ['Cloud Computing']
+        ['Cloud Computing'],
+        avator='clwang.png'
     ))
 
     tutors.append(add_tutor(
@@ -115,7 +117,8 @@ r"Professor Cho-Li Wang received his B.S. degree in Computer Science and Informa
         'kpwat', 'kpwat', 'watkp@hku.hk', 'Kam Pui', 'Wat', 'PT', -1,
         r'Dr. Wat receives a first class honour from BSc(Ac).',
         [['COMP2601', 'Probability & Statistics I']],
-        ['Risk Management', 'Statistics']
+        ['Risk Management', 'Statistics'],
+        avator='watkp.png'
     ))
 
     return tutors
