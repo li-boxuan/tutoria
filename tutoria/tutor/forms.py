@@ -1,11 +1,10 @@
 """Form-related classes."""
 
 from django import forms
-from scheduler.models import Session
+# from scheduler.models import Session
 
 
-# TODO change forms.Form to forms.ModelForm once the Meta model is ready
-class BookForm(forms.Form):
+class BookForm(forms.ModelForm):
     """A form for booking sessions."""
 
     DATE_CHOICES = [
@@ -16,13 +15,13 @@ class BookForm(forms.Form):
         ('slot_4', '10:30-11:30'),
         ('slot_5', '11:30-12:00'),
         ('slot_6', '12:00-12:30'),
-        ]
+    ]
 
     naive = forms.CharField(label='Select a session...',
                             widget=forms.RadioSelect(choices=DATE_CHOICES))
 
-    class Meta:
-        """Meta class holding the Session model."""
-
-        model = Session
-        fields = ('start_date', 'start_hour', 'start_minute')
+    # class Meta:
+    #     """Meta class holding the Session model."""
+    #
+    #     model = Session
+    #     fields = ('start_date',)

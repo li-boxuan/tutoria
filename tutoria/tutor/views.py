@@ -1,5 +1,6 @@
 """Views for the Tutor App."""
-from django.shortcuts import get_object_or_404, render, render_to_response, redirect
+from __future__ import print_function
+from django.shortcuts import (get_object_or_404, render, render_to_response, redirect)
 from django.views import generic
 from django.template import RequestContext
 from .forms import BookForm
