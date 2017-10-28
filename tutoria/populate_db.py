@@ -20,7 +20,7 @@ OFFICE_HOUR_STEP = {'CT': timedelta(hours=0.5),
                     'PT': timedelta(hours=1.0)}
 
 def add_student(username, password, email, first_name, last_name,
-                wallet_balance=-1, avator='default_avator.png'):
+                wallet_balance=-1, avatar='default_avatar.png'):
     from account.models import Student
     if wallet_balance < 0:
         wallet_balance = np.random.randint(1, 300) * 10
@@ -29,7 +29,7 @@ def add_student(username, password, email, first_name, last_name,
                                          first_name=first_name,
                                          last_name=last_name)
     student.wallet_balance = wallet_balance
-    student.avator = avator
+    student.avatar = avatar
     student.save()
     return student
 
@@ -39,7 +39,7 @@ def add_tutor(username, password, email, first_name, last_name,
                           bio='',
                           courses=[['COMP3297', 'Software Engineering']],
                             tags=['Software Engineering'],
-                          wallet_balance=-1, avator='default_avator.png',
+                          wallet_balance=-1, avatar='default_avatar.png',
                         sessions=None):
     from account.models import (Tutor, Course, SubjectTag)
     if wallet_balance < 0:
@@ -54,7 +54,7 @@ def add_tutor(username, password, email, first_name, last_name,
                                          last_name=last_name)
     tutor.tutor_type = tutor_type
     tutor.wallet_balance = wallet_balance
-    tutor.avator = avator
+    tutor.avatar = avatar
     tutor.hourly_rate = hourly_rate
     tutor.bio = bio
     tutor.save()
@@ -93,7 +93,7 @@ r'Before joining HKU, George accumulated many years of experience in large-scale
         [['COMP3297', 'Software Engineering'],
          ['COMP3403', 'Software Implmentation, Testing and Maintainence']],
         ['Software Engineering', 'Evolutionary Computing'],
-        avator='georgem.png'
+        avatar='georgem.png'
     ))
 
     tutors.append(add_tutor(
@@ -101,7 +101,7 @@ r'Before joining HKU, George accumulated many years of experience in large-scale
 r"Professor Cho-Li Wang received his B.S. degree in Computer Science and Information Engineering from National Taiwan University in 1985. He obtained his M.S. and Ph.D. degrees in Computer Engineering from University of Southern California in 1990 and 1995 respectively. He is currently a professor at the Department of Computer Science. Professor Wang's research interests include parallel architecture, software systems for Cluster and Grid computing, and virtualization techniques for Cloud computing. Recently, he starts working on software transaction memory for multicore/GPU clusters and multi-kernel operating systems for future single-chip manycore processor. Professor Wang has published more than 130 papers in various peer reviewed journals and conference proceedings. He is/was on the editorial boards of several international journals, including IEEE Transactions on Computers (TC), Multiagent and Grid Systems (MGS), Journal of Information Science and Engineering (JISE), International Journal of Pervasive Computing and Communications (JPCC), ICST Transactions on Scalable Information Systems (SIS). He was the program chair for Cluster’03, CCGrid'09, InfoScale’09, and ICPADS’09, ISPA’11, FCST’11, FutureTech’12, and Cluster2012; and the General Chair for IPDPS2012. He has also served as program committee members for numerous international conferences, including IPDPS, CCGrid, Cloud, CloudCom, Grid, HiPC, ICPP, and ICPADS. Professor Wang is the primary investigator of China 863 project 'Hong Kong University Grid Point' (2006-2011). The HKU Grid point consists of 3004 CPU cores (31.45 Teraflops), which offers parallel computing services for the China National Grid (CNGrid) and is used as a testbed for Cloud-related systems development. He has been invited to give keynote and plenary talk related to Distributed JVM design and Cloud Computing at various international conferences.",
         [['COMP3230', 'Operating Systems']],
         ['Cloud Computing'],
-        avator='clwang.png'
+        avatar='clwang.png'
     ))
 
     tutors.append(add_tutor(
@@ -118,7 +118,7 @@ r"Professor Cho-Li Wang received his B.S. degree in Computer Science and Informa
         r'Dr. Wat receives a first class honour from BSc(Ac).',
         [['COMP2601', 'Probability & Statistics I']],
         ['Risk Management', 'Statistics'],
-        avator='watkp.png'
+        avatar='watkp.png'
     ))
 
     return tutors
