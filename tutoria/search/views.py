@@ -5,9 +5,11 @@ from django.views import generic
 
 from account.models import Tutor
 
+
 class IndexView(generic.TemplateView):
     template_name = 'search.html'
     # context_object_name = 'index_context'
+
 
 class ResultView(generic.ListView):
     model = Tutor

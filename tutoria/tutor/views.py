@@ -31,6 +31,4 @@ def book_session(request, tutor_id):
         # return redirect('detail', tutor_id)
     else:
         return HttpResponse("In ELSE")
-    # return render(request, 'book.html', {'form': form})
-
 # -----------------------------------------------------------------------------
