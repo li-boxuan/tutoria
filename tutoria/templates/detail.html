@@ -8,8 +8,8 @@
         <div class="row">
             <div class="col-md-10 col-md-offset-1">
                 <div class="col-md-5">
-                    {% if tutor.avator %}
-                        <img class="img-rounded" src="{{ tutor.avator.url }}">
+                    {% if tutor.avatar %}
+                        <img class="img-rounded" src="{{ tutor.avatar.url }}">
                     {% else %}
                     <p class="text-center">No Avator</p>
                     {% endif %}
@@ -54,7 +54,8 @@
                         <a class="btn btn-primary" href="#" role="button">Chat</a>
                     <h3>Book a Session</3>
                     <form action="{% url 'tutor:book_session' tutor_id=tutor.id %}" method="POST" role="form" class="form-horizontal">
-                        <select name="searchtype" class="form-control">
+                        {% csrf_token %}
+                        <select name="session_id" class="form-control">
                             {% for session in tutor.session_set.all %}
                                 {% if session.status == 'A' %}
                                     <option value="{{ session.id }}">{{ session.start_time }} - {{ session.end_time }}</option>

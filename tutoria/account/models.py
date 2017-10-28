@@ -34,7 +34,7 @@ class Tutor(auth_models.User):
         (PRIVATE_TUTOR, 'Private Tutor'),
     )
     wallet_balance = models.PositiveIntegerField(default=0)
-    avator = models.ImageField()
+    avatar = models.ImageField()
     tutor_type = models.CharField(
         max_length=2,
         choices=TUTOR_TYPE_CHOICES,
@@ -56,5 +56,5 @@ class Student(auth_models.User):
     def __str__(self):
         return self.username
     wallet_balance = models.PositiveIntegerField(default=0)
-    avator = models.ImageField()
+    avatar = models.ImageField()
 
