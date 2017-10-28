@@ -6,6 +6,6 @@ app_name = 'dashboard'
 
 urlpatterns = [
     # url(r'debug$', views.debug, name='debug'),
-    url(r'dashboard/$', views.MybookingsView.as_view(), name='dashboard'),
+    url(r'mybookings$', views.MybookingsView, name='mybookings'),
 
 ]
