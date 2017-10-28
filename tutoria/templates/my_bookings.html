@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block title %}Tutoria{% endblock %}
+
+{% block content %}
+
+{% if results %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-11 col-md-offset-1">
+                <div class="col-md-11">
+                    <div class="list-group">
+                        <a href="{% url 'search:result' %}"
+                          class="list-group-item" id="id_category_all">All Tutors
+                        </a>
+                    <script type="text/javascript">
+                        function key_up() {
+                            var old_value = $('#id_search_input').val();
+                            setTimeout(function () {
+                                var new_value = $('#id_search_input').val();
+                                if (old_value == new_value) {
+                                    document.search_form.submit();
+                                }
+                            }, 1500);
+                        }
+                    </script>
+                    <table class="table table-hover" width="80%">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Tutor</th>
+                            <th>Course</th>
+                            <th>Hourly Rate</th>
+                            <th>Tags</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for tutor in results %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td><a href="{% url 'tutor:detail' tutor.id %}">{{ tutor.user.first_name }}
+                                {{tutor.user.last_name }}</a></td>
+                                <td> <ul>
+                                  {% for course in tutor.courses.all %}
+                                  <li> {{course.course_code}} {{course.course_name }}<br>
+                                  {% endfor %}
+                                  </ul>
+                                </td>
+                                <td>{{ tutor.hourly_rate }}</td>
+                                <td>
+                                  <ul>
+                                  {% for tag in tutor.tags.all %}
+                                  <li> {{ tag.tag }} <br>
+                                  {% endfor %}
+                                  </ul>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td>No tutor available for your query =(</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <!--
+                    <nav>
+                        <ul class="pager">
+                            {% if book_list.has_previous %}
+                                <li class="previous"><a
+                                        href="?typ={{ query_category }}&page={{ book_list.previous_page_number }}">上一页</a>
+                                </li>
+                            {% else %}
+                                <li class="previous disabled"><a
+                                    href="#">Previous Page</a></li>
+                            {% endif %}
+                            第 {{ book_list.number }} / {{ book_list.paginator.num_pages }}页
+                            {% if book_list.has_next %}
+                                <li class="next"><a
+                                        href="?typ={{ query_category }}&page={{ book_list.next_page_number }}">下一页</a>
+                                </li>
+                            {% else %}
+                                <li class="next disabled"><a href="#">Next Page</a></li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                    -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% else %}
+
+  <h3> No tutor availabel for your query. Would you want to search again? </h3>
+
+{% endif %}
+
+{% endblock %}
