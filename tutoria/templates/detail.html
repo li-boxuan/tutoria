@@ -8,28 +8,8 @@
         <div class="row">
             <div class="col-md-10 col-md-offset-1">
                 <div class="col-md-5">
-                    {% if tutor_set.all %}
-                        <div id="carousel-generic" class="carousel slide" data-ride="carousel">
-                            <ol class="carousel-indicators">
-                                {% for img in book.img_set.all %}
-                                    <li data-target="#carousel-generic" data-slide-to="{{ forloop.counter0 }}"
-                                        {% if forloop.first %}class="active"{% endif %}></li>
-                                {% endfor %}
-                            </ol>
-                            <div class="carousel-inner" role="listbox">
-                                {% for img in book.img_set.all %}
-                                    <div {% if forloop.first %}class="item active"{% else %}class="item"{% endif %}>
-                                        <img class="img-rounded" src="{% url 'media' img.img %}">
-                                    </div>
-                                {% endfor %}
-                            </div>
-                            <a class="left carousel-control" href="#carousel-generic" role="button" data-slide="prev">
-                                <span class="glyphicon glyphicon-chevron-left"></span>
-                            </a>
-                            <a class="right carousel-control" href="#carousel-generic" role="button" data-slide="next">
-                                <span class="glyphicon glyphicon-chevron-right"></span>
-                            </a>
-                        </div>
+                    {% if tutor.avator %}
+                                      <img class="img-rounded" src="{{ tutor.avator.url }}">
                     {% else %}
                     <p class="text-center">No Avator</p>
                     {% endif %}
@@ -50,14 +30,23 @@
                         <h5> {{ tag.tag }} &nbsp; </h5>
                         {% endfor %}
                     <h3>Courses</h3>
-                        {% for course in tutor.courses.all %} 
+                        {% for course in tutor.courses.all %}
                         <h5> {{ course.course_name }} &nbsp; {{ course.course_code }} </h5>
                         {% endfor %}
-                    <h3>Sessions</h3>
-                        {% for session in tutor.sessions.all %}
-                        <h5> start_time : {{ session.start_date }} &nbsp; {{ session.start_hour }}:{{ session.start_minute }} </h5>
-                        <h5> status : {{ session.status }} </h5>
+                    <h3>Available Sessions</h3>
+                        <table>
+                        {% for session in tutor.session_set.all %}
+                        {% if session.status == 'A' %}
+                        <tr>
+                          <td> [{{ forloop.counter }}] </td>
+                            <td> &nbsp; </td>
+                          <td><h5> {{ session.start_time }} </td></h5>
+                            <td> &nbsp; </td>
+                          <td><h5> {{ session.end_time }} </td></h5>
+                        </tr>
+                        {% endif %}
                         {% endfor %}
+                        </table>
                 </div>
             </div>
         </div>
