@@ -45,6 +45,7 @@ class Tutor(auth_models.User):
     hourly_rate = models.PositiveIntegerField(default=0)
     tags = models.ManyToManyField(SubjectTag)
     courses = models.ManyToManyField(Course)
+    visible = models.BooleanField(default=True)
     # sessions = models.ManyToManyField('scheduler.session')
 
     def __str__(self):
