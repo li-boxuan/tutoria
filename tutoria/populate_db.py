@@ -11,7 +11,13 @@ by Jiayao
 import os
 import numpy as np
 from scheduler.models import Session
+from datetime import (datetime, timedelta, time, date)
+import django.utils.timezone as tz
 
+OFFICE_HOURS = {'begin': time(9, 30),
+                'end': time(18, 30)}
+OFFICE_HOUR_STEP = {'CT': timedelta(hours=0.5),
+                    'PT': timedelta(hours=1.0)}
 
 def add_student(username, password, email, first_name, last_name,
                 wallet_balance=-1, avator='default_avator.png'):
@@ -55,12 +61,15 @@ def add_tutor(username, password, email, first_name, last_name,
 
     for tag in tags:
         tutor.tags.add(add_tag(tag))
+
     for course in courses:
         tutor.courses.add(add_course(course[0], course[1]))
+
     if sessions is not None:
         for session in sessions:
             session.tutor = tutor
             session.save()
+            
     tutor.save()
     return tutor
 
@@ -83,7 +92,7 @@ def populate_tutor():
 r'Before joining HKU, George accumulated many years of experience in large-scale software engineering and in R&D for real-time systems. He has headed or contributed to development of a wide range of systems spanning fields such as scientific computation, telecommunications, database management systems, control systems and autonomous robotics. This work was carried out principally in Europe and the USA. Between the two he taught for several years at the University of Puerto Rico.',
         [['COMP3297', 'Software Engineering'],
          ['COMP3403', 'Software Implmentation, Testing and Maintainence']],
-        ['Software Engineering', 'Evolutionary Computing']
+        ['Software Engineering', 'Evolutionary Computing'],
     ))
 
     tutors.append(add_tutor(
@@ -112,10 +121,17 @@ r"Professor Cho-Li Wang received his B.S. degree in Computer Science and Informa
     return tutors
 
 def populate_session(tutors):
+    DEMO_DATE = date(2017, 11, 1)
     if tutors is not None:
         for tutor in tutors:
-            if tutor.tutor_type == 'CT':
-                pass
+            d = datetime.combine(DEMO_DATE, OFFICE_HOURS['begin'])
+            while d.time() <= OFFICE_HOURS['end']:
+                dn = d + OFFICE_HOUR_STEP[tutor.tutor_type]
+                s, _ = Session.objects.get_or_create(start_time=tz.make_aware(d),
+                                                     end_time=tz.make_aware(dn),
+                                                    tutor=tutor,
+                                                    status=Session.BOOKABLE)
+                d = dn
 
 
 def populate_student():
@@ -131,6 +147,7 @@ def populate_student():
 def populate():
     tutors = populate_tutor()
     students = populate_student()
+    populate_session(tutors)
     return [tutors, students]
 
 
