@@ -25,7 +25,11 @@ class Course(models.Model):
     def __str__(self):
         return self.course_code + " " + self.course_name
 
-class Tutor(auth_models.User):
+class User(auth_models.User):
+    wallet_balance = models.PositiveIntegerField(default=0)
+    avatar = models.ImageField()
+
+class Tutor(models.Model):
     """Models the tutor."""
     CONTRACTED_TUTOR = 'CT'
     PRIVATE_TUTOR = 'PT'
@@ -41,6 +45,7 @@ class Tutor(auth_models.User):
         default=CONTRACTED_TUTOR,
     )
 
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     bio = models.TextField(default='')
     hourly_rate = models.PositiveIntegerField(default=0)
     tags = models.ManyToManyField(SubjectTag)
@@ -48,13 +53,119 @@ class Tutor(auth_models.User):
     visible = models.BooleanField(default=True)
     # sessions = models.ManyToManyField('scheduler.session')
 
+    @property
+    def username(self):
+        return self.user.username
+
+    @property
+    def first_name(self):
+        return self.user.first_name
+
+    @first_name.setter
+    def first_name(self, val):
+        self.user.first_name = val
+        self.user.save()
+
+    @property
+    def last_name(self):
+        return self.user.last_name
+
+    @last_name.setter
+    def last_name(self, val):
+        self.user.last_name = val
+        self.user.save()
+
+    @property
+    def email(self):
+        return self.user.email
+
+    @email.setter
+    def email(self, val):
+        self.user.email = val
+        self.user.save()
+
+    @property
+    def wallet_balance(self):
+        return self.user.wallet_balance
+
+    @wallet_balance.setter
+    def wallet_balance(self, bal):
+        if bal < 0:
+            raise ValueError
+        else:
+            self.user.wallet_balance = bal
+            self.user.save()
+
+    @property
+    def avatar(self):
+        return self.user.avatar
+
+    @avatar.setter
+    def avatar(self, avt):
+        self.user.avatar = avt
+        self.user.save()
+
     def __str__(self):
         return "{}: {}".format(self.username, self.tutor_type)
 
 
-class Student(auth_models.User):
+class Student(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    @property
+    def username(self):
+        return self.user.username
+
+    @property
+    def first_name(self):
+        return self.user.first_name
+
+    @first_name.setter
+    def first_name(self, val):
+        self.user.first_name = val
+        self.user.save()
+
+    @property
+    def last_name(self):
+        return self.user.last_name
+
+    @last_name.setter
+    def last_name(self, val):
+        self.user.last_name = val
+        self.user.save()
+
+    @property
+    def email(self):
+        return self.user.email
+
+    @email.setter
+    def email(self, val):
+        self.user.email = val
+        self.user.save()
+
+    @property
+    def wallet_balance(self):
+        return self.user.wallet_balance
+
+    @wallet_balance.setter
+    def wallet_balance(self, bal):
+        if bal < 0:
+            raise ValueError
+        else:
+            self.user.wallet_balance = bal
+            self.user.save()
+
+    @property
+    def avatar(self):
+        return self.user.avatar
+
+    @avatar.setter
+    def avatar(self, avt):
+        self.user.avatar = avt
+        self.user.save()
+
+
+
     def __str__(self):
         return self.username
-    wallet_balance = models.PositiveIntegerField(default=0)
-    avatar = models.ImageField()
 

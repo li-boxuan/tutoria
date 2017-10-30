@@ -1,11 +1,37 @@
-{% extends "base.html" %} {% load staticfiles %} {% block title %}Book Session{% endblock %}
+{% extends "base.html" %} {% load staticfiles %} {% block title %}Book Session{% endblock %} {% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-offset-4 col-md-4">
+      <h1>Confirm Booking</h1>
+      <h3>Session</h3>
+      <p>{{ session.start_time }} - {{ session.end_time }}</p>
+      <h3>Tutor</h3>
+      <p>
+        {{ tutor.first_name }} {{ tutor.last_name }}
+      </p>
+      <h3>Tag</h3> {% for tag in tutor.tags.all %}
+      <p>{{ tag.tag }}</p> {% endfor %}
+      <h3>Course</h3> {% for course in tutor.courses.all %}
+      <p>{{ course.course_code }}</p> {% endfor %}
+      <h2>Total: ${{tutor.hourly_rate}}</h2>
+    </div>
+  </div>
 
-{% block content %}
+  <hr style="width: 100%; color: black; height: 1px; background-color:black;" />
 
-<h1>Book Session</h1>
-<form method="post" class='book_form'> {% csrf_token %}
-  {{ form.as_p }}
-  <input type="submit" value="Book" />
-</form>
+  <div class="row">
+    <div align='center' style='overflow:auto;height:50px;'>
+      <input id="coupon_checkbox" name="coupon_checkbox" type="checkbox" value="coupon" onclick="var input = document.getElementById('coupon_input'); if(this.checked){ input.disabled = false; input.focus();}else{input.disabled=true;}" />
+      <label for="coupon_checkbox">Use Coupon</label>
+      <input type="text" id="coupon_input" name="coupon_input_field" disabled="disabled" />
+    </div>
+    <div align="center" style='overflow:auto;height:50px;'>
+      <form action="{% url 'tutor:save_booking' tutor_id=tutor.id %}" method="POST" role="form" class="form-horizontal">
+        {% csrf_token %}
+        <button type="submit" value="{{ session.id }}" class="btn btn-default">Confirm Booking</button>
+      </form>
+    </div>
+  </div>
+</div>
 
 {% endblock %}

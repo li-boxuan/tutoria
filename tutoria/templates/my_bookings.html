@@ -65,7 +65,10 @@
                                 <td>{{record.tutor.hourly_rate }}</td>
 
 				<td>
-				  <button type="button" class="btn btn-warning">CANCEL</button>
+				  <!-- <button type="button" class="btn btn-warning">CANCEL</button>-->
+				  <form action="" method="POST">
+    					<button name="booking_id" value={{record.id}}>Upvote</button>
+				  </form>
 				</td>
 
                             </tr>

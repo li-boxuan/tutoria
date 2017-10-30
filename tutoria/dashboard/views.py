@@ -20,6 +20,10 @@ class MybookingsView(generic.ListView):
     template_name = 'my_bookings.html'
     context_object_name = 'my_booking_records'
 
+    if self.request.method == 'POST':
+        bkRecord_id = self.request.POST.get('booking_id','')
+        BookingRecord.objects.filter(id=bkRecord_id).session_set.all().status=Session.BOOKABLE
+        BookingRecord.objects.filter(id=bkRecord_id).delete()
     def get_context_data(self, **kwargs):
         context = super(MybookingsView,self).get_context_data(**kwargs)
         #context.objects.filter(user=self.request.user)
