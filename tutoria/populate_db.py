@@ -75,14 +75,20 @@ def add_tutor(username, password, email, first_name, last_name,
     elif hourly_rate < 0:
         hourly_rate = random.randint(1, 300) * 10
 
-    tutor = Tutor.objects.create_user(username, email, password,
-                                         first_name=first_name,
-                                         last_name=last_name)
+#    tutor = Tutor.objects.create_user(username, email, password, first_name=first_name, last_name=last_name)
 
     # user, _ = User.objects.get_or_create(username=username, email=email,
 	# 								  password=password,
     #                                      first_name=first_name,
     #                                      last_name=last_name)
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        user = User.objects.create_user(username=username, email=email,
+        							  password=password,
+                                         first_name=first_name,
+                                         last_name=last_name)
+
     tutor, _ = Tutor.objects.get_or_create(user=user)
     tutor.tutor_type = tutor_type
     tutor.wallet_balance = wallet_balance
@@ -189,11 +195,13 @@ def populate_student():
 
 def populate_bookingrecord():
     from scheduler.models import (Session, BookingRecord)
-    from account.models import (Student,Tutor)
+    from account.models import (User,Student,Tutor)
     from wallet.models import Transaction
-    
-    s, _ = Student.objects.get_or_create(username='ckchui')
-    t, _ = Tutor.objects.get_or_create(username='georgem')
+    user = User.objects.get(username='ckchui')
+    s, _ = Student.objects.get_or_create(user=user)
+    user = User.objects.get(username='georgem')
+    t, _ = Tutor.objects.get_or_create(user=user)
+
     DEMO_DATE=date(2017, 11,1)
     DEMO_TIME=time(9, 30)
     d = datetime.combine(DEMO_DATE, DEMO_TIME)

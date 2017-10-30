@@ -67,7 +67,8 @@
 				<td>
 				  <!-- <button type="button" class="btn btn-warning">CANCEL</button>-->
 				  <form action="" method="POST">
-    					<button name="booking_id" value={{record.id}}>Upvote</button>
+					{% csrf_token %}
+    					<button name="booking_id" value={{record.id}}>Cancel</button>
 				  </form>
 				</td>
 
