@@ -85,15 +85,6 @@ class Tutor(models.Model):
         self.user.save()
 
     @property
-    def password(self):
-        return self.user.password
-
-    @password.setter
-    def password(self, val):
-        self.user.password = val
-        self.user.save()
-
-    @property
     def wallet_balance(self):
         return self.user.wallet_balance
 
@@ -150,15 +141,6 @@ class Student(models.Model):
     @email.setter
     def email(self, val):
         self.user.email = val
-        self.user.save()
-
-    @property
-    def password(self):
-        return self.user.password
-
-    @password.setter
-    def password(self, val):
-        self.user.password = val
         self.user.save()
 
     @property
