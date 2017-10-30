@@ -13,4 +13,5 @@ urlpatterns = [
     # views.BookView.as_view(), name='book'),
     url(r'^(?P<tutor_id>[0-9]+)/book/$',
         views.book_session, name='book_session'),
+    url(r'^(?P<tutor_id>[0-9]+)/book/confirm$', views.save_booking, name='save_booking'),
 ]
