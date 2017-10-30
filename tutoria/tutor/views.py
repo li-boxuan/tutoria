@@ -4,7 +4,7 @@ from django.shortcuts import (get_object_or_404, render, render_to_response,
                               redirect)
 from django.http import HttpResponse
 
-from account.models import Tutor, Student
+from account.models import Tutor, Student, User
 from scheduler.models import Session
 from django.contrib.auth.decorators import login_required
 
@@ -32,7 +32,8 @@ def book_session(request, tutor_id):
     if request.method == 'POST':
         username = request.session['username']
         if username is not None:  # If the user has logged in
-            student = Student.objects.get(username=username)
+            user = User.objects.get(username=username)
+            student = Student.objects.get(user=user)
             session_id = request.POST.get('session_id', '')
             tutor = Tutor.objects.get(pk=tutor_id)
             session = Session.objects.get(pk=session_id)

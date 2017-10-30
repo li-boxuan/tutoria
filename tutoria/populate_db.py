@@ -8,7 +8,8 @@ data.
 Created on Oct. 20, 2017
 by Jiayao
 """
-import numpy as np
+import os
+import random
 from scheduler.models import Session
 from datetime import (datetime, timedelta, time, date)
 import django.utils.timezone as tz
@@ -39,7 +40,7 @@ def add_student(username, password, email, first_name, last_name,
                 wallet_balance=-1, avatar='default_avatar.png'):
     from account.models import (User, Student)
     if wallet_balance < 0:
-        wallet_balance = np.random.randint(1, 300) * 10
+        wallet_balance = random.randint(1, 300) * 10
 
 
     try:
@@ -68,11 +69,18 @@ def add_tutor(username, password, email, first_name, last_name,
                         sessions=None):
     from account.models import (User, Tutor, Course, SubjectTag)
     if wallet_balance < 0:
-        wallet_balance = np.random.randint(1, 300) * 10
+        wallet_balance = random.randint(1, 300) * 10
     if tutor_type == 'CT':
         hourly_rate = 0
     elif hourly_rate < 0:
-        hourly_rate = np.random.randint(1, 300) * 10
+        hourly_rate = random.randint(1, 300) * 10
+
+#    tutor = Tutor.objects.create_user(username, email, password, first_name=first_name, last_name=last_name)
+
+    # user, _ = User.objects.get_or_create(username=username, email=email,
+	# 								  password=password,
+    #                                      first_name=first_name,
+    #                                      last_name=last_name)
     try:
         user = User.objects.get(username=username)
     except User.DoesNotExist:
@@ -81,10 +89,6 @@ def add_tutor(username, password, email, first_name, last_name,
                                          first_name=first_name,
                                          last_name=last_name)
 
-    # user, _ = User.objects.get_or_create(username=username, email=email,
-	# 								  password=password,
-    #                                      first_name=first_name,
-    #                                      last_name=last_name)
     tutor, _ = Tutor.objects.get_or_create(user=user)
     tutor.tutor_type = tutor_type
     tutor.wallet_balance = wallet_balance
@@ -142,7 +146,7 @@ r"Professor Cho-Li Wang received his B.S. degree in Computer Science and Informa
 
     tutors.append(add_tutor(
         'azero', 'azero', 'alpha_zero@deepmind.com', 'AlphaGo', 'Zero', 'PT',
-        np.iinfo(np.int32).max,
+        99999999,
         r'I learn by meself so well. No human beats me.',
         [['COMP3314', 'Machine Learning']],
         ['Go', 'Deep Learning']
@@ -189,6 +193,27 @@ def populate_student():
     ))
 
 
+def populate_bookingrecord():
+    from scheduler.models import (Session, BookingRecord)
+    from account.models import (User,Student,Tutor)
+    from wallet.models import Transaction
+    user = User.objects.get(username='ckchui')
+    s, _ = Student.objects.get_or_create(user=user)
+    user = User.objects.get(username='georgem')
+    t, _ = Tutor.objects.get_or_create(user=user)
+
+    DEMO_DATE=date(2017, 11,1)
+    DEMO_TIME=time(9, 30)
+    d = datetime.combine(DEMO_DATE, DEMO_TIME)
+    dn = d + OFFICE_HOUR_STEP['CT']
+    tran, _ = Transaction.objects.get_or_create(issuer=s,receiver=t,amount=100, created_at=d,commission=5.0)
+    
+    sess, _ = Session.objects.get_or_create(start_time=tz.make_aware(d), end_time=tz.make_aware(dn),tutor=t,status=Session.BOOKABLE)
+    b, _ = BookingRecord.objects.get_or_create(student=s,tutor=t,session=sess,entry_date=d,transaction=tran)
+
+
+    
+
 def populate_coupon():
     coupon_list = []
     coupon_list.append(add_coupon(datetime(1997, 6, 15), datetime(2097, 6, 15),
@@ -204,6 +229,7 @@ def populate():
     tutors = populate_tutor()
     students = populate_student()
     populate_session(tutors)
+    populate_bookingrecord()
     coupons = populate_coupon()
     return [tutors, students]
 
