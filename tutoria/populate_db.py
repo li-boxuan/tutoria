@@ -41,10 +41,15 @@ def add_student(username, password, email, first_name, last_name,
     if wallet_balance < 0:
         wallet_balance = np.random.randint(1, 300) * 10
 
-    user, _ = User.objects.get_or_create(username=username, email=email,
-									  password=password,
+
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        user = User.objects.create_user(username=username, email=email,
+        							  password=password,
                                          first_name=first_name,
                                          last_name=last_name)
+
     student, _ = Student.objects.get_or_create(user=user)
     student.wallet_balance = wallet_balance
     student.avatar = avatar
@@ -68,11 +73,18 @@ def add_tutor(username, password, email, first_name, last_name,
         hourly_rate = 0
     elif hourly_rate < 0:
         hourly_rate = np.random.randint(1, 300) * 10
-
-    user, _ = User.objects.get_or_create(username=username, email=email,
-									  password=password,
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        user = User.objects.create_user(username=username, email=email,
+        							  password=password,
                                          first_name=first_name,
                                          last_name=last_name)
+
+    # user, _ = User.objects.get_or_create(username=username, email=email,
+	# 								  password=password,
+    #                                      first_name=first_name,
+    #                                      last_name=last_name)
     tutor, _ = Tutor.objects.get_or_create(user=user)
     tutor.tutor_type = tutor_type
     tutor.wallet_balance = wallet_balance
@@ -198,3 +210,4 @@ def populate():
 
 if __name__ == '__main__':
     populate()
+
