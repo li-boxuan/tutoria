@@ -21,13 +21,14 @@ class MybookingsView(generic.ListView):
     context_object_name = 'my_booking_records'
 
     def get_context_data(self, **kwargs):
-        #context = super(MybookingsView,self).get_context_data(**kwargs)
+        context = super(MybookingsView,self).get_context_data(**kwargs)
         #context.objects.filter(user=self.request.user)
-        if 'username' not in self.request.session:
-            return None
+        if self.request.session['username'] is None:
+            context['records'] = None
+            return context 
         else:
             ursn=self.request.session['username']
             urs = get_object_or_404(Student, username=ursn)
-            context=urs.BookingRecord_set.all()
+            context['records'] = urs.bookingrecord_set.all()
             #context= BookingRecord.objects.filter(student.username==ursn)
             return context        

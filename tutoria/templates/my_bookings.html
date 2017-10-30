@@ -4,7 +4,7 @@
 
 {% block content %}
 
-{% if results %}
+{% if records is not None %}
 
     <div class="container">
         <div class="row">
@@ -39,11 +39,11 @@
                         </tr>
                         </thead>
                         <tbody>
-                        {% for record in my_bookings_records %}
+                        {% for record in records %}
                             <tr>
                                 <td>{{forloop.counter}}</td>
                                 <td>
-                                  <img class="img-rounded" width=128px src="{{ record.tutor.avator.url }}"><br>
+                                  <img class="img-rounded" width=128px src="{{ record.tutor.avatar.url }}"><br>
                                   <center>
                                     <a href="{% url 'tutor:detail' record.tutor.id %}">{{ record.tutor.first_name }}
                                       {{record.tutor.last_name }}</a>

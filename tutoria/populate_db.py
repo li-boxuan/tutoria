@@ -149,17 +149,20 @@ def populate_student():
 
 
 def populate_bookingrecord():
-    from scheduler.models import (Session BookingRecord)
+    from scheduler.models import (Session, BookingRecord)
     from account.models import (Student,Tutor)
+    from wallet.models import Transaction
     
-    s = Student.objects.get_or_create(username='ckchui')
-    t = Tutor.objects.get_or_create(username='georgem')
+    s, _ = Student.objects.get_or_create(username='ckchui')
+    t, _ = Tutor.objects.get_or_create(username='georgem')
     DEMO_DATE=date(2017, 11,1)
     DEMO_TIME=time(9, 30)
     d = datetime.combine(DEMO_DATE, DEMO_TIME)
     dn = d + OFFICE_HOUR_STEP['CT']
-    sess, _ = Session.objects.get_or_create(start_time=tz.make_aware(d), end_time=tz.make_aware(dn),tutor=tutor,status=Session.BOOKABLE)
-    b, _ = BookingRecord.get_or_create(student=s,tutor=t,session=sess,entry_date=None,transaction=None)
+    tran, _ = Transaction.objects.get_or_create(issuer=s,receiver=t,amount=100, created_at=d,commission=5.0)
+    
+    sess, _ = Session.objects.get_or_create(start_time=tz.make_aware(d), end_time=tz.make_aware(dn),tutor=t,status=Session.BOOKABLE)
+    b, _ = BookingRecord.objects.get_or_create(student=s,tutor=t,session=sess,entry_date=d,transaction=tran)
 
 
     
