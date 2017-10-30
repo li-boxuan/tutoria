@@ -23,7 +23,7 @@ class MybookingsView(generic.ListView):
     def get_context_data(self, **kwargs):
         context = super(MybookingsView,self).get_context_data(**kwargs)
 
-	if self.request.session['username'] is None:
+        if self.request.session['username'] is None:
             context['records'] = None
             return context 
         else:
