@@ -12,6 +12,14 @@ from django.contrib.auth.decorators import login_required
 def detail(request, tutor_id):
     """View for rendering a detailed profile of a tutor."""
     tutor = get_object_or_404(Tutor, id=tutor_id)
+    #try:
+    #    username = request.session['username']
+    #except FieldError:
+    #    pass
+    #if username is not None:
+    #    student = Student.objects.get(username=username)
+    #    for record in student.bookingrecord_set.all():
+    #        pass
     return render(request, 'detail.html', {'tutor': tutor})
 
 # -----------------------------------------------------------------------------
