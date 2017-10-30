@@ -35,9 +35,9 @@ class MybookingsView(generic.ListView):
             return context
     def post(self, request, **kwargs):     
         print(request)
-	bkRecord_id = self.request.POST.get('booking_id','') 
-	bkrc=BookingRecord.objects.filter(id=bkRecord_id).first()
-       # bkrc.session_set.all().status=Session.BOOKABLE
-	Session.objects.get(bookingrecord=bkrc).status=Session.BOOKABLE
-	BookingRecord.objects.filter(id=bkRecord_id).delete()
+        bkRecord_id = self.request.POST.get('booking_id','') 
+        bkrc=BookingRecord.objects.filter(id=bkRecord_id).first()
+        # bkrc.session_set.all().status=Session.BOOKABLE
+        Session.objects.get(bookingrecord=bkrc).status=Session.BOOKABLE
+        BookingRecord.objects.filter(id=bkRecord_id).delete()
         return render(request, 'my_bookings.html')        

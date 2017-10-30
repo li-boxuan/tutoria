@@ -25,7 +25,7 @@ def book_session(request, tutor_id):
         username = request.session['username']
         if username is not None:  # If the user has logged in
             user = User.objects.get(username=username)
-	    student = Student.objects.get(user=user)
+            student = Student.objects.get(user=user)
             session_id = request.POST.get('session_id', '')
             tutor = Tutor.objects.get(pk=tutor_id)
             session = Session.objects.get(pk=session_id)
