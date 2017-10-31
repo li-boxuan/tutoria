@@ -38,6 +38,9 @@ class MybookingsView(generic.ListView):
         bkRecord_id = self.request.POST.get('booking_id','') 
         bkrc=BookingRecord.objects.filter(id=bkRecord_id).first()
         # bkrc.session_set.all().status=Session.BOOKABLE
-        Session.objects.get(bookingrecord=bkrc).status=Session.BOOKABLE
+        sess = Session.objects.get(bookingrecord=bkrc)
+        sess.status = Session.BOOKABLE
+        sess.save()  # save is needed for functioning  - Jiayao
+
         BookingRecord.objects.filter(id=bkRecord_id).delete()
         return render(request, 'my_bookings.html')        
