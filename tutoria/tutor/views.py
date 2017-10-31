@@ -74,6 +74,7 @@ def save_booking(request, tutor_id):
         now = datetime.now()
         # TODO: check balance and other assertions
         # TODO: django add timezone to naive datetime  - Jiayao
+        # TODO: handle coupons
         transaction = Transaction(issuer=student, receiver=tutor,
                                   amount=tutor.hourly_rate,
                                   created_at=now,
@@ -83,7 +84,7 @@ def save_booking(request, tutor_id):
             tutor=tutor, student=student, session=session, entry_date=now,
             transaction=transaction)
         bookRecord.save()
-        return redirect("/tutor/" + tutor_id)
+        return redirect("/dashboard/mybookings/")
     else:
         return HttpResponse("not a POST request!")
 
