@@ -206,10 +206,10 @@ def populate_bookingrecord():
     DEMO_TIME=time(9, 30)
     d = datetime.combine(DEMO_DATE, DEMO_TIME)
     dn = d + OFFICE_HOUR_STEP['CT']
-    tran, _ = Transaction.objects.get_or_create(issuer=s,receiver=t,amount=100, created_at=d,commission=5.0)
+    tran, _ = Transaction.objects.get_or_create(issuer=s,receiver=t,amount=100, created_at=tz.make_aware(d),commission=5.0)
     
     sess, _ = Session.objects.get_or_create(start_time=tz.make_aware(d), end_time=tz.make_aware(dn),tutor=t,status=Session.BOOKABLE)
-    b, _ = BookingRecord.objects.get_or_create(student=s,tutor=t,session=sess,entry_date=d,transaction=tran)
+    b, _ = BookingRecord.objects.get_or_create(student=s,tutor=t,session=sess,entry_date=tz.make_aware(d),transaction=tran)
 
 
     

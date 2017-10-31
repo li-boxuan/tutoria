@@ -28,7 +28,7 @@ class UserForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(UserForm, self).__init__(*args, **kwargs)
-        for _, field in self.fields.items:
+        for _, field in self.fields.items():
             field.widget.attrs.update(WIDGET_STYLE_CLASS)
 
 
@@ -59,4 +59,5 @@ class TutorForm(forms.ModelForm):
     class Meta:
         model = Tutor
         fields = ('hourly_rate', 'bio', 'tutor_type')
+        exclude = ('user', )
 

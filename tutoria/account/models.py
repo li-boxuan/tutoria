@@ -7,7 +7,7 @@ by Jiayao
 from __future__ import (absolute_import, print_function)
 from django.db import models
 import django.contrib.auth.models as auth_models
-
+import os
 
 class SubjectTag(models.Model):
     """Models subject tags."""
@@ -27,7 +27,7 @@ class Course(models.Model):
 
 class User(auth_models.User):
     wallet_balance = models.PositiveIntegerField(default=0)
-    avatar = models.ImageField()
+    avatar = models.ImageField(default='default_avatar.png')
 
 class Tutor(models.Model):
     """Models the tutor."""
@@ -37,8 +37,6 @@ class Tutor(models.Model):
         (CONTRACTED_TUTOR, 'Contracted Tutor'),
         (PRIVATE_TUTOR, 'Private Tutor'),
     )
-    wallet_balance = models.PositiveIntegerField(default=0)
-    avatar = models.ImageField()
     tutor_type = models.CharField(
         max_length=2,
         choices=TUTOR_TYPE_CHOICES,
@@ -48,8 +46,8 @@ class Tutor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     bio = models.TextField(default='')
     hourly_rate = models.PositiveIntegerField(default=0)
-    tags = models.ManyToManyField(SubjectTag)
-    courses = models.ManyToManyField(Course)
+    tags = models.ManyToManyField(SubjectTag, default=None)
+    courses = models.ManyToManyField(Course, default=None)
     visible = models.BooleanField(default=True)
     # sessions = models.ManyToManyField('scheduler.session')
 
