@@ -10,12 +10,12 @@
                     {% endif %}
                     <h3>Sessions in Next 7 days</h3>
                         {% for session in tutor.session_set.all %}
-                            {% if session.status == 'A' %}
+                            {% if session.status == session.BOOKABLE %}
                                 <p class="text-success">
-                            {% elif session.status == 'B' %}
+                            {% elif session.status == session.BOOKED %}
                                 <p class="text-danger">
                             {% endif %}
-                            {% if session.status == 'A' or session.status == 'B' %}
+                            {% if not session.status == session.CLOSED %}
                                     [{{ forloop.counter }}]
                                     &nbsp; {{ session.start_time }}
                                     &nbsp; To {{ session.end_time }}

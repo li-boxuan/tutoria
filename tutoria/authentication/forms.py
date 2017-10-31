@@ -10,7 +10,7 @@ by Jiayao
 from django import forms
 from account.models import (User, Tutor, Student, Course, SubjectTag)
 from django.core.urlresolvers import reverse_lazy
-
+from django.core.validators import RegexValidator
 
 WIDGET_STYLE_CLASS = {}#{'class' : 'form-control' }
 
@@ -28,7 +28,7 @@ class UserForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(UserForm, self).__init__(*args, **kwargs)
-        for _, field in self.fields.items:
+        for _, field in self.fields.items():
             field.widget.attrs.update(WIDGET_STYLE_CLASS)
 
 
@@ -56,7 +56,13 @@ class TutorForm(forms.ModelForm):
         label='Share yourself to your prospective students.',
     )
 
+    phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+85212345678' or '12345678'. 8 or 11 digits are allowed.")
+    phone = forms.CharField(validators=[phone_regex])
+
+    university = forms.CharField()
+
     class Meta:
         model = Tutor
-        fields = ('hourly_rate', 'bio', 'tutor_type')
+        fields = ('hourly_rate', 'bio', 'tutor_type', 'phone', 'university')
+        exclude = ('user', )
 

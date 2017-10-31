@@ -1,16 +1,10 @@
-{% extends "base.html" %}
-{% load staticfiles %}
-{% block title %}Tutoria{% endblock %}
+{% extends "base.html" %} {% load staticfiles %} {% block title %}Tutoria{% endblock %} {% block content %} {% if records is not None %}
 
-{% block content %}
-
-{% if records is not None %}
-
-    <div class="container">
-        <div class="row">
-            <div class="col-md-11 col-md-offset-1">
-                 <div class="col-md-11">
-                <!--    <div class="list-group">
+<div class="container">
+  <div class="row">
+    <div class="col-md-11 col-md-offset-1">
+      <div class="col-md-11">
+        <!--    <div class="list-group">
                         <a href="{% url 'search:result' %}"
                           class="list-group-item" id="id_category_all">All Tutors
                         </a>
@@ -25,72 +19,63 @@
                             }, 1500);
                         }
                     </script>  -->
-                    <table class="table table-hover" width="80%">
-                        <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Tutor</th>
-                            <th>Type</th>
-                            <th>Start time</th>
-                            <th>End time</th>
-                            <th>Status</th>
-                            <th>Hourly rate</th>
-			    <th>Cancel</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for record in records %}
-                            <tr>
-                                <td>{{forloop.counter}}</td>
-                                <td>
-                                  <img class="img-rounded" width=128px src="{{ record.tutor.avatar.url }}"><br>
-                                  <center>
-                                    <a href="{% url 'tutor:detail' record.tutor.id %}">{{ record.tutor.first_name }}
+        <table class="table table-hover" width="80%">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Tutor</th>
+              <th>Type</th>
+              <th>Start time</th>
+              <th>End time</th>
+              <th>Status</th>
+              <th>Hourly rate</th>
+              <th>Cancel</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for record in records %}
+            <tr>
+              <td>{{forloop.counter}}</td>
+              <td>
+                <img class="img-rounded" width=128px src="{{ record.tutor.avatar.url }}"><br>
+                <center>
+                  <a href="{% url 'tutor:detail' record.tutor.id %}">{{ record.tutor.first_name }}
                                       {{record.tutor.last_name }}</a>
-                                    </center>
-                                </td>
+                </center>
+              </td>
 
 
-                                <td>
-                                  {% if record.tutor.tutor_type == 'CT' %}
-                                    Contracted Tutor
-                                  {% else %}
-                                    Private Tutor
-                                  {% endif %}
-                                </td>
+              <td>
+                {% if record.tutor.tutor_type == 'CT' %} Contracted Tutor {% else %} Private Tutor {% endif %}
+              </td>
 
-                                <td>{{record.session.start_time}}</td>
-				<td>{{record.session.end_time}}</td>
-				<td>{{record.session.status}}</td>
-                                <td>{{record.tutor.hourly_rate }}</td>
+              <td>{{record.session.start_time}}</td>
+              <td>{{record.session.end_time}}</td>
+              <td>{{record.session.status}}</td>
+              <td>{{record.tutor.hourly_rate }}</td>
 
-				<td>
-				  <!-- <button type="button" class="btn btn-warning">CANCEL</button>-->
-				  <form action="" method="POST">
-					{% csrf_token %}
-    					<button name="booking_id" value={{record.id}}>Cancel</button>
-				  </form>
-				</td>
+              <td>
+                <!-- <button type="button" class="btn btn-warning">CANCEL</button>-->
+                <form action="" method="POST">
+                  {% csrf_token %}
+                  <button name="booking_id" value={{record.id}}>Cancel</button>
+                </form>
+              </td>
 
-                            </tr>
-                        {% empty %}
-                            <tr>
-                                <td>No bookings found =(</td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
+            </tr>
+            {% empty %}
+            <tr>
+              <td>No bookings found =(</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
 
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
+  </div>
+</div>
 
 {% else %}
 
-  <h3> No bookings found. Just relaxe! </h3>
-
-
-{% endif %}
-
-{% endblock %}
+<h3> No bookings found. Just relax! </h3> {% endif %} {% endblock %}

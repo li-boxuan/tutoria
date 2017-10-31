@@ -61,12 +61,12 @@ def add_student(username, password, email, first_name, last_name,
 
 def add_tutor(username, password, email, first_name, last_name,
                           tutor_type = 'CT',
-                          hourly_rate=0,
+                          hourly_rate=0, phone='99999999',
                           bio='',
                           courses=[['COMP3297', 'Software Engineering']],
                             tags=['Software Engineering'],
                           wallet_balance=-1, avatar='default_avatar.png',
-                        sessions=None):
+                        sessions=None, university='The University of Hong Kong'):
     from account.models import (User, Tutor, Course, SubjectTag)
     if wallet_balance < 0:
         wallet_balance = random.randint(1, 300) * 10
@@ -93,6 +93,8 @@ def add_tutor(username, password, email, first_name, last_name,
     tutor.tutor_type = tutor_type
     tutor.wallet_balance = wallet_balance
     tutor.avatar = avatar
+    tutor.phone = phone
+    tutor.university = university
     tutor.hourly_rate = hourly_rate
     tutor.bio = bio
     tutor.save()
@@ -129,7 +131,8 @@ def add_course(code, name):
 def populate_tutor():
     tutors = []
     tutors.append(add_tutor(
-        'georgem', 'georgem', 'georgem@cs.hku.hk', 'George', 'Michetson', 'CT', 0, r'Before joining HKU, George accumulated many years of experience in large-scale software engineering and in R&D for real-time systems. He has headed or contributed to development of a wide range of systems spanning fields such as scientific computation, telecommunications, database management systems, control systems and autonomous robotics. This work was carried out principally in Europe and the USA. Between the two he taught for several years at the University of Puerto Rico.',
+        'georgem', 'georgem', 'georgem@cs.hku.hk', 'George', 'Mitcheson', 'CT', 0, '28597068',
+        r'Before joining HKU, George accumulated many years of experience in large-scale software engineering and in R&D for real-time systems. He has headed or contributed to development of a wide range of systems spanning fields such as scientific computation, telecommunications, database management systems, control systems and autonomous robotics. This work was carried out principally in Europe and the USA. Between the two he taught for several years at the University of Puerto Rico.',
         [['COMP3297', 'Software Engineering'],
          ['COMP3403', 'Software Implmentation, Testing and Maintainence']],
         ['Software Engineering', 'Evolutionary Computing'],
@@ -137,7 +140,7 @@ def populate_tutor():
     ))
 
     tutors.append(add_tutor(
-        'clwang', 'choli', 'clwang@cs.hku.hk', 'Cho-Li', 'Wang', 'CT', 0,
+        'clwang', 'choli', 'clwang@cs.hku.hk', 'Cho-Li', 'Wang', 'CT', 0, '28578458',
 r"Professor Cho-Li Wang received his B.S. degree in Computer Science and Information Engineering from National Taiwan University in 1985. He obtained his M.S. and Ph.D. degrees in Computer Engineering from University of Southern California in 1990 and 1995 respectively. He is currently a professor at the Department of Computer Science. Professor Wang's research interests include parallel architecture, software systems for Cluster and Grid computing, and virtualization techniques for Cloud computing. Recently, he starts working on software transaction memory for multicore/GPU clusters and multi-kernel operating systems for future single-chip manycore processor. Professor Wang has published more than 130 papers in various peer reviewed journals and conference proceedings. He is/was on the editorial boards of several international journals, including IEEE Transactions on Computers (TC), Multiagent and Grid Systems (MGS), Journal of Information Science and Engineering (JISE), International Journal of Pervasive Computing and Communications (JPCC), ICST Transactions on Scalable Information Systems (SIS). He was the program chair for Cluster’03, CCGrid'09, InfoScale’09, and ICPADS’09, ISPA’11, FCST’11, FutureTech’12, and Cluster2012; and the General Chair for IPDPS2012. He has also served as program committee members for numerous international conferences, including IPDPS, CCGrid, Cloud, CloudCom, Grid, HiPC, ICPP, and ICPADS. Professor Wang is the primary investigator of China 863 project 'Hong Kong University Grid Point' (2006-2011). The HKU Grid point consists of 3004 CPU cores (31.45 Teraflops), which offers parallel computing services for the China National Grid (CNGrid) and is used as a testbed for Cloud-related systems development. He has been invited to give keynote and plenary talk related to Distributed JVM design and Cloud Computing at various international conferences.",
         [['COMP3230', 'Operating Systems']],
         ['Cloud Computing'],
@@ -146,7 +149,7 @@ r"Professor Cho-Li Wang received his B.S. degree in Computer Science and Informa
 
     tutors.append(add_tutor(
         'azero', 'azero', 'alpha_zero@deepmind.com', 'AlphaGo', 'Zero', 'PT',
-        99999999,
+        1000, '00000000',
         r'I learn by meself so well. No human beats me.',
         [['COMP3314', 'Machine Learning']],
         ['Go', 'Deep Learning']
@@ -154,7 +157,7 @@ r"Professor Cho-Li Wang received his B.S. degree in Computer Science and Informa
     ))
 
     tutors.append(add_tutor(
-        'kpwat', 'kpwat', 'watkp@hku.hk', 'Kam Pui', 'Wat', 'PT', -1,
+        'kpwat', 'kpwat', 'watkp@hku.hk', 'Kam Pui', 'Wat', 'PT', -1, '39171989',
         r'Dr. Wat receives a first class honour from BSc(Ac).',
         [['COMP2601', 'Probability & Statistics I']],
         ['Risk Management', 'Statistics'],
@@ -197,22 +200,25 @@ def populate_bookingrecord():
     from scheduler.models import (Session, BookingRecord)
     from account.models import (User,Student,Tutor)
     from wallet.models import Transaction
+    # let it err rather than create improper users
     user = User.objects.get(username='ckchui')
-    s, _ = Student.objects.get_or_create(user=user)
+    s = Student.objects.get(user=user)
     user = User.objects.get(username='georgem')
-    t, _ = Tutor.objects.get_or_create(user=user)
+    t = Tutor.objects.get(user=user)
 
     DEMO_DATE=date(2017, 11,1)
     DEMO_TIME=time(9, 30)
     d = datetime.combine(DEMO_DATE, DEMO_TIME)
     dn = d + OFFICE_HOUR_STEP['CT']
-    tran, _ = Transaction.objects.get_or_create(issuer=s,receiver=t,amount=100, created_at=d,commission=5.0)
-    
-    sess, _ = Session.objects.get_or_create(start_time=tz.make_aware(d), end_time=tz.make_aware(dn),tutor=t,status=Session.BOOKABLE)
-    b, _ = BookingRecord.objects.get_or_create(student=s,tutor=t,session=sess,entry_date=d,transaction=tran)
+    tran, _ = Transaction.objects.get_or_create(issuer=s,receiver=t,amount=100, created_at=tz.make_aware(d),commission=5.0)
+    sess = t.session_set.all()[0]
+    sess.status = Session.BOOKABLE
+    sess.save()
+    # use populated session
+    # sess, _ = Session.objects.get_or_create(start_time=tz.make_aware(d), end_time=tz.make_aware(dn),tutor=t,status=Session.BOOKABLE)
+    b, _ = BookingRecord.objects.get_or_create(student=s,tutor=t,session=sess,entry_date=tz.make_aware(d),transaction=tran)
 
 
-    
 
 def populate_coupon():
     coupon_list = []
