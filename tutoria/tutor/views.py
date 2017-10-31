@@ -26,11 +26,11 @@ def detail(request, tutor_id):
 # ####### Book Session #######
 
 
-@login_required
+# @login_required
 def book_session(request, tutor_id):
     """Confirm booking a new session."""
     if request.method == 'POST':
-        username = request.session['username']
+        username = request.session['username']  # won't work if not logged in!
         if username is not None:  # If the user has logged in
             user = User.objects.get(username=username)
             student = Student.objects.get(user=user)
