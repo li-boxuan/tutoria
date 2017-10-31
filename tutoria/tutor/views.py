@@ -62,8 +62,18 @@ def save_booking(request, tutor_id):
         tutor = Tutor.objects.get(pk=tutor_id)
         session = Session.objects.get(pk=session_id)
         # TODO: mark session as selected
+        if not session.status == session.BOOKABLE:
+            # TODO: handle exception
+            # return
+            pass
+        # added following lines for testing.  - Jiayao
+        session.tutor = tutor
+        session.status = session.BOOKED
+        session.save()
+
         now = datetime.now()
         # TODO: check balance and other assertions
+        # TODO: django add timezone to naive datetime  - Jiayao
         transaction = Transaction(issuer=student, receiver=tutor,
                                   amount=tutor.hourly_rate,
                                   created_at=now,
