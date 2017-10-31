@@ -26,7 +26,7 @@ def detail(request, tutor_id):
 # ####### Book Session #######
 
 
-# @login_required
+@login_required(login_url='/auth/login/')
 def book_session(request, tutor_id):
     """Confirm booking a new session."""
     if request.method == 'POST':
