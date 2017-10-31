@@ -19,7 +19,7 @@ class DetailView(generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super(DetailView,self).get_context_data(**kwargs)
         context['phone_visible'] = False
-        if self.request.session['username'] is not None:
+        if self.request.user.is_authenticated:
             visitor = User.objects.get(username=self.request.session['username'])
             # check if current visitor is the tutor itself
             if visitor == self.get_object().user:
