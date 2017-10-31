@@ -3,24 +3,29 @@ from __future__ import print_function
 from django.shortcuts import (get_object_or_404, render, render_to_response,
                               redirect)
 from django.http import HttpResponse
+from django.views import generic
 
 from account.models import Tutor, Student, User
-from scheduler.models import Session
+from scheduler.models import Session, BookingRecord
 from django.contrib.auth.decorators import login_required
 
-
-def detail(request, tutor_id):
-    """View for rendering a detailed profile of a tutor."""
-    tutor = get_object_or_404(Tutor, id=tutor_id)
-    #try:
-    #    username = request.session['username']
-    #except FieldError:
-    #    pass
-    #if username is not None:
-    #    student = Student.objects.get(username=username)
-    #    for record in student.bookingrecord_set.all():
-    #        pass
-    return render(request, 'detail.html', {'tutor': tutor})
+class DetailView(generic.DetailView):
+    model = Tutor
+    template_name = 'detail.html'
+    context_object_name = 'tutor'
+    def get_context_data(self, **kwargs):
+        context = super(DetailView,self).get_context_data(**kwargs)
+        context['phone_visible'] = False
+        if self.request.session['username'] is not None:
+            visitor = User.objects.get(username=self.request.session['username'])
+            # check if current visitor is the tutor itself
+            if visitor == self.get_object().user:
+                context['phone_visible'] = True
+            # check if current visitor has booked this tutor's session
+            for record in self.get_object().bookingrecord_set.all():
+                if visitor == record.student.user:
+                    context['phone_visible'] = True
+        return context
 
 # -----------------------------------------------------------------------------
 # ####### Book Session #######
