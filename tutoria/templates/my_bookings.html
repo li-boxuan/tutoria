@@ -4,13 +4,13 @@
 
 {% block content %}
 
-{% if results %}
+{% if records is not None %}
 
     <div class="container">
         <div class="row">
             <div class="col-md-11 col-md-offset-1">
-                <div class="col-md-11">
-                    <div class="list-group">
+                 <div class="col-md-11">
+                <!--    <div class="list-group">
                         <a href="{% url 'search:result' %}"
                           class="list-group-item" id="id_category_all">All Tutors
                         </a>
@@ -24,67 +24,62 @@
                                 }
                             }, 1500);
                         }
-                    </script>
+                    </script>  -->
                     <table class="table table-hover" width="80%">
                         <thead>
                         <tr>
                             <th>#</th>
                             <th>Tutor</th>
-                            <th>Course</th>
-                            <th>Hourly Rate</th>
-                            <th>Tags</th>
+                            <th>Type</th>
+                            <th>Start time</th>
+                            <th>End time</th>
+                            <th>Status</th>
+                            <th>Hourly rate</th>
+			    <th>Cancel</th>
                         </tr>
                         </thead>
                         <tbody>
-                        {% for tutor in results %}
+                        {% for record in records %}
                             <tr>
-                                <td>{{ forloop.counter }}</td>
-                                <td><a href="{% url 'tutor:detail' tutor.id %}">{{ tutor.user.first_name }}
-                                {{tutor.user.last_name }}</a></td>
-                                <td> <ul>
-                                  {% for course in tutor.courses.all %}
-                                  <li> {{course.course_code}} {{course.course_name }}<br>
-                                  {% endfor %}
-                                  </ul>
-                                </td>
-                                <td>{{ tutor.hourly_rate }}</td>
+                                <td>{{forloop.counter}}</td>
                                 <td>
-                                  <ul>
-                                  {% for tag in tutor.tags.all %}
-                                  <li> {{ tag.tag }} <br>
-                                  {% endfor %}
-                                  </ul>
+                                  <img class="img-rounded" width=128px src="{{ record.tutor.avatar.url }}"><br>
+                                  <center>
+                                    <a href="{% url 'tutor:detail' record.tutor.id %}">{{ record.tutor.first_name }}
+                                      {{record.tutor.last_name }}</a>
+                                    </center>
                                 </td>
+
+
+                                <td>
+                                  {% if record.tutor.tutor_type == 'CT' %}
+                                    Contracted Tutor
+                                  {% else %}
+                                    Private Tutor
+                                  {% endif %}
+                                </td>
+
+                                <td>{{record.session.start_time}}</td>
+				<td>{{record.session.end_time}}</td>
+				<td>{{record.session.status}}</td>
+                                <td>{{record.tutor.hourly_rate }}</td>
+
+				<td>
+				  <!-- <button type="button" class="btn btn-warning">CANCEL</button>-->
+				  <form action="" method="POST">
+					{% csrf_token %}
+    					<button name="booking_id" value={{record.id}}>Cancel</button>
+				  </form>
+				</td>
+
                             </tr>
                         {% empty %}
                             <tr>
-                                <td>No tutor available for your query =(</td>
+                                <td>No bookings found =(</td>
                             </tr>
                         {% endfor %}
                         </tbody>
                     </table>
-                    <!--
-                    <nav>
-                        <ul class="pager">
-                            {% if book_list.has_previous %}
-                                <li class="previous"><a
-                                        href="?typ={{ query_category }}&page={{ book_list.previous_page_number }}">上一页</a>
-                                </li>
-                            {% else %}
-                                <li class="previous disabled"><a
-                                    href="#">Previous Page</a></li>
-                            {% endif %}
-                            第 {{ book_list.number }} / {{ book_list.paginator.num_pages }}页
-                            {% if book_list.has_next %}
-                                <li class="next"><a
-                                        href="?typ={{ query_category }}&page={{ book_list.next_page_number }}">下一页</a>
-                                </li>
-                            {% else %}
-                                <li class="next disabled"><a href="#">Next Page</a></li>
-                            {% endif %}
-                        </ul>
-                    </nav>
-                    -->
 
                 </div>
             </div>
@@ -93,7 +88,8 @@
 
 {% else %}
 
-  <h3> No tutor availabel for your query. Would you want to search again? </h3>
+  <h3> No bookings found. Just relaxe! </h3>
+
 
 {% endif %}
 
