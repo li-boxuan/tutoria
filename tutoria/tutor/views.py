@@ -7,16 +7,19 @@ from django.http import HttpResponse
 from account.models import Tutor, Student, User
 from scheduler.models import Session
 from django.contrib.auth.decorators import login_required
+from scheduler.models import BookingRecord
+from datetime import datetime
+from wallet.models import Transaction
 
 
 def detail(request, tutor_id):
     """View for rendering a detailed profile of a tutor."""
     tutor = get_object_or_404(Tutor, id=tutor_id)
-    #try:
+    # try:
     #    username = request.session['username']
-    #except FieldError:
+    # except FieldError:
     #    pass
-    #if username is not None:
+    # if username is not None:
     #    student = Student.objects.get(username=username)
     #    for record in student.bookingrecord_set.all():
     #        pass
@@ -30,7 +33,7 @@ def detail(request, tutor_id):
 def book_session(request, tutor_id):
     """Confirm booking a new session."""
     if request.method == 'POST':
-        username = request.session['username']  # won't work if not logged in!
+        username = request.session['username']  # Won't work if not logged in
         if username is not None:  # If the user has logged in
             user = User.objects.get(username=username)
             student = Student.objects.get(user=user)
@@ -48,10 +51,29 @@ def book_session(request, tutor_id):
                                                  'session': session})
 
 
+@login_required(login_url='/auth/login/')
 def save_booking(request, tutor_id):
     """Save booking record and redirect to the dashboard."""
     if request.method == 'POST':
-        return HttpResponse("received the request!")
+        username = request.session['username']
+        user = User.objects.get(username=username)
+        student = Student.objects.get(user=user)
+        session_id = request.POST.get('session_id', '')
+        tutor = Tutor.objects.get(pk=tutor_id)
+        session = Session.objects.get(pk=session_id)
+        # TODO: mark session as selected
+        now = datetime.now()
+        # TODO: check balance and other assertions
+        transaction = Transaction(issuer=student, receiver=tutor,
+                                  amount=tutor.hourly_rate,
+                                  created_at=now,
+                                  commission=tutor.hourly_rate * 0.05)
+        transaction.save()
+        bookRecord = BookingRecord(
+            tutor=tutor, student=student, session=session, entry_date=now,
+            transaction=transaction)
+        bookRecord.save()
+        return redirect("/tutor/" + tutor_id)
     else:
         return HttpResponse("not a POST request!")
 
