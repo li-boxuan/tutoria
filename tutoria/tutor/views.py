@@ -56,10 +56,10 @@ def book_session(request, tutor_id):
                                     ". You don't have enough money.")
             if (tutor.username == student.username):
                 return HttpResponse("You can't book your session.")
-            if not student.bookingrecord_set.all().filter(
-                    entry_date__date=date.today()).empty():
+            #if not student.bookingrecord_set.all().filter(
+                    entry_date__date=date.today()).exist():
 
-                return HttpResponse("You can only book one session per day!")
+                #return HttpResponse("You can only book one session per day!")
             return render(request, 'book.html', {'tutor': tutor,
                                                  'session': session})
 
@@ -93,6 +93,7 @@ def save_booking(request, tutor_id):
                                   created_at=now,
                                   commission=tutor.hourly_rate * 0.05)
         transaction.save()
+        student.wallet_balance -= tutor.houtly_rate
         bookRecord = BookingRecord(
             tutor=tutor, student=student, session=session, entry_date=now,
             transaction=transaction)
