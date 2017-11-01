@@ -129,7 +129,7 @@ def add_course(code, name):
 def populate_tutor():
     tutors = []
     tutors.append(add_tutor(
-        'georgem', 'georgem', 'georgem@cs.hku.hk', 'George', 'Mitcheson', 'CT', 0, '28597068',
+        'georgem', 'georgem', 'georgem@cs.hku.hk', 'George', 'Mitcheson', 'PT', 300, '28597068',
         r'Before joining HKU, George accumulated many years of experience in large-scale software engineering and in R&D for real-time systems. He has headed or contributed to development of a wide range of systems spanning fields such as scientific computation, telecommunications, database management systems, control systems and autonomous robotics. This work was carried out principally in Europe and the USA. Between the two he taught for several years at the University of Puerto Rico.',
         [['COMP3297', 'Software Engineering'],
          ['COMP3403', 'Software Implmentation, Testing and Maintainence']],
@@ -146,8 +146,8 @@ r"Professor Cho-Li Wang received his B.S. degree in Computer Science and Informa
     ))
 
     tutors.append(add_tutor(
-        'azero', 'azero', 'alpha_zero@deepmind.com', 'AlphaGo', 'Zero', 'PT',
-        1000, '00000000',
+        'kitty', 'kitty', 'alpha_zero@deepmind.com', 'Kitty', 'K', 'PT',
+        100, '00000000',
         r'I learn by meself so well. No human beats me.',
         [['COMP3314', 'Machine Learning']],
         ['Go', 'Deep Learning']
@@ -179,6 +179,51 @@ def populate_session(tutors):
                         status=Session.BOOKABLE)
                 d = dn
 
+    geo = tutors[0]
+    kitty = tutors[2]
+    s,_ = Session.objects.get_or_create(
+            start_time=tz.make_aware(datetime.combine(date(2017,11, 3), time(4,00))),
+            end_time=tz.make_aware(datetime.combine(date(2017,11,3), time(5,00))),
+            tutor=kitty,
+            status=Session.BOOKABLE)
+
+    s.save()
+    s,_ = Session.objects.get_or_create(
+            start_time=tz.make_aware(datetime.combine(date(2017,11, 3), time(5,00))),
+            end_time=tz.make_aware(datetime.combine(date(2017,11,3), time(6,00))),
+            tutor=kitty,
+            status=Session.BOOKABLE)
+    s.save()
+    s,_ = Session.objects.get_or_create(
+            start_time=tz.make_aware(datetime.combine(date(2017,11, 6), time(4,00))),
+            end_time=tz.make_aware(datetime.combine(date(2017,11,6), time(5,00))),
+            tutor=kitty,
+            status=Session.BOOKABLE)
+
+    s.save()
+    s,_ = Session.objects.get_or_create(
+            start_time=tz.make_aware(datetime.combine(date(2017,11, 6), time(5,00))),
+            end_time=tz.make_aware(datetime.combine(date(2017,11,6), time(6,00))),
+            tutor=kitty,
+            status=Session.BOOKABLE)
+    s.save()
+    
+    s,_ = Session.objects.get_or_create(
+            start_time=tz.make_aware(datetime.combine(date(2017,11, 6), time(9,00))),
+            end_time=tz.make_aware(datetime.combine(date(2017,11,6), time(10,00))),
+            tutor=geo,
+            status=Session.BOOKABLE)
+
+    s.save()
+    s,_ = Session.objects.get_or_create(
+            start_time=tz.make_aware(datetime.combine(date(2017,11, 6), time(10,00))),
+            end_time=tz.make_aware(datetime.combine(date(2017,11,6), time(11,00))),
+            tutor=geo,
+            status=Session.BOOKABLE)
+    s.save()
+
+
+
 
 def populate_student():
     students = []
@@ -191,7 +236,7 @@ def populate_student():
     ))
 
     students.append(add_student(
-        'atam', 'atam', 'atam@cs.hku.hk', 'Anthony', 'Tam'
+        'atam', 'atam', 'atam@cs.hku.hk', 'Anthony', 'Tam', wallet_balance=1000
     ))
 
 
