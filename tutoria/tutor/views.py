@@ -57,7 +57,7 @@ def book_session(request, tutor_id):
             if (tutor.username == student.username):
                 return HttpResponse("You can't book your session.")
             if (student.bookingrecord_set.all().filter(
-                    entry_date__date=date.today())):
+                    entry_date__date=date.today()).exists()):
                 return HttpResponse("You can only book one session per day!")
             return render(request, 'book.html', {'tutor': tutor,
                                                  'session': session})
