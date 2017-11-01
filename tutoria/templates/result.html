@@ -28,7 +28,6 @@
                     <table class="table table-hover" width="80%">
                         <thead>
                         <tr>
-                            <th>#</th>
                             <th>Tutor</th>
                             <th>Type</th>
                             <th>Course</th>
@@ -40,7 +39,6 @@
                         <tbody>
                         {% for tutor in results %}
                             <tr>
-                                <td>{{ forloop.counter }}</td>
                                 <td>
                                   <img class="img-rounded" width=128px src="{{ tutor.avatar.url }}"><br>
                                   <center>
@@ -71,7 +69,7 @@
                                   </ul>
                                 </td>
                                 <td>
-                                  N/A
+                                <td>5</td>
                                 </td>
                             </tr>
                         {% empty %}
