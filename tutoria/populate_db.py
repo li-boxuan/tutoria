@@ -36,8 +36,7 @@ OFFICE_HOUR_STEP = {'CT': timedelta(hours=0.5),
                     'PT': timedelta(hours=1.0)}
 
 
-def add_student(username, password, email, first_name, last_name,
-                wallet_balance=-1, avatar='default_avatar.png'):
+def add_student(username, password, email, first_name, last_name, wallet_balance=-1):
     from account.models import (User, Student)
     if wallet_balance < 0:
         wallet_balance = random.randint(1, 300) * 10
@@ -47,13 +46,12 @@ def add_student(username, password, email, first_name, last_name,
         user = User.objects.get(username=username)
     except User.DoesNotExist:
         user = User.objects.create_user(username=username, email=email,
-        							  password=password,
+                                        password=password,
                                          first_name=first_name,
                                          last_name=last_name)
+        user.wallet_balance = wallet_balance
 
     student, _ = Student.objects.get_or_create(user=user)
-    student.wallet_balance = wallet_balance
-    student.avatar = avatar
     user.save()
     student.save()
     return student
@@ -212,7 +210,7 @@ def populate_bookingrecord():
     dn = d + OFFICE_HOUR_STEP['CT']
     tran, _ = Transaction.objects.get_or_create(issuer=s,receiver=t,amount=100, created_at=tz.make_aware(d),commission=5.0)
     sess = t.session_set.all()[0]
-    sess.status = Session.BOOKABLE
+    sess.status = Session.BOOKED
     sess.save()
     # use populated session
     # sess, _ = Session.objects.get_or_create(start_time=tz.make_aware(d), end_time=tz.make_aware(dn),tutor=t,status=Session.BOOKABLE)
