@@ -56,8 +56,9 @@ def book_session(request, tutor_id):
                                     ". You don't have enough money.")
             if (tutor.username == student.username):
                 return HttpResponse("You can't book your session.")
-            if (student.bookingrecord_set.all().filter(
-                    entry_date__date=date.today())):
+            if not student.bookingrecord_set.all().filter(
+                    entry_date__date=date.today()).empty():
+
                 return HttpResponse("You can only book one session per day!")
             return render(request, 'book.html', {'tutor': tutor,
                                                  'session': session})
