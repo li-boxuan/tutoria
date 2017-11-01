@@ -12,15 +12,18 @@ from scheduler.models import BookingRecord
 from datetime import datetime
 from wallet.models import Transaction
 
+
 class DetailView(generic.DetailView):
     model = Tutor
     template_name = 'detail.html'
     context_object_name = 'tutor'
+
     def get_context_data(self, **kwargs):
-        context = super(DetailView,self).get_context_data(**kwargs)
+        context = super(DetailView, self).get_context_data(**kwargs)
         context['phone_visible'] = False
         if self.request.user.is_authenticated:
-            visitor = User.objects.get(username=self.request.session['username'])
+            visitor = User.objects.get(
+                username=self.request.session['username'])
             # check if current visitor is the tutor itself
             if visitor == self.get_object().user:
                 context['phone_visible'] = True
@@ -48,7 +51,9 @@ def book_session(request, tutor_id):
             session = Session.objects.get(pk=session_id)
             # Ignore commission for now because it might be saved by coupon
             if (student.wallet_balance - tutor.hourly_rate) < 0:
-                return HttpResponse("You don't have enough money.")
+                return HttpResponse("Your balance is " +
+                                    str(student.wallet_balance) +
+                                    ". You don't have enough money.")
             if (tutor.username == student.username):
                 return HttpResponse("You can't book your session.")
             if (student.bookingrecord_set.all().exists()):
