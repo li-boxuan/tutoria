@@ -30,8 +30,8 @@ def add_coupon(start_date, end_date, coupon_code):
     return coupon
 
 
-OFFICE_HOURS = {'begin': time(9, 30),
-                'end': time(18, 30)}
+OFFICE_HOURS = {'begin': time(9, 00),
+                'end': time(19, 00)}
 OFFICE_HOUR_STEP = {'CT': timedelta(hours=0.5),
                     'PT': timedelta(hours=1.0)}
 
@@ -155,7 +155,7 @@ r"Professor Cho-Li Wang received his B.S. degree in Computer Science and Informa
     ))
 
     tutors.append(add_tutor(
-        'kpwat', 'kpwat', 'watkp@hku.hk', 'Kam Pui', 'Wat', 'PT', -1, '39171989',
+        'kpwat', 'kpwat', 'watkp@hku.hk', 'Kam Pui', 'Wat', 'PT', 100, '39171989',
         r'Dr. Wat receives a first class honour from BSc(Ac).',
         [['COMP2601', 'Probability & Statistics I']],
         ['Risk Management', 'Statistics'],
@@ -186,7 +186,8 @@ def populate_student():
         'kpwat', 'kpwat', 'watkp@hku.hk', 'Kam Pui', 'Wat'
     ))
     students.append(add_student(
-        'ckchui', 'ckchui', 'ckchui@cs.hku.hk', 'Chun-Kit', 'Chui'
+        'ckchui', 'ckchui', 'ckchui@cs.hku.hk', 'Chun-Kit', 'Chui',
+        wallet_balance=500
     ))
 
     students.append(add_student(
