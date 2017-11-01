@@ -87,11 +87,13 @@ def save_booking(request, tutor_id):
         # TODO: check balance and other assertions
         # TODO: django add timezone to naive datetime  - Jiayao
         # TODO: handle coupons
+        # TODO: make change to the user balance
         transaction = Transaction(issuer=student, receiver=tutor,
                                   amount=tutor.hourly_rate,
                                   created_at=now,
                                   commission=tutor.hourly_rate * 0.05)
         transaction.save()
+        student.wallet_balance -= tutor.houtly_rate
         bookRecord = BookingRecord(
             tutor=tutor, student=student, session=session, entry_date=now,
             transaction=transaction)
