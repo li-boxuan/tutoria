@@ -56,8 +56,11 @@ def book_session(request, tutor_id):
                                     ". You don't have enough money.")
             if (tutor.username == student.username):
                 return HttpResponse("You can't book your session.")
+            today = date.today()
             if (student.bookingrecord_set.all().filter(
-                    entry_date__date=date.today()).exists()):
+                    entry_date__year=today.year,
+                    entry_date__month=today.month,
+                    entry_date__day=today.day).exists()):
                 return HttpResponse("You can only book one session per day!")
             return render(request, 'book.html', {'tutor': tutor,
                                                  'session': session})
@@ -87,6 +90,7 @@ def save_booking(request, tutor_id):
         # TODO: check balance and other assertions
         # TODO: django add timezone to naive datetime  - Jiayao
         # TODO: handle coupons
+        # TODO: make change to the user balance
         transaction = Transaction(issuer=student, receiver=tutor,
                                   amount=tutor.hourly_rate,
                                   created_at=now,
