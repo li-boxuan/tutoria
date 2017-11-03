@@ -16,7 +16,7 @@ class Session(models.Model):
     STATUS_CHOICES = (
         (CLOSED, 'Closed'),
         (BOOKED, 'Booked'),
-		(BOOKABLE, 'BOOKABLE'),
+        (BOOKABLE, 'BOOKABLE'),
     )
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
@@ -25,6 +25,9 @@ class Session(models.Model):
                               choices=STATUS_CHOICES,
                               default=CLOSED,
                               )
+    def __str__(self):
+        return "{} -- {}\nTutor: {} ({})".format(self.start_time, self.end_time,
+									 self.tutor, self.status)
 
 
 class BookingRecord(models.Model):
@@ -34,5 +37,9 @@ class BookingRecord(models.Model):
     student = models.ForeignKey('account.Student', on_delete=models.CASCADE)
     session = models.ForeignKey('scheduler.Session', on_delete=models.CASCADE)
     entry_date = models.DateTimeField()
-    transaction = models.ForeignKey('wallet.Transaction', on_delete=models.CASCADE)
+    transaction = models.ForeignKey(
+        'wallet.Transaction', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return "Tutor: {}\nStudent: {}\n Session\n{}".format(self.tutor,self.student, self.session)
 

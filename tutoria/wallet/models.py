@@ -11,9 +11,9 @@ from django.db import models
 class Transaction(models.Model):
     """Models a transaction."""
     issuer = models.ForeignKey('account.Student', on_delete=models.CASCADE,
-                              related_name='issuer')
+                               related_name='issuer')
     receiver = models.ForeignKey('account.Tutor', on_delete=models.CASCADE,
-                                related_name='receiver')
+                                 related_name='receiver')
     amount = models.PositiveIntegerField()
     created_at = models.DateTimeField()
     commission = models.FloatField()
@@ -28,6 +28,5 @@ class Coupon(models.Model):
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
     code = models.UUIDField(primary_key=True,
-                           default=uuid.uuid4, editable=False)
+                            default=uuid.uuid4, editable=False)
     transaction = models.ForeignKey(Transaction, null=True)
-

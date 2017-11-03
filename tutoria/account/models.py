@@ -7,6 +7,8 @@ by Jiayao
 from __future__ import (absolute_import, print_function)
 from django.db import models
 import django.contrib.auth.models as auth_models
+import os
+from django.core.validators import RegexValidator
 
 
 class SubjectTag(models.Model):
@@ -27,7 +29,7 @@ class Course(models.Model):
 
 class User(auth_models.User):
     wallet_balance = models.PositiveIntegerField(default=0)
-    avatar = models.ImageField()
+    avatar = models.ImageField(default='default_avatar.png')
 
 class Tutor(models.Model):
     """Models the tutor."""
@@ -37,8 +39,6 @@ class Tutor(models.Model):
         (CONTRACTED_TUTOR, 'Contracted Tutor'),
         (PRIVATE_TUTOR, 'Private Tutor'),
     )
-    wallet_balance = models.PositiveIntegerField(default=0)
-    avatar = models.ImageField()
     tutor_type = models.CharField(
         max_length=2,
         choices=TUTOR_TYPE_CHOICES,
@@ -47,9 +47,12 @@ class Tutor(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     bio = models.TextField(default='')
+    phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+85212345678' or '12345678'. 8 or 11 digits are allowed.")
+    phone = models.CharField(validators=[phone_regex], max_length=11, blank=True)
+    university = models.CharField(max_length=128, default='The University of Hong Kong')
     hourly_rate = models.PositiveIntegerField(default=0)
-    tags = models.ManyToManyField(SubjectTag)
-    courses = models.ManyToManyField(Course)
+    tags = models.ManyToManyField(SubjectTag, default=None)
+    courses = models.ManyToManyField(Course, default=None)
     visible = models.BooleanField(default=True)
     # sessions = models.ManyToManyField('scheduler.session')
 

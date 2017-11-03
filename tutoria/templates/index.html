@@ -6,7 +6,16 @@
 
     <div class="container">
         <div class="row">
-          <h2>Hola! Welcome to Tutoria =D</h2>
+					{% if not user.is_authenticated %}
+					<h1><b>You just found Tutoria.</b></h1><br>
+					<h3>Tutoria is an online platform for free/private
+						campus tutoring.</h3>
+					<h3><a href='{% url 'auth:signup' %}'>Sign up</a>
+						or begin a <a href='{% url 'search:index' %}'>search</a> to start. </h3>
+					<h5><i>Already sign up? <a href='{% url 'auth:login'%}'>Login</a> to evolve with Tutoria.</i></h5>
+					{% else %}
+					<h2>Tutoria welcomes you back, {{ user.first_name }}!</h2>
+					{% endif %}
         </div>
     </div>
 

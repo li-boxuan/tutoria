@@ -8,6 +8,14 @@
         <div class="row">
             <div class="col-md-6 col-md-offset-3 col-sm-10 col-sm-offset-1">
               <h1 class="form-signin-heading text-center">Sign Up</h1>
+              {% if status == SIGNUP_STATUS.SUCCESS %}
+                <h5> Sign-up successful </h5>
+              {% elif status == SIGNUP_STATUS.FAILED %}
+                <h5> Sign-up failed </h5>
+              {% elif status == SIGNUP_STATUS.EXISTED %}
+                <h5> User existed </h5>
+
+              {% else %}
                 {% if choice %}
                 <form action="{% url 'auth:student' %}" class="form-horizontal">
 
@@ -34,7 +42,8 @@
                     </div>
                 </form>
 
-                {% elif form %}
+                {% else %}
+                  {% if user_form is not None %}
 
                  <form method="POST" role="form" class="form-horizontal">
                     {% csrf_token %}
@@ -42,7 +51,10 @@
                     <div class="form-group">
                       <div class="col-md-9">
                         <table>
-                          {{ form.as_p }}
+                          {{ user_form.as_p }}
+                          {% if tutor_form is not None %}
+                            {{tutor_form.as_p}}
+                          {% endif %}
                         </table>
                       </div>
                     </div>
@@ -53,7 +65,9 @@
                       </div>
                     </div>
                 </form>
+                {% endif %}
               {% endif %}
+            {% endif %}
            </div>
         </div>
     </div>

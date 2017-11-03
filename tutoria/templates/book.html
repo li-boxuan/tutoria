@@ -28,7 +28,7 @@
     <div align="center" style='overflow:auto;height:50px;'>
       <form action="{% url 'tutor:save_booking' tutor_id=tutor.id %}" method="POST" role="form" class="form-horizontal">
         {% csrf_token %}
-        <button name="session_id" type="submit" value="{{ session.id }}" class="btn btn-default">Confirm Booking</button>
+        <button name="session_id" type="submit" onclick="return confirm('Email Sent!')" value="{{ session.id }}" class="btn btn-default">Confirm Booking</button>
       </form>
     </div>
   </div>
