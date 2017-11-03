@@ -52,7 +52,7 @@
                     <h3>Chat</h3>
                         <a class="btn btn-primary" href="#" role="button">Chat</a>
                     <h3>Book a Session</3>
-                    <form action="{% url 'tutor:book_session' tutor_id=tutor.id %}" method="POST" role="form" class="form-horizontal">
+                    <form action="{% url 'tutor:confirm_booking' tutor_id=tutor.id %}" method="POST" role="form" class="form-horizontal">
                         {% csrf_token %}
                         <select name="session_id" class="form-control">
                             {% for session in tutor.session_set.all %}
