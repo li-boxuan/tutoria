@@ -39,7 +39,7 @@ class DetailView(generic.DetailView):
 
 
 @login_required(login_url='/auth/login/')
-def book_session(request, tutor_id):
+def confirm_booking(request, tutor_id):
     """Confirm booking a new session."""
     if request.method == 'POST':
         username = request.session['username']  # Won't work if not logged in
