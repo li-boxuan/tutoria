@@ -3,14 +3,12 @@ from __future__ import print_function
 from django.shortcuts import (get_object_or_404, render, render_to_response,
                               redirect)
 from django.http import HttpResponse
-from django.views import generic
-
 from account.models import Tutor, Student, User
 from scheduler.models import Session, BookingRecord
 from django.contrib.auth.decorators import login_required
-from scheduler.models import BookingRecord
-from datetime import datetime, date
+from datetime import datetime
 from wallet.models import Transaction
+from django.views import generic
 
 
 class DetailView(generic.DetailView):
