@@ -44,11 +44,11 @@ def book_session(request, tutor_id):
     if request.method == 'POST':
         username = request.session['username']  # Won't work if not logged in
         if username is not None:  # If the user has logged in
-            user = User.objects.get(username=username)
-            student = Student.objects.get(user=user)
-            session_id = request.POST.get('session_id', '')
+            student = Student.objects.get(
+                user=User.objects.get(username=username))
             tutor = Tutor.objects.get(pk=tutor_id)
-            session = Session.objects.get(pk=session_id)
+            session = Session.objects.get(
+                pk=request.POST.get('session_id', ''))
             # Ignore commission for now because it might be saved by coupon
             if (student.wallet_balance - tutor.hourly_rate) < 0:
                 return HttpResponse("Your balance is " +
@@ -56,7 +56,7 @@ def book_session(request, tutor_id):
                                     ". You don't have enough money.")
             if (tutor.username == student.username):
                 return HttpResponse("You can't book your session.")
-            #if (student.bookingrecord_set.all().filter(
+            # if (student.bookingrecord_set.all().filter(
             #    entry_date__date  = session.start_time.date).exists()):
             #    return HttpResponse("You can only book one session per day!")
             return render(request, 'book.html', {'tutor': tutor,
@@ -88,16 +88,18 @@ def save_booking(request, tutor_id):
         # TODO: django add timezone to naive datetime  - Jiayao
         # TODO: handle coupons
         # TODO: make change to the user balance
+        # TODO: check today
         transaction = Transaction(issuer=student, receiver=tutor,
                                   amount=tutor.hourly_rate,
                                   created_at=now,
                                   commission=tutor.hourly_rate * 0.05)
         transaction.save()
-        student.wallet_balance -= tutor.houtly_rate
+        student.wallet_balance -= tutor.hourly_rate
         bookRecord = BookingRecord(
             tutor=tutor, student=student, session=session, entry_date=now,
             transaction=transaction)
-        student.wallet_balance -= tutor.hourly_rate * (0.5 if tutor.tutor_type == 'CT' else 1)
+        student.wallet_balance -= tutor.hourly_rate * \
+            (0.5 if tutor.tutor_type == 'CT' else 1)
         bookRecord.save()
         return redirect("/dashboard/mybookings/")
     else:
