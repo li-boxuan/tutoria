@@ -3,7 +3,6 @@ from __future__ import print_function
 from django.shortcuts import (get_object_or_404, render, render_to_response,
                               redirect)
 from django.http import HttpResponse
-<< << << < HEAD
 from account.models import Tutor, Student, User
 from scheduler.models import Session, BookingRecord
 from django.contrib.auth.decorators import login_required
@@ -23,9 +22,6 @@ def detail(request, tutor_id):
     #    for record in student.bookingrecord_set.all():
     #        pass
     return render(request, 'detail.html', {'tutor': tutor})
-
-
->>>>>> > 85157c6013b48fa52b6f26ea4aee66501d85ab55
 
 # -----------------------------------------------------------------------------
 # ####### Book Session #######
