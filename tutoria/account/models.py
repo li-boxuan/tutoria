@@ -27,9 +27,11 @@ class Course(models.Model):
     def __str__(self):
         return self.course_code + " " + self.course_name
 
+
 class User(auth_models.User):
     wallet_balance = models.PositiveIntegerField(default=0)
     avatar = models.ImageField(default='default_avatar.png')
+
 
 class Tutor(models.Model):
     """Models the tutor."""
@@ -47,9 +49,12 @@ class Tutor(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     bio = models.TextField(default='')
-    phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+85212345678' or '12345678'. 8 or 11 digits are allowed.")
-    phone = models.CharField(validators=[phone_regex], max_length=11, blank=True)
-    university = models.CharField(max_length=128, default='The University of Hong Kong')
+    phone_regex = RegexValidator(
+        regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+85212345678' or '12345678'. 8 or 11 digits are allowed.")
+    phone = models.CharField(
+        validators=[phone_regex], max_length=11, blank=True)
+    university = models.CharField(
+        max_length=128, default='The University of Hong Kong')
     hourly_rate = models.PositiveIntegerField(default=0)
     tags = models.ManyToManyField(SubjectTag, default=None)
     courses = models.ManyToManyField(Course, default=None)
@@ -167,8 +172,5 @@ class Student(models.Model):
         self.user.avatar = avt
         self.user.save()
 
-
-
     def __str__(self):
         return self.username
-
