@@ -39,25 +39,23 @@ class DetailView(generic.DetailView):
 def confirm_booking(request, tutor_id):
     """Confirm booking a new session."""
     if request.method == 'POST':
-        username = request.session['username']  # Won't work if not logged in
-        if username is not None:  # If the user has logged in
-            student = Student.objects.get(
-                user=User.objects.get(username=username))
-            tutor = Tutor.objects.get(pk=tutor_id)
-            session = Session.objects.get(
-                pk=request.POST.get('session_id', ''))
-            # Ignore commission for now because it might be saved by coupon
-            if (student.wallet_balance - tutor.hourly_rate) < 0:
-                return HttpResponse("Your balance is " +
-                                    str(student.wallet_balance) +
-                                    ". You don't have enough money.")
-            if (tutor.username == student.username):
-                return HttpResponse("You can't book your session.")
-            # if (student.bookingrecord_set.all().filter(
-            #    entry_date__date  = session.start_time.date).exists()):
-            #    return HttpResponse("You can only book one session per day!")
-            return render(request, 'book.html', {'tutor': tutor,
-                                                 'session': session})
+        student = Student.objects.get(
+            user=User.objects.get(username=request.session['username']))
+        tutor = Tutor.objects.get(pk=tutor_id)
+        session = Session.objects.get(
+            pk=request.POST.get('session_id', ''))
+        # Ignore commission for now because it might be saved by coupon
+        if (student.wallet_balance - tutor.hourly_rate) < 0:
+            return HttpResponse("Your balance is " +
+                                str(student.wallet_balance) +
+                                ". You don't have enough money.")
+        if (tutor.username == student.username):
+            return HttpResponse("You can't book your session.")
+        # if (student.bookingrecord_set.all().filter(
+        #    entry_date__date  = session.start_time.date).exists()):
+        #    return HttpResponse("You can only book one session per day!")
+        return render(request, 'book.html', {'tutor': tutor,
+                                             'session': session})
 
 
 @login_required(login_url='/auth/login/')
