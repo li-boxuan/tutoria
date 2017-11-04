@@ -18,8 +18,6 @@ class DetailView(generic.DetailView):
     template_name = 'detail.html'
     context_object_name = 'tutor'
 
-
-<< << << < HEAD
     def get_context_data(self, **kwargs):
         context = super(DetailView, self).get_context_data(**kwargs)
         context['phone_visible'] = False
@@ -35,9 +33,6 @@ class DetailView(generic.DetailView):
                     context['phone_visible'] = True
         return context
 
-
-== == == =
->>>>>> > attemp to get it running
 # -----------------------------------------------------------------------------
 # ####### Book Session #######
 
