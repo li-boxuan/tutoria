@@ -25,9 +25,10 @@ class Session(models.Model):
                               choices=STATUS_CHOICES,
                               default=CLOSED,
                               )
+
     def __str__(self):
         return "{} -- {}\nTutor: {} ({})".format(self.start_time, self.end_time,
-									 self.tutor, self.status)
+                                                 self.tutor, self.status)
 
 
 class BookingRecord(models.Model):
@@ -41,5 +42,4 @@ class BookingRecord(models.Model):
         'wallet.Transaction', on_delete=models.CASCADE)
 
     def __str__(self):
-        return "Tutor: {}\nStudent: {}\n Session\n{}".format(self.tutor,self.student, self.session)
-
+        return "Tutor: {}\nStudent: {}\n Session\n{}".format(self.tutor, self.student, self.session)

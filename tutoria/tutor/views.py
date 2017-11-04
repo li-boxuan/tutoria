@@ -12,11 +12,13 @@ from django.views import generic
 
 
 class DetailView(generic.DetailView):
+    # TODO: add doc string - Jingran
     model = Tutor
     template_name = 'detail.html'
     context_object_name = 'tutor'
 
     def get_context_data(self, **kwargs):
+        # TODO: add doc string - Jingran
         context = super(DetailView, self).get_context_data(**kwargs)
         context['phone_visible'] = False
         if self.request.user.is_authenticated:
@@ -39,33 +41,34 @@ class DetailView(generic.DetailView):
 def confirm_booking(request, tutor_id):
     """Confirm booking a new session."""
     if request.method == 'POST':
-        username = request.session['username']  # Won't work if not logged in
-        if username is not None:  # If the user has logged in
-            student = Student.objects.get(
-                user=User.objects.get(username=username))
-            tutor = Tutor.objects.get(pk=tutor_id)
-            session = Session.objects.get(
-                pk=request.POST.get('session_id', ''))
-            # Ignore commission for now because it might be saved by coupon
-            if (student.wallet_balance - tutor.hourly_rate) < 0:
-                return HttpResponse("Your balance is " +
-                                    str(student.wallet_balance) +
-                                    ". You don't have enough money.")
-            if (tutor.username == student.username):
-                return HttpResponse("You can't book your session.")
-            # if (student.bookingrecord_set.all().filter(
-            #    entry_date__date  = session.start_time.date).exists()):
-            #    return HttpResponse("You can only book one session per day!")
-            return render(request, 'book.html', {'tutor': tutor,
-                                                 'session': session})
+        user = User.objects.get(username=request.session['username'])
+        student = Student.objects.get(user=user)
+        tutor = Tutor.objects.get(pk=tutor_id)
+        new_session = Session.objects.get(
+            pk=request.POST.get('session_id', ''))
+        # Ignore commission for now because it might be saved by coupon
+        if (student.wallet_balance - tutor.hourly_rate) < 0:
+            # TODO: beautify
+            return HttpResponse("Your balance is " +
+                                str(student.wallet_balance) +
+                                ". You don't have enough money.")
+        if (tutor.username == student.username):
+            # TODO: beautify
+            return HttpResponse("You can't book your session.")
+        # Check if student has already booked a session on that day.
+        hist_booking_list = student.bookingrecord_set.all()
+        for hist_booking in hist_booking_list:
+            if hist_booking.session.start_time.date() == new_session.start_time.date() and hist_booking.tutor == tutor:
+                return HttpResponse("You can only book one session per day!")
+        return render(request, 'book.html', {'tutor': tutor,
+                                             'session': new_session})
 
 
 @login_required(login_url='/auth/login/')
 def save_booking(request, tutor_id):
     """Save booking record and redirect to the dashboard."""
     if request.method == 'POST':
-        username = request.session['username']
-        user = User.objects.get(username=username)
+        user = User.objects.get(username=request.session['username'])
         student = Student.objects.get(user=user)
         session_id = request.POST.get('session_id', '')
         tutor = Tutor.objects.get(pk=tutor_id)
@@ -91,7 +94,6 @@ def save_booking(request, tutor_id):
                                   created_at=now,
                                   commission=tutor.hourly_rate * 0.05)
         transaction.save()
-        student.wallet_balance -= tutor.hourly_rate
         bookRecord = BookingRecord(
             tutor=tutor, student=student, session=session, entry_date=now,
             transaction=transaction)
