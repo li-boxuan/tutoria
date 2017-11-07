@@ -20,6 +20,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 from . import views
 
+admin.autodiscover()
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls, name='admin'),
     url(r'^$', views.IndexView.as_view(), name='homepage'),
