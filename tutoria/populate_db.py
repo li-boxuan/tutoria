@@ -284,8 +284,16 @@ def populate_coupon():
                                   uuid4()))
     return coupon_list
 
+def populate_admin():
+    # create superuser
+    from django.contrib.auth.models import User as Admin
+    Admin.objects.create_user(username='admin',
+                         password='admin',
+                         is_staff=True,
+                         is_superuser=True)
 
 def populate():
+    populate_admin()
     tutors = populate_tutor()
     students = populate_student()
     populate_session(tutors)
@@ -296,3 +304,5 @@ def populate():
 
 if __name__ == '__main__':
     populate()
+
+
