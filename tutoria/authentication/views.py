@@ -51,6 +51,8 @@ class LoginView(generic.TemplateView):
         if user is not None:
             login(req, user)
             req.session['username'] = req.POST['username']
+            if user.is_staff:
+                return HttpResponseRedirect(reverse('admin:index'))
             return HttpResponseRedirect(reverse('homepage'))
         else:
             return render(req, self.template_name, {'status': 0})
