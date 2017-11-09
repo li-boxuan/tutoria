@@ -34,6 +34,17 @@ class Session(models.Model):
 class BookingRecord(models.Model):
     """Models booking record."""
     # TODO: update on_deletion methods to SET()
+    INCOMING = 'I'
+    CANCELED = 'C'
+    FINISHED = 'F'
+    ONGOING = 'O'
+    STATUS_CHOICES = (
+        (INCOMING, 'In-coming'),
+        (CANCELED, 'Canceled'),
+        (FINISHED, 'Finished'),
+        (ONGOING, 'On-going')
+    )
+    status = models.CharField(max_length=1, choices=STATUS_CHOICES,default=INCOMING)
     tutor = models.ForeignKey('account.Tutor', on_delete=models.CASCADE)
     student = models.ForeignKey('account.Student', on_delete=models.CASCADE)
     session = models.ForeignKey('scheduler.Session', on_delete=models.CASCADE)
