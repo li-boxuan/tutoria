@@ -248,6 +248,10 @@ def populate_student():
         'atam', 'atam', 'atam@cs.hku.hk', 'Anthony', 'Tam', wallet_balance=1000
     ))
 
+    students.append(add_student(
+        'jrchow', 'jrchow', 'jrchow@hku.hk', 'Jingran', 'Zhou', wallet_balance=3000
+    ))
+
 
 def populate_bookingrecord():
     from scheduler.models import (Session, BookingRecord)
@@ -284,13 +288,15 @@ def populate_coupon():
                                   uuid4()))
     return coupon_list
 
+
 def populate_admin():
     # create superuser
     from django.contrib.auth.models import User as Admin
     Admin.objects.create_user(username='admin',
-                         password='admin',
-                         is_staff=True,
-                         is_superuser=True)
+                              password='admin',
+                              is_staff=True,
+                              is_superuser=True)
+
 
 def populate():
     populate_admin()
@@ -304,5 +310,3 @@ def populate():
 
 if __name__ == '__main__':
     populate()
-
-

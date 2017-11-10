@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from datetime import datetime, date
 from wallet.models import Transaction
 from django.views import generic
+from django.core.mail import send_mail
 
 
 class DetailView(generic.DetailView):
@@ -78,6 +79,7 @@ def confirm_booking(request, tutor_id):
             pk=request.POST.get('session_id', ''))
         # Ignore commission for now because it might be saved by coupon
         if (student.wallet_balance - tutor.hourly_rate) < 0:
+            # TODO: beautify
             return HttpResponse("Your balance is " +
                                 str(student.wallet_balance) +
                                 ". You don't have enough money.")
@@ -132,11 +134,12 @@ def save_booking(request, tutor_id):
             tutor=tutor, student=student, session=session, entry_date=now,
             transaction=transaction)
         bookRecord.save()
-
         # Deduct fee (including commission) from student's wallet
         student.wallet_balance -= tutor.hourly_rate * 1.05
+        send_mail('Booking Confirmed', 'Your booking has been confirmed.',
+                  'noreply@hola-inc.top', [student.email], False)
         return redirect("/dashboard/mybookings/")
     else:
         return HttpResponse("not a legal POST request!")
 
-# -----------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------
