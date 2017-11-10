@@ -46,7 +46,7 @@ class DetailView(generic.DetailView):
                 else:
                     index += hour_diff
                 #print("date_diff = ", date_diff, "hour_diff = ", hour_diff,
-                        "minute_diff = ", minute_diff, "index = ", index)
+                #        "minute_diff = ", minute_diff, "index = ", index)
                 timetable[index] = session.status
         context['timetable'] = timetable
         #print(timetable)

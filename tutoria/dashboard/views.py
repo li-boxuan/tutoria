@@ -24,7 +24,7 @@ class MybookingsView(generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super(MybookingsView, self).get_context_data(**kwargs)
-        print datetime.now()
+        #print datetime.now()
         if self.request.session['username'] is None:
             context['records'] = None
             return context
@@ -33,7 +33,7 @@ class MybookingsView(generic.ListView):
             user = User.objects.get(username=usrn)
             usr = get_object_or_404(Student, user=user)
             context['records'] = usr.bookingrecord_set.all()
-            print usr.wallet_balance
+            #print usr.wallet_balance
             return context
 
     def post(self, request, **kwargs):
@@ -43,19 +43,19 @@ class MybookingsView(generic.ListView):
         sess = Session.objects.get(bookingrecord=bkrc)
         one_day_from_now = timezone.now() + timedelta(hours=24)
         if one_day_from_now < sess.start_time:
-	    sess.status = Session.BOOKABLE
+            sess.status = Session.BOOKABLE
             sess.save()  # save is needed for functioning  - Jiayao
             refund = bkrc.transaction.amount
             usrn = self.request.session['username']
             user = User.objects.get(username=usrn)
             usr = get_object_or_404(Student, user=user)
-            print usr.wallet_balance
+            #print usr.wallet_balance
             usr.wallet_balance += refund
             usr.save()
-            print "refund!" + str(refund)
-            print usr.wallet_balance
+            #print "refund!" + str(refund)
+            #print usr.wallet_balance
             bkrc.status = BookingRecord.CANCELED
-            print bkrc.status
+            #print bkrc.status
             bkrc.save()            
             return redirect('dashboard/mybookings/')
         else:
