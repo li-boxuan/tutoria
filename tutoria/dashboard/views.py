@@ -10,6 +10,8 @@ from django.contrib.auth.decorators import login_required
 
 from datetime import datetime, timedelta
 from django.utils import timezone
+from django.core.mail import send_mail
+
 # def MybookingsView(request):
 #    #model = scheduler
 #    record = student.BookingRecord_set.all
@@ -56,7 +58,9 @@ class MybookingsView(generic.ListView):
             #print usr.wallet_balance
             bkrc.status = BookingRecord.CANCELED
             #print bkrc.status
-            bkrc.save()            
+            bkrc.save()
+            tut = bkrc.tutor
+            send_mail('Session Canceled', 'Please check on Tutoria, your session has been canceled.', 'nonereplay@hola-inc.top', [usr.email, tut.email], False)
             return redirect('dashboard/mybookings/')
         else:
             return HttpResponse("This session is within 24 hours and can't be canceled!")

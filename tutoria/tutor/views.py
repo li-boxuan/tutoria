@@ -91,7 +91,7 @@ def confirm_booking(request, tutor_id):
         for hist_booking in hist_booking_list:
             if hist_booking.session.start_time.date() == \
                     new_session.start_time.date() and \
-                    hist_booking.tutor == tutor:
+                    hist_booking.tutor == tutor and hist_booking.status!='C':
                 return HttpResponse("You can only book one session per day!")
         return render(request, 'book.html',
                       {'tutor': tutor,
