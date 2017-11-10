@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from datetime import datetime, date
 from wallet.models import Transaction
 from django.views import generic
+from django.core.mail import send_mail
 
 
 class DetailView(generic.DetailView):
@@ -19,7 +20,7 @@ class DetailView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         """Get context data."""
-        context = super(DetailView,self).get_context_data(**kwargs)
+        context = super(DetailView, self).get_context_data(**kwargs)
         # generate a 1D array which stores the timetable
         # there are 7 days
         # private tutor has 24 timeslots per day while contracted tutor has 48
@@ -28,14 +29,14 @@ class DetailView(generic.DetailView):
         days_to_display = 7
         timetable = []
         for i in range(days_to_display * slots_per_day):
-            timetable.append("X") # closed
+            timetable.append("X")  # closed
         # retrieve date of today
         today = date.today()
         # convert "date" of today to "datetime" of today's 0 'o clock
         # init_time = datetime.combine(today, datetime.min.time())
         for session in self.get_object().session_set.all():
             start_time = session.start_time
-            hour_diff = start_time.hour - 0 # if timetable starts from 0
+            hour_diff = start_time.hour - 0  # if timetable starts from 0
             minute_diff = start_time.minute
             date_diff = (start_time.date() - today).days
             # filter date within days_to_display
@@ -45,11 +46,11 @@ class DetailView(generic.DetailView):
                     index += hour_diff * 2 + minute_diff // 30
                 else:
                     index += hour_diff
-                #print("date_diff = ", date_diff, "hour_diff = ", hour_diff,
+                # print("date_diff = ", date_diff, "hour_diff = ", hour_diff,
                 #        "minute_diff = ", minute_diff, "index = ", index)
                 timetable[index] = session.status
         context['timetable'] = timetable
-        #print(timetable)
+        # print(timetable)
         context['phone_visible'] = False
         if self.request.user.is_authenticated:
             visitor = User.objects.get(
@@ -78,6 +79,7 @@ def confirm_booking(request, tutor_id):
             pk=request.POST.get('session_id', ''))
         # Ignore commission for now because it might be saved by coupon
         if (student.wallet_balance - tutor.hourly_rate) < 0:
+            # TODO: beautify
             return HttpResponse("Your balance is " +
                                 str(student.wallet_balance) +
                                 ". You don't have enough money.")
@@ -132,11 +134,15 @@ def save_booking(request, tutor_id):
             tutor=tutor, student=student, session=session, entry_date=now,
             transaction=transaction)
         bookRecord.save()
-
         # Deduct fee (including commission) from student's wallet
         student.wallet_balance -= tutor.hourly_rate * 1.05
+        msg = 'Your booking with ' + tutor.first_name + ' ' + tutor.last_name + ' from ' + \
+            str(session.start_time) + ' to ' + \
+            str(session.end_time) + ' has been confirmed.'
+        send_mail('Booking Confirmed', msg,
+                  'noreply@hola-inc.top', [student.email], False)
         return redirect("/dashboard/mybookings/")
     else:
         return HttpResponse("not a legal POST request!")
 
-# -----------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------
