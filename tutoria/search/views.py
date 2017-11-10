@@ -12,6 +12,14 @@ class IndexView(generic.TemplateView):
 
 
 class ResultView(generic.ListView):
+    """View for search results."""
     model = Tutor
     template_name = 'result.html'
     context_object_name = 'results'
+
+    def get_context_data(self, **kwargs):
+        """Obtain search query keywords from GET request."""
+        context = super(ResultView, self).get_context_data(**kwargs)
+        context['keywords'] = self.request.GET['keywords']
+        print(self.request.GET['keywords'])
+        return context
