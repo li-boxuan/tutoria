@@ -1,43 +1,62 @@
 {% extends "base.html" %} {% load staticfiles %} {% block title %}Tutoria{% endblock %} {% block content %}
-<div class="container">
-  <div class="row">
-    <div class="col-md-10 col-md-offset-1">
-      <div class="col-md-5">
-        {% if tutor.avatar %}
-        <img class="img-rounded" src="{{ tutor.avatar.url }}"> {% else %}
-        <p class="text-center">No Avator</p>
-        {% endif %}
-        <h3>Sessions in Next 7 days</h3> {% for session in tutor.session_set.all %} {% if session.status == session.BOOKABLE %}
-        <p class="text-success">
-          {% elif session.status == session.BOOKED %}
-          <p class="text-danger">
-            {% endif %} {% if not session.status == session.CLOSED %} [{{ forloop.counter }}] &nbsp; {{ session.start_time }} &nbsp; To {{ session.end_time }}
-          </p>
-          {% endif %} {% endfor %}
-      </div>
-      <div class="col-md-6 col-md-offset-1">
-        <!-- <h2 class="text-center">Detail</h2> -->
-        <h3>Name </h3>
-        <h5>{{ tutor.first_name }} {{tutor.last_name }}</h5>
-        <h3>Type</h3> {% if tutor.tutor_type == 'CT' %}
-        <h5>Contracted Tutor</h5> {% elif tutor.tutor_type == 'PT' %}
-        <h5>Private Tutor</h5> {% endif %}
-        <h3>Biography</h3>
-        <h5> {{ tutor.bio }} </h5>
-        <h3>Hourly Rate</h3>
-        <h5> {{ tutor.hourly_rate }} </h5>
-        <h3>Rating</h3>
-        <h5> 5 </h5>
-        <h3>Phone Number</h3> {% if phone_visible == True %}
-        <h5> {{ tutor.phone }}</h5> {% else %}
-        <h5> Only visible to booked students</h5> {% endif %}
-        <h3>Tags</h3> {% for tag in tutor.tags.all %}
-        <h5> {{ tag.tag }} &nbsp; </h5> {% endfor %}
-        <h3>Courses</h3> {% for course in tutor.courses.all %}
-        <h5> {{ course.course_name }} &nbsp; {{ course.course_code }} </h5> {% endfor %}
-        <h3>Chat</h3>
-        <a class="btn btn-primary" href="#" role="button">Chat</a>
-        <h3>Book a Session</3>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-10 col-md-offset-1">
+                <div class="col-md-5">
+                    {% if tutor.avatar %}
+                        <img class="img-rounded" src="{{ tutor.avatar.url }}">
+                    {% else %}
+                    <p class="text-center">No Avator</p>
+                    {% endif %}
+                    <h3>Sessions in Next 7 days</h3>
+                        {% for session in tutor.session_set.all %}
+                            {% if session.status == session.BOOKABLE %}
+                                <p class="text-success">
+                            {% elif session.status == session.BOOKED %}
+                                <p class="text-danger">
+                            {% endif %}
+                            {% if not session.status == session.CLOSED %}
+                                    [{{ forloop.counter }}]
+                                    &nbsp; {{ session.start_time }}
+                                    &nbsp; To {{ session.end_time }}
+                                </p>
+                            {% endif %}
+                       {% endfor %}
+
+                </div>
+                <div class="col-md-6 col-md-offset-1">
+                    <!-- <h2 class="text-center">Detail</h2> -->
+                    <h3>Name </h3>
+                        <h5>{{ tutor.first_name }} {{tutor.last_name }}</h5>
+                    <h3>Type</h3>
+                        {% if tutor.tutor_type == 'CT' %}
+                            <h5>Contracted Tutor</h5>
+                        {% elif tutor.tutor_type == 'PT' %}
+                            <h5>Private Tutor</h5>
+                        {% endif %}
+                    <h3>Biography</h3>
+                        <h5> {{ tutor.bio }} </h5>
+                    <h3>Hourly Rate</h3>
+                        <h5> {{ tutor.hourly_rate }} </h5>
+                    <h3>Rating</h3>
+                        <h5> N/A </h5>
+                    <h3>Phone Number</h3>
+                        {% if phone_visible == True %}
+                            <h5> {{ tutor.phone }}</h5>
+                        {% else %}
+                            <h5> Only visible to booked students</h5>
+                        {% endif %}
+                    <h3>Tags</h3>
+                        {% for tag in tutor.tags.all %}
+                            <h5> {{ tag.tag }} &nbsp; </h5>
+                        {% endfor %}
+                    <h3>Courses</h3>
+                        {% for course in tutor.courses.all %}
+                            <h5> {{ course.course_name }} &nbsp; {{ course.course_code }} </h5>
+                        {% endfor %}
+                    <h3>Chat</h3>
+                        <a class="btn btn-primary" href="#" role="button">Chat</a>
+                    <h3>Book a Session</3>
                     <form action="{% url 'tutor:confirm_booking' tutor_id=tutor.id %}" method="POST" role="form" class="form-horizontal">
                         {% csrf_token %}
                         <select name="session_id" class="form-control">
@@ -54,8 +73,52 @@
         </div>
         <div class="row">
             <div class="col-md-10 col-md-offset-1">
-                <h3>Comments</h3>
+                <h3>Timetable</h3>
+
+
+<div id="reservations" class="ui-selectable">
+    <table class="reservations" border="1" cellpadding="0" width="100%">
+        <tbody>
+            <tr>
+                <td class="resdate">Table</td>
+                {% for i in "xxxxxxxxxxxxxxxxxxxxxxxx" %}
+                    <td class="reslabel" colspan="2">{{ forloop.counter0 }}:00</td>
+                {% endfor %}
+            </tr>
+            <tr class="slots">
+                        {% for session in tutor.session_set.all %}
+                            {% if session.status == session.BOOKABLE %}
+                                <p class="text-success">
+                            {% elif session.status == session.BOOKED %}
+                                <p class="text-danger">
+                            {% endif %}
+                            {% if not session.status == session.CLOSED %}
+                                    [{{ forloop.counter }}]
+                                    &nbsp; {{ session.start_time }}
+                                    &nbsp; To {{ session.end_time }}
+                                </p>
+                            {% endif %}
+                       {% endfor %}
+
+
+                <td class="resourcename">
+                    <a resourceid="9" class="resourceNameSelector" resource-details-bound="1">Day 1</a>
+                </td>
+                {% for i in "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" %}
+                <td colspan="1" ref="201711120000009" class="reservable clickres slot ui-selectee">
+                    &nbsp;
+                    <input type="hidden" class="href" value="reservation.php?rid=9&amp;sid=3&amp;rd=2017-11-12" kl_vkbd_parsed="true">
+                    <input type="hidden" class="start" value="2017-11-12%2000%3A00%3A00" kl_vkbd_parsed="true">
+                    <input type="hidden" class="end" value="2017-11-12%2000%3A30%3A00" kl_vkbd_parsed="true">
+                </td>
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
       </div>
     </div>
   </div>
-  {% endif %} {% endblock %}
+  {% endblock %}

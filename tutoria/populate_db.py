@@ -165,7 +165,7 @@ def populate_tutor():
 
 
 def populate_session(tutors):
-    DEMO_DATE = date(2017, 11, 1)
+    DEMO_DATE = date(2017, 11, 10)
     if tutors is not None:
         for tutor in tutors:
             d = datetime.combine(DEMO_DATE, OFFICE_HOURS['begin'])
@@ -226,9 +226,9 @@ def populate_session(tutors):
     s.save()
     s, _ = Session.objects.get_or_create(
         start_time=tz.make_aware(datetime.combine(
-            date(2017, 11, 6), time(10, 00))),
+            date(2017, 12, 6), time(10, 00))),
         end_time=tz.make_aware(datetime.combine(
-            date(2017, 11, 6), time(11, 00))),
+            date(2017, 12, 6), time(11, 00))),
         tutor=geo,
         status=Session.BOOKABLE)
     s.save()
@@ -271,7 +271,7 @@ def populate_bookingrecord():
     # use populated session
     # sess, _ = Session.objects.get_or_create(start_time=tz.make_aware(d), end_time=tz.make_aware(dn),tutor=t,status=Session.BOOKABLE)
     b, _ = BookingRecord.objects.get_or_create(
-        student=s, tutor=t, session=sess, entry_date=tz.make_aware(d), transaction=tran)
+        student=s, tutor=t, session=sess, entry_date=tz.make_aware(d), transaction=tran,status=BookingRecord.INCOMING)
 
 
 def populate_coupon():
