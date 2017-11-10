@@ -22,6 +22,7 @@
                                 </p>
                             {% endif %}
                        {% endfor %}
+
                 </div>
                 <div class="col-md-6 col-md-offset-1">
                     <!-- <h2 class="text-center">Detail</h2> -->
@@ -72,7 +73,51 @@
         </div>
         <div class="row">
             <div class="col-md-10 col-md-offset-1">
-                <h3>Comments</h3>
+                <h3>Timetable</h3>
+
+
+<div id="reservations" class="ui-selectable">
+    <table class="reservations" border="1" cellpadding="0" width="100%">
+        <tbody>
+            <tr>
+                <td class="resdate">Table</td>
+                {% for i in "xxxxxxxxxxxxxxxxxxxxxxxx" %}
+                    <td class="reslabel" colspan="2">{{ forloop.counter0 }}:00</td>
+                {% endfor %}
+            </tr>
+            <tr class="slots">
+                        {% for session in tutor.session_set.all %}
+                            {% if session.status == session.BOOKABLE %}
+                                <p class="text-success">
+                            {% elif session.status == session.BOOKED %}
+                                <p class="text-danger">
+                            {% endif %}
+                            {% if not session.status == session.CLOSED %}
+                                    [{{ forloop.counter }}]
+                                    &nbsp; {{ session.start_time }}
+                                    &nbsp; To {{ session.end_time }}
+                                </p>
+                            {% endif %}
+                       {% endfor %}
+
+
+                <td class="resourcename">
+                    <a resourceid="9" class="resourceNameSelector" resource-details-bound="1">Day 1</a>
+                </td>
+                {% for i in "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" %}
+                <td colspan="1" ref="201711120000009" class="reservable clickres slot ui-selectee">
+                    &nbsp;
+                    <input type="hidden" class="href" value="reservation.php?rid=9&amp;sid=3&amp;rd=2017-11-12" kl_vkbd_parsed="true">
+                    <input type="hidden" class="start" value="2017-11-12%2000%3A00%3A00" kl_vkbd_parsed="true">
+                    <input type="hidden" class="end" value="2017-11-12%2000%3A30%3A00" kl_vkbd_parsed="true">
+                </td>
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
       </div>
     </div>
   </div>

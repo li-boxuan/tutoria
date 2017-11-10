@@ -168,7 +168,7 @@ r"Professor Cho-Li Wang received his B.S. degree in Computer Science and Informa
 
 
 def populate_session(tutors):
-    DEMO_DATE = date(2017, 11, 1)
+    DEMO_DATE = date(2017, 11, 10)
     if tutors is not None:
         for tutor in tutors:
             d = datetime.combine(DEMO_DATE, OFFICE_HOURS['begin'])
@@ -206,7 +206,7 @@ def populate_bookingrecord():
     user = User.objects.get(username='georgem')
     t = Tutor.objects.get(user=user)
 
-    DEMO_DATE=date(2017, 11,1)
+    DEMO_DATE=date(2017, 11,11)
     DEMO_TIME=time(9, 30)
     d = datetime.combine(DEMO_DATE, DEMO_TIME)
     dn = d + OFFICE_HOUR_STEP['CT']
