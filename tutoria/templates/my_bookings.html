@@ -54,12 +54,11 @@
               <td>{{record.session.status}}</td>
               <td>{{record.tutor.hourly_rate }}</td>
 
-              <td>
-                <!-- <button type="button" class="btn btn-warning">CANCEL</button>-->
-                <form action="" method="POST">
-                  {% csrf_token %}
-                  <button name="booking_id" value={{record.id}}>Cancel</button>
-                </form>
+              <td> {% if record.status == 'F' %}Finished{% elif record.status == 'C' %}Canceled{% else %}      <form action="{% url 'dashboard:mybookings'%} " method="POST">
+                    {% csrf_token %}
+                    <button name="booking_id" value={{record.id}}>Cancel</button>
+                   </form>
+                {% endif %}
               </td>
 
             </tr>

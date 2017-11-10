@@ -1,5 +1,5 @@
 """Dashborad views."""
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.views import generic
@@ -8,7 +8,8 @@ from scheduler.models import BookingRecord, Session
 from account.models import User, Student
 from django.contrib.auth.decorators import login_required
 
-
+from datetime import datetime, timedelta
+from django.utils import timezone
 # def MybookingsView(request):
 #    #model = scheduler
 #    record = student.BookingRecord_set.all
@@ -23,26 +24,39 @@ class MybookingsView(generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super(MybookingsView, self).get_context_data(**kwargs)
-
+        print datetime.now()
         if self.request.session['username'] is None:
             context['records'] = None
             return context
         else:
-            ursn = self.request.session['username']
-            user = User.objects.get(username=ursn)
-            urs = get_object_or_404(Student, user=user)
-            context['records'] = urs.bookingrecord_set.all()
-            # context= BookingRecord.objects.filter(student.username==ursn)
+            usrn = self.request.session['username']
+            user = User.objects.get(username=usrn)
+            usr = get_object_or_404(Student, user=user)
+            context['records'] = usr.bookingrecord_set.all()
+            print usr.wallet_balance
             return context
 
     def post(self, request, **kwargs):
         print(request)
         bkRecord_id = self.request.POST.get('booking_id', '')
         bkrc = BookingRecord.objects.filter(id=bkRecord_id).first()
-        # bkrc.session_set.all().status=Session.BOOKABLE
         sess = Session.objects.get(bookingrecord=bkrc)
-        sess.status = Session.BOOKABLE
-        sess.save()  # save is needed for functioning  - Jiayao
-
-        BookingRecord.objects.filter(id=bkRecord_id).delete()
-        return render(request, 'my_bookings.html')
+        one_day_from_now = timezone.now() + timedelta(hours=24)
+        if one_day_from_now < sess.start_time:
+	    sess.status = Session.BOOKABLE
+            sess.save()  # save is needed for functioning  - Jiayao
+            refund = bkrc.transaction.amount
+            usrn = self.request.session['username']
+            user = User.objects.get(username=usrn)
+            usr = get_object_or_404(Student, user=user)
+            print usr.wallet_balance
+            usr.wallet_balance += refund
+            usr.save()
+            print "refund!" + str(refund)
+            print usr.wallet_balance
+            bkrc.status = BookingRecord.CANCELED
+            print bkrc.status
+            bkrc.save()            
+            return redirect('dashboard/mybookings/')
+        else:
+            return HttpResponse("This session is within 24 hours and can't be canceled!")

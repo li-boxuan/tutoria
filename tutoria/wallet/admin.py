@@ -1,3 +1,5 @@
 from django.contrib import admin
+from wallet.models import (Transaction, Coupon)
 
-# Register your models here.
+admin.site.register(Transaction)
+admin.site.register(Coupon)

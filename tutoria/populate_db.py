@@ -30,43 +30,40 @@ def add_coupon(start_date, end_date, coupon_code):
     return coupon
 
 
-OFFICE_HOURS = {'begin': time(9, 30),
-                'end': time(18, 30)}
+OFFICE_HOURS = {'begin': time(9, 00),
+                'end': time(19, 00)}
 OFFICE_HOUR_STEP = {'CT': timedelta(hours=0.5),
                     'PT': timedelta(hours=1.0)}
 
 
-def add_student(username, password, email, first_name, last_name,
-                wallet_balance=-1, avatar='default_avatar.png'):
+def add_student(username, password, email, first_name, last_name, wallet_balance=-1):
     from account.models import (User, Student)
     if wallet_balance < 0:
         wallet_balance = random.randint(1, 300) * 10
-
 
     try:
         user = User.objects.get(username=username)
     except User.DoesNotExist:
         user = User.objects.create_user(username=username, email=email,
-        							  password=password,
-                                         first_name=first_name,
-                                         last_name=last_name)
+                                        password=password,
+                                        first_name=first_name,
+                                        last_name=last_name)
+        user.wallet_balance = wallet_balance
 
     student, _ = Student.objects.get_or_create(user=user)
-    student.wallet_balance = wallet_balance
-    student.avatar = avatar
     user.save()
     student.save()
     return student
 
 
 def add_tutor(username, password, email, first_name, last_name,
-                          tutor_type = 'CT',
-                          hourly_rate=0, phone='99999999',
-                          bio='',
-                          courses=[['COMP3297', 'Software Engineering']],
-                            tags=['Software Engineering'],
-                          wallet_balance=-1, avatar='default_avatar.png',
-                        sessions=None, university='The University of Hong Kong'):
+              tutor_type='CT',
+              hourly_rate=0, phone='99999999',
+              bio='',
+              courses=[['COMP3297', 'Software Engineering']],
+              tags=['Software Engineering'],
+              wallet_balance=-1, avatar='default_avatar.png',
+              sessions=None, university='The University of Hong Kong'):
     from account.models import (User, Tutor, Course, SubjectTag)
     if wallet_balance < 0:
         wallet_balance = random.randint(1, 300) * 10
@@ -78,16 +75,16 @@ def add_tutor(username, password, email, first_name, last_name,
 #    tutor = Tutor.objects.create_user(username, email, password, first_name=first_name, last_name=last_name)
 
     # user, _ = User.objects.get_or_create(username=username, email=email,
-	# 								  password=password,
+        # 								  password=password,
     #                                      first_name=first_name,
     #                                      last_name=last_name)
     try:
         user = User.objects.get(username=username)
     except User.DoesNotExist:
         user = User.objects.create_user(username=username, email=email,
-        							  password=password,
-                                         first_name=first_name,
-                                         last_name=last_name)
+                                        password=password,
+                                        first_name=first_name,
+                                        last_name=last_name)
 
     tutor, _ = Tutor.objects.get_or_create(user=user)
     tutor.tutor_type = tutor_type
@@ -131,7 +128,7 @@ def add_course(code, name):
 def populate_tutor():
     tutors = []
     tutors.append(add_tutor(
-        'georgem', 'georgem', 'georgem@cs.hku.hk', 'George', 'Mitcheson', 'CT', 0, '28597068',
+        'georgem', 'georgem', 'georgem@cs.hku.hk', 'George', 'Mitcheson', 'PT', 100, '28597068',
         r'Before joining HKU, George accumulated many years of experience in large-scale software engineering and in R&D for real-time systems. He has headed or contributed to development of a wide range of systems spanning fields such as scientific computation, telecommunications, database management systems, control systems and autonomous robotics. This work was carried out principally in Europe and the USA. Between the two he taught for several years at the University of Puerto Rico.',
         [['COMP3297', 'Software Engineering'],
          ['COMP3403', 'Software Implmentation, Testing and Maintainence']],
@@ -141,15 +138,15 @@ def populate_tutor():
 
     tutors.append(add_tutor(
         'clwang', 'choli', 'clwang@cs.hku.hk', 'Cho-Li', 'Wang', 'CT', 0, '28578458',
-r"Professor Cho-Li Wang received his B.S. degree in Computer Science and Information Engineering from National Taiwan University in 1985. He obtained his M.S. and Ph.D. degrees in Computer Engineering from University of Southern California in 1990 and 1995 respectively. He is currently a professor at the Department of Computer Science. Professor Wang's research interests include parallel architecture, software systems for Cluster and Grid computing, and virtualization techniques for Cloud computing. Recently, he starts working on software transaction memory for multicore/GPU clusters and multi-kernel operating systems for future single-chip manycore processor. Professor Wang has published more than 130 papers in various peer reviewed journals and conference proceedings. He is/was on the editorial boards of several international journals, including IEEE Transactions on Computers (TC), Multiagent and Grid Systems (MGS), Journal of Information Science and Engineering (JISE), International Journal of Pervasive Computing and Communications (JPCC), ICST Transactions on Scalable Information Systems (SIS). He was the program chair for Cluster’03, CCGrid'09, InfoScale’09, and ICPADS’09, ISPA’11, FCST’11, FutureTech’12, and Cluster2012; and the General Chair for IPDPS2012. He has also served as program committee members for numerous international conferences, including IPDPS, CCGrid, Cloud, CloudCom, Grid, HiPC, ICPP, and ICPADS. Professor Wang is the primary investigator of China 863 project 'Hong Kong University Grid Point' (2006-2011). The HKU Grid point consists of 3004 CPU cores (31.45 Teraflops), which offers parallel computing services for the China National Grid (CNGrid) and is used as a testbed for Cloud-related systems development. He has been invited to give keynote and plenary talk related to Distributed JVM design and Cloud Computing at various international conferences.",
+        r"Professor Cho-Li Wang received his B.S. degree in Computer Science and Information Engineering from National Taiwan University in 1985. He obtained his M.S. and Ph.D. degrees in Computer Engineering from University of Southern California in 1990 and 1995 respectively. He is currently a professor at the Department of Computer Science. Professor Wang's research interests include parallel architecture, software systems for Cluster and Grid computing, and virtualization techniques for Cloud computing. Recently, he starts working on software transaction memory for multicore/GPU clusters and multi-kernel operating systems for future single-chip manycore processor. Professor Wang has published more than 130 papers in various peer reviewed journals and conference proceedings. He is/was on the editorial boards of several international journals, including IEEE Transactions on Computers (TC), Multiagent and Grid Systems (MGS), Journal of Information Science and Engineering (JISE), International Journal of Pervasive Computing and Communications (JPCC), ICST Transactions on Scalable Information Systems (SIS). He was the program chair for Cluster’03, CCGrid'09, InfoScale’09, and ICPADS’09, ISPA’11, FCST’11, FutureTech’12, and Cluster2012; and the General Chair for IPDPS2012. He has also served as program committee members for numerous international conferences, including IPDPS, CCGrid, Cloud, CloudCom, Grid, HiPC, ICPP, and ICPADS. Professor Wang is the primary investigator of China 863 project 'Hong Kong University Grid Point' (2006-2011). The HKU Grid point consists of 3004 CPU cores (31.45 Teraflops), which offers parallel computing services for the China National Grid (CNGrid) and is used as a testbed for Cloud-related systems development. He has been invited to give keynote and plenary talk related to Distributed JVM design and Cloud Computing at various international conferences.",
         [['COMP3230', 'Operating Systems']],
         ['Cloud Computing'],
         avatar='clwang.png'
     ))
 
     tutors.append(add_tutor(
-        'azero', 'azero', 'alpha_zero@deepmind.com', 'AlphaGo', 'Zero', 'PT',
-        1000, '00000000',
+        'kitty', 'kitty', 'alpha_zero@deepmind.com', 'Kitty', 'K', 'PT',
+        100, '00000000',
         r'I learn by meself so well. No human beats me.',
         [['COMP3314', 'Machine Learning']],
         ['Go', 'Deep Learning']
@@ -157,7 +154,7 @@ r"Professor Cho-Li Wang received his B.S. degree in Computer Science and Informa
     ))
 
     tutors.append(add_tutor(
-        'kpwat', 'kpwat', 'watkp@hku.hk', 'Kam Pui', 'Wat', 'PT', -1, '39171989',
+        'kpwat', 'kpwat', 'watkp@hku.hk', 'Kam Pui', 'Wat', 'PT', 100, '39171989',
         r'Dr. Wat receives a first class honour from BSc(Ac).',
         [['COMP2601', 'Probability & Statistics I']],
         ['Risk Management', 'Statistics'],
@@ -175,11 +172,66 @@ def populate_session(tutors):
             while d.time() <= OFFICE_HOURS['end']:
                 dn = d + OFFICE_HOUR_STEP[tutor.tutor_type]
                 s, _ = Session.objects.get_or_create(
-                        start_time=tz.make_aware(d),
-                        end_time=tz.make_aware(dn),
-                        tutor=tutor,
-                        status=Session.BOOKABLE)
+                    start_time=tz.make_aware(d),
+                    end_time=tz.make_aware(dn),
+                    tutor=tutor,
+                    status=Session.BOOKABLE)
                 d = dn
+
+    geo = tutors[0]
+    kitty = tutors[2]
+    s, _ = Session.objects.get_or_create(
+        start_time=tz.make_aware(datetime.combine(
+            date(2017, 11, 3), time(4, 00))),
+        end_time=tz.make_aware(datetime.combine(
+            date(2017, 11, 3), time(5, 00))),
+        tutor=kitty,
+        status=Session.BOOKABLE)
+
+    s.save()
+    s, _ = Session.objects.get_or_create(
+        start_time=tz.make_aware(datetime.combine(
+            date(2017, 11, 3), time(5, 00))),
+        end_time=tz.make_aware(datetime.combine(
+            date(2017, 11, 3), time(6, 00))),
+        tutor=kitty,
+        status=Session.BOOKABLE)
+    s.save()
+    s, _ = Session.objects.get_or_create(
+        start_time=tz.make_aware(datetime.combine(
+            date(2017, 11, 6), time(4, 00))),
+        end_time=tz.make_aware(datetime.combine(
+            date(2017, 11, 6), time(5, 00))),
+        tutor=kitty,
+        status=Session.BOOKABLE)
+
+    s.save()
+    s, _ = Session.objects.get_or_create(
+        start_time=tz.make_aware(datetime.combine(
+            date(2017, 11, 6), time(5, 00))),
+        end_time=tz.make_aware(datetime.combine(
+            date(2017, 11, 6), time(6, 00))),
+        tutor=kitty,
+        status=Session.BOOKABLE)
+    s.save()
+
+    s, _ = Session.objects.get_or_create(
+        start_time=tz.make_aware(datetime.combine(
+            date(2017, 11, 6), time(9, 00))),
+        end_time=tz.make_aware(datetime.combine(
+            date(2017, 11, 6), time(10, 00))),
+        tutor=geo,
+        status=Session.BOOKABLE)
+
+    s.save()
+    s, _ = Session.objects.get_or_create(
+        start_time=tz.make_aware(datetime.combine(
+            date(2017, 12, 6), time(10, 00))),
+        end_time=tz.make_aware(datetime.combine(
+            date(2017, 12, 6), time(11, 00))),
+        tutor=geo,
+        status=Session.BOOKABLE)
+    s.save()
 
 
 def populate_student():
@@ -188,17 +240,18 @@ def populate_student():
         'kpwat', 'kpwat', 'watkp@hku.hk', 'Kam Pui', 'Wat'
     ))
     students.append(add_student(
-        'ckchui', 'ckchui', 'ckchui@cs.hku.hk', 'Chun-Kit', 'Chui'
+        'ckchui', 'ckchui', 'ckchui@cs.hku.hk', 'Chun-Kit', 'Chui',
+        wallet_balance=500
     ))
 
     students.append(add_student(
-        'atam', 'atam', 'atam@cs.hku.hk', 'Anthony', 'Tam'
+        'atam', 'atam', 'atam@cs.hku.hk', 'Anthony', 'Tam', wallet_balance=1000
     ))
 
 
 def populate_bookingrecord():
     from scheduler.models import (Session, BookingRecord)
-    from account.models import (User,Student,Tutor)
+    from account.models import (User, Student, Tutor)
     from wallet.models import Transaction
     # let it err rather than create improper users
     user = User.objects.get(username='ckchui')
@@ -206,18 +259,19 @@ def populate_bookingrecord():
     user = User.objects.get(username='georgem')
     t = Tutor.objects.get(user=user)
 
-    DEMO_DATE=date(2017, 11,11)
-    DEMO_TIME=time(9, 30)
+    DEMO_DATE = date(2017, 11, 1)
+    DEMO_TIME = time(9, 30)
     d = datetime.combine(DEMO_DATE, DEMO_TIME)
     dn = d + OFFICE_HOUR_STEP['CT']
-    tran, _ = Transaction.objects.get_or_create(issuer=s,receiver=t,amount=100, created_at=tz.make_aware(d),commission=5.0)
+    tran, _ = Transaction.objects.get_or_create(
+        issuer=s, receiver=t, amount=100, created_at=tz.make_aware(d), commission=5.0)
     sess = t.session_set.all()[0]
-    sess.status = Session.BOOKABLE
+    sess.status = Session.BOOKED
     sess.save()
     # use populated session
     # sess, _ = Session.objects.get_or_create(start_time=tz.make_aware(d), end_time=tz.make_aware(dn),tutor=t,status=Session.BOOKABLE)
-    b, _ = BookingRecord.objects.get_or_create(student=s,tutor=t,session=sess,entry_date=tz.make_aware(d),transaction=tran)
-
+    b, _ = BookingRecord.objects.get_or_create(
+        student=s, tutor=t, session=sess, entry_date=tz.make_aware(d), transaction=tran,status=BookingRecord.INCOMING)
 
 
 def populate_coupon():
@@ -230,8 +284,16 @@ def populate_coupon():
                                   uuid4()))
     return coupon_list
 
+def populate_admin():
+    # create superuser
+    from django.contrib.auth.models import User as Admin
+    Admin.objects.create_user(username='admin',
+                         password='admin',
+                         is_staff=True,
+                         is_superuser=True)
 
 def populate():
+    populate_admin()
     tutors = populate_tutor()
     students = populate_student()
     populate_session(tutors)
@@ -242,4 +304,5 @@ def populate():
 
 if __name__ == '__main__':
     populate()
+
 
