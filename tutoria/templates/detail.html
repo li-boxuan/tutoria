@@ -4,24 +4,24 @@
             <div class="col-md-10 col-md-offset-1">
                 <div class="col-md-5">
                     {% if tutor.avatar %}
-                        <img class="img-rounded" src="{{ tutor.avatar.url }}">
+                    <img class="img-rounded" src="{{ tutor.avatar.url }}">
                     {% else %}
                     <p class="text-center">No Avator</p>
                     {% endif %}
                     <h3>Sessions in Next 7 days</h3>
-                        {% for session in tutor.session_set.all %}
-                            {% if session.status == session.BOOKABLE %}
-                                <p class="text-success">
-                            {% elif session.status == session.BOOKED %}
-                                <p class="text-danger">
-                            {% endif %}
-                            {% if not session.status == session.CLOSED %}
-                                    [{{ forloop.counter }}]
-                                    &nbsp; {{ session.start_time }}
-                                    &nbsp; To {{ session.end_time }}
-                                </p>
-                            {% endif %}
-                       {% endfor %}
+                    {% for session in tutor.session_set.all %}
+                        {% if session.status == session.BOOKABLE %}
+                        <p class="text-success">
+                        {% elif session.status == session.BOOKED %}
+                        <p class="text-danger">
+                        {% endif %}
+                        {% if not session.status == session.CLOSED %}
+                            [{{ forloop.counter }}]
+                            &nbsp; {{ session.start_time }}
+                            &nbsp; To {{ session.end_time }}
+                        </p>
+                        {% endif %}
+                    {% endfor %}
 
                 </div>
                 <div class="col-md-6 col-md-offset-1">
@@ -30,9 +30,9 @@
                         <h5>{{ tutor.first_name }} {{tutor.last_name }}</h5>
                     <h3>Type</h3>
                         {% if tutor.tutor_type == 'CT' %}
-                            <h5>Contracted Tutor</h5>
+                        <h5>Contracted Tutor</h5>
                         {% elif tutor.tutor_type == 'PT' %}
-                            <h5>Private Tutor</h5>
+                        <h5>Private Tutor</h5>
                         {% endif %}
                     <h3>Biography</h3>
                         <h5> {{ tutor.bio }} </h5>
@@ -42,17 +42,17 @@
                         <h5> N/A </h5>
                     <h3>Phone Number</h3>
                         {% if phone_visible == True %}
-                            <h5> {{ tutor.phone }}</h5>
+                        <h5> {{ tutor.phone }}</h5>
                         {% else %}
-                            <h5> Only visible to booked students</h5>
+                        <h5> Only visible to booked students</h5>
                         {% endif %}
                     <h3>Tags</h3>
                         {% for tag in tutor.tags.all %}
-                            <h5> {{ tag.tag }} &nbsp; </h5>
+                        <h5> {{ tag.tag }} &nbsp; </h5>
                         {% endfor %}
                     <h3>Courses</h3>
                         {% for course in tutor.courses.all %}
-                            <h5> {{ course.course_name }} &nbsp; {{ course.course_code }} </h5>
+                        <h5> {{ course.course_name }} &nbsp; {{ course.course_code }} </h5>
                         {% endfor %}
                     <h3>Chat</h3>
                         <a class="btn btn-primary" href="#" role="button">Chat</a>
@@ -60,11 +60,11 @@
                     <form action="{% url 'tutor:confirm_booking' tutor_id=tutor.id %}" method="POST" role="form" class="form-horizontal">
                         {% csrf_token %}
                         <select name="session_id" class="form-control">
-                            {% for session in tutor.session_set.all %}
-                                {% if session.status == 'A' %}
-                                    <option value="{{ session.id }}">{{ session.start_time }} - {{ session.end_time }}</option>
-                                {% endif %}
-                            {% endfor %}
+                        {% for session in tutor.session_set.all %}
+                            {% if session.status == 'A' %}
+                            <option value="{{ session.id }}">{{ session.start_time }} - {{ session.end_time }}</option>
+                            {% endif %}
+                        {% endfor %}
                         </select>
                         <button type="submit" class="btn btn-default">Book</button>
                     </form>
@@ -74,51 +74,50 @@
         <div class="row">
             <div class="col-md-10 col-md-offset-1">
                 <h3>Timetable</h3>
-
-
-<div id="reservations" class="ui-selectable">
-    <table class="reservations" border="1" cellpadding="0" width="100%">
-        <tbody>
-            <tr>
-                <td class="resdate">Table</td>
-                {% for i in "xxxxxxxxxxxxxxxxxxxxxxxx" %}
-                    <td class="reslabel" colspan="2">{{ forloop.counter0 }}:00</td>
-                {% endfor %}
-            </tr>
-            <tr class="slots">
-                        {% for session in tutor.session_set.all %}
-                            {% if session.status == session.BOOKABLE %}
-                                <p class="text-success">
-                            {% elif session.status == session.BOOKED %}
-                                <p class="text-danger">
+                <table class="" border="1" cellpadding="0">
+                    <tbody>
+                        <tr>
+                            <td>Table</td>
+                            {% for i in "xxxxxxxxxxxxxxxxxxxxxxxx" %}
+                            {% if tutor.tutor_type == 'PT' %}
+                            <td colspan="1">
+                            {% else %}
+                            <td colspan="2">
                             {% endif %}
-                            {% if not session.status == session.CLOSED %}
-                                    [{{ forloop.counter }}]
-                                    &nbsp; {{ session.start_time }}
-                                    &nbsp; To {{ session.end_time }}
-                                </p>
-                            {% endif %}
-                       {% endfor %}
-
-
-                <td class="resourcename">
-                    <a resourceid="9" class="resourceNameSelector" resource-details-bound="1">Day 1</a>
-                </td>
-                {% for i in "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" %}
-                <td colspan="1" ref="201711120000009" class="reservable clickres slot ui-selectee">
-                    &nbsp;
-                    <input type="hidden" class="href" value="reservation.php?rid=9&amp;sid=3&amp;rd=2017-11-12" kl_vkbd_parsed="true">
-                    <input type="hidden" class="start" value="2017-11-12%2000%3A00%3A00" kl_vkbd_parsed="true">
-                    <input type="hidden" class="end" value="2017-11-12%2000%3A30%3A00" kl_vkbd_parsed="true">
-                </td>
-                {% endfor %}
-            </tr>
-        </tbody>
-    </table>
-</div>
-
-
-      </div>
+                                {{ forloop.counter0 }}:00
+                            </td>
+                            {% endfor %}
+                        </tr>
+                        {% for grid in timetable %}
+                        {% if tutor.tutor_type == 'PT' and forloop.counter0|divisibleby:24 or tutor.tutor_type == 'CT' and forloop.counter0|divisibleby:48 %}
+                        <tr class="slots">
+                            <td class="resourcename">
+                                {{ grid.date }}
+                            </td>
+                        {% endif %}
+                        {% if grid.status == 'A' %}
+                            <td colspan="1" class="bg-success" id="book">
+                                <form id="book-{{ grid.id }}" method="post" action="{% url 'tutor:confirm_booking' tutor_id=tutor.id %}">
+                                {% csrf_token %}
+                                <div onclick="document.getElementById('book-{{ grid.id }}').submit();">
+                                    <input type="hidden" name="session_id" value="{{ grid.id }}">A
+                                </div>
+                                </form>
+                            </td>
+                        {% elif grid.status == 'B' %}
+                            <td colspan="1" class="bg-primary">
+                            </td>
+                        {% elif grid.status == 'X' %}
+                            <td colspan="1" class="bg-info">
+                            </td>
+                        {% endif %}
+                        {% if tutor.tutor_type == 'PT' and forloop.counter|divisibleby:24 or tutor.tutor_type == 'CT' and forloop.counter|divisibleby:48 %}
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
-  </div>
   {% endblock %}

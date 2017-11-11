@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from account.models import Tutor, Student, User
 from scheduler.models import Session, BookingRecord
 from django.contrib.auth.decorators import login_required
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from wallet.models import Transaction
 from django.views import generic
 
@@ -27,15 +27,19 @@ class DetailView(generic.DetailView):
         slots_per_day = 48 if is_contracted_tutor else 24
         days_to_display = 7
         timetable = []
-        for i in range(days_to_display * slots_per_day):
-            timetable.append("X") # closed
         # retrieve date of today
         today = date.today()
+        for i in range(days_to_display * slots_per_day):
+            elem = {'status' : 'X', 'date' : str(today + timedelta(days=i / slots_per_day)), 'id': ''}
+            #print(elem)
+            timetable.append(elem) # closed
         # convert "date" of today to "datetime" of today's 0 'o clock
         # init_time = datetime.combine(today, datetime.min.time())
         for session in self.get_object().session_set.all():
             start_time = session.start_time
             hour_diff = start_time.hour - 0 # if timetable starts from 0
+            hour_diff += 8 # timezone issue (todo)
+            #print(start_time, " hour ", start_time.hour)
             minute_diff = start_time.minute
             date_diff = (start_time.date() - today).days
             # filter date within days_to_display
@@ -47,7 +51,8 @@ class DetailView(generic.DetailView):
                     index += hour_diff
                 #print("date_diff = ", date_diff, "hour_diff = ", hour_diff,
                 #        "minute_diff = ", minute_diff, "index = ", index)
-                timetable[index] = session.status
+                timetable[index]['status'] = session.status
+                timetable[index]['id'] = session.id
         context['timetable'] = timetable
         #print(timetable)
         context['phone_visible'] = False
