@@ -136,11 +136,17 @@ def save_booking(request, tutor_id):
         bookRecord.save()
         # Deduct fee (including commission) from student's wallet
         student.wallet_balance -= tutor.hourly_rate * 1.05
-        msg = 'Your booking with ' + tutor.first_name + ' ' + tutor.last_name + ' from ' + \
+        # Send emails to both students and tutors.
+        msgToStudent = 'Your booking with ' + tutor.first_name + ' ' + tutor.last_name + ' from ' + \
             str(session.start_time) + ' to ' + \
             str(session.end_time) + ' has been confirmed.'
-        send_mail('Booking Confirmed', msg,
+        send_mail('Booking Confirmed', msgToStudent,
                   'noreply@hola-inc.top', [student.email], False)
+        msgToTutor = 'Your booking with ' + student.first_name + ' ' + student.last_name + ' from ' + \
+            str(session.start_time) + ' to ' + \
+            str(session.end_time) + ' has been confirmed.'
+        send_mail('Booking Confirmed', msgToTutor,
+                  'noreply@hola-inc.top', [tutor.email], False)
         return redirect("/dashboard/mybookings/")
     else:
         return HttpResponse("not a legal POST request!")
