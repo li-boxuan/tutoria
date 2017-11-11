@@ -7,7 +7,7 @@ by Jiayao
 from __future__ import (absolute_import)
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse, HttpResponseRedirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views import generic
 from django.contrib.auth import (authenticate, login, logout)
 from django.contrib.auth.decorators import login_required
@@ -168,3 +168,25 @@ class BothView(IndexView):
         else:
             context['status'] = SINGUP_STATUS.FAILED
         return self.render_to_response(context)
+
+PASSWORD_EMAIL_SENDER = 'noreply@hola-inc.top'
+
+PASSWORD_RESET_TOKEN_REGEX = r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$'
+
+PASSWORD_RESET_DONE_MSG = r"""
+    We've emailed you instructions for setting your password, if an account exists with the email you entered.
+    You should receive them shortly.
+
+    If you don't receive an email, please make sure you've entered the address you registered with,"
+    and check your spam folder.
+"""
+
+PASSWORD_RESET_EX_MSG =r"""
+    The password reset link was invalid, possibly because it has already been used.
+    Please request a new password reset.
+"""
+
+PASSWORD_RESET_COMPLETE = """
+Your password has been set.
+You may go ahead and login now.
+"""

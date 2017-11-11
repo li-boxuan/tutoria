@@ -54,9 +54,9 @@
               <td>{{record.session.status}}</td>
               <td>{{record.tutor.hourly_rate }}</td>
 
-              <td> {% if record.status == 'F' %}Finished{% elif record.status == 'C' %}Canceled{% else %}      <form action="{% url 'dashboard:mybookings'%} " method="POST">
+              <td> {% if record.status == 'F' %}Finished{% elif record.status == 'C' %}Canceled{% else %}      <form action="{% url 'dashboard:mybookings'%} " method="POST" onsubmit="return confirm('Do you really want to cancel this session?');">
                     {% csrf_token %}
-                    <button name="booking_id" value={{record.id}}>Cancel</button>
+                    <button type="submit" name="booking_id" value={{record.id}}>Cancel</button>
                    </form>
                 {% endif %}
               </td>

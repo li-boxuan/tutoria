@@ -82,6 +82,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'tutoria.wsgi.application'
 
+if DEBUG:
+	EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
@@ -141,3 +143,4 @@ STATICFILES_DIRS = (os.path.join('static'),)
 MEDIA_ROOT = os.path.abspath(os.path.join(BASE_DIR, 'media/'))
 MEDIA_URL = '/media/'
 
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
