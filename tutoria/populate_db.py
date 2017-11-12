@@ -18,11 +18,11 @@ from review.models import Review
 from account.models import Student, Tutor
 
 
-def add_review(content, rating, student, tutor, date, anonymous):
+def add_review(content, rating, student, tutor, anonymous):
     """Add a review."""
     review, _ = Review.objects.get_or_create(
         content=content, rating=rating, student=student, tutor=tutor,
-        date=date, anonymous=anonymous)
+        anonymous=anonymous)
     review.save()
     return review
 
@@ -338,6 +338,7 @@ def populate():
     populate_session(tutors)
     populate_bookingrecord()
     coupons = populate_coupon()
+    populate_review()
     return [tutors, students]
 
 
