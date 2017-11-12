@@ -40,6 +40,7 @@
             <ul class="nav navbar-nav navbar-right">
                 {% if user.is_authenticated %}
 								<li><a href="{% url 'dashboard:mybookings' %}">{{ user.first_name }}</a></li>
+                                <li><a href="{% url 'dashboard:mytransactions' %}">View Transactions</a></li>
                     <li><a href="{% url 'auth:logout' %}">Logout</a></li>
                 {% else %}
                     <li><a href="{% url 'auth:signup' %}">Sign Up</a></li>
