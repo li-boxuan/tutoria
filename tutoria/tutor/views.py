@@ -10,7 +10,6 @@ from wallet.models import Transaction
 from django.views import generic
 from django.core.mail import send_mail
 
-
 class DetailView(generic.DetailView):
     """A class for the detailed view of tutor profile."""
 
@@ -24,18 +23,17 @@ class DetailView(generic.DetailView):
         # generate a 1D array which stores the timetable
         # there are 7 days
         # private tutor has 24 timeslots per day while contracted tutor has 48
-        is_contracted_tutor = True
+        is_contracted_tutor = self.get_object().tutor_type == 'CT'
         slots_per_day = 48 if is_contracted_tutor else 24
         days_to_display = 7
         timetable = []
-        for i in range(days_to_display * slots_per_day):
-            timetable.append("X") # closed
         # retrieve date of today
         today = date.today()
         for i in range(days_to_display * slots_per_day):
             elem = {'status' : 'X', 'date' : str(today + timedelta(days=i / slots_per_day)), 'id': ''}
             #print(elem)
             timetable.append(elem) # closed
+        # print("tot: " + str(days_to_display * slots_per_day))
         # convert "date" of today to "datetime" of today's 0 'o clock
         # init_time = datetime.combine(today, datetime.min.time())
         for session in self.get_object().session_set.all():
@@ -54,7 +52,8 @@ class DetailView(generic.DetailView):
                     index += hour_diff
                 # print("date_diff = ", date_diff, "hour_diff = ", hour_diff,
                 #        "minute_diff = ", minute_diff, "index = ", index)
-                timetable[index]['status'] = session.status
+                #print(index)
+                timetable[index]['status'] = str(session.status)
                 timetable[index]['id'] = session.id
         context['timetable'] = timetable
         # print(timetable)
