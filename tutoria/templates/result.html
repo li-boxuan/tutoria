@@ -45,7 +45,9 @@
                         {% for tutor in object_list %}
                             <tr>
                                 <td>
-                                  <img class="img-rounded" width=128px src="{{ tutor.avatar.url }}"><br>
+                                  <a href="{% url 'tutor:detail' tutor.id %}">
+                                    <img class="img-rounded" width=128px src="{{ tutor.avatar.url }}">
+                                  </a><br>
                                   <center>
                                     <a href="{% url 'tutor:detail' tutor.id %}">{{ tutor.first_name }}
                                       {{tutor.last_name }}</a>
