@@ -1,0 +1,62 @@
+{% extends "base.html" %} {% load staticfiles %} {% block title %}Tutoria{% endblock %} {% block content %} {% if records is not None %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-11 col-md-offset-1">
+      <div class="col-md-11">
+        <th><center><h2>Current Balance:   {{balance}}</h2></center> </th>
+        <th><h2> </h2></th>
+        <table class="table table-hover" width="80%">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Paid to</th>
+              <th>Type</th>
+              <th>Session start time</th>
+              <th>Session end time</th>
+              <th>Transaction time</th>
+              <th>Amount</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for record, transaction in zipped %}
+            <tr>
+              <td>{{forloop.counter}}</td>
+              <td>
+                <center>
+                  <a href="{% url 'tutor:detail' record.tutor.id %}">{{ record.tutor.first_name }}
+                                      {{record.tutor.last_name }}</a>
+                </center>
+              </td>
+
+
+              <td>
+                {% if record.tutor.tutor_type == 'CT' %} Contracted Tutor {% else %} Private Tutor {% endif %}
+              </td>
+
+              <td>{{record.session.start_time}}</td>
+              <td>{{record.session.end_time}}</td>
+              <td>{{transaction.created_at}}</td>
+              <td>{{record.tutor.hourly_rate }}</td>
+
+              <td> {% if record.status == 'F' %}Completed{% elif record.status == 'C' %}Refunded{% else %}Paid{% endif %}
+              </td>
+
+            </tr>
+            {% empty %}
+            <tr>
+              <td>No bookings found =(</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+{% else %}
+
+<h3> No bookings found. Just relax! </h3> {% endif %} {% endblock %}

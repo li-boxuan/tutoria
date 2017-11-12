@@ -4,6 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.views import generic
 
+from wallet.models import Transaction
 from scheduler.models import BookingRecord, Session
 from account.models import User, Student
 from django.contrib.auth.decorators import login_required
@@ -18,6 +19,36 @@ from django.core.mail import send_mail
 #    #template_name = 'my_bookings.html'
 #    #context_object_name = 'mybookings'
 #    return render(request, 'my_bookings.html', {'record': record})
+
+class MytransactionsView(generic.ListView):
+    model = Transaction
+    template_name = 'my_transactions.html'
+    context_object_name = 'my_transaction_records'
+
+    def get_context_data(self, **kwargs):
+        context = super(MytransactionsView, self).get_context_data(**kwargs)
+        #print datetime.now()
+        if self.request.session['username'] is None:
+           context['records'] = None
+           return context
+        else:
+           usrn = self.request.session['username']
+           user = User.objects.get(username=usrn)
+           usr = get_object_or_404(Student, user=user)
+           records = usr.bookingrecord_set.all()
+           context['records'] = records
+           transactions = []
+           for rec in context['records']:
+               transactions.append(rec.transaction)
+           context['transactions'] = transactions
+           context['zipped'] = zip(records,transactions)
+           context['balance'] = usr.wallet_balance
+           return context
+
+
+    
+
+
 
 class MybookingsView(generic.ListView):
     model = BookingRecord
