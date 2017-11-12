@@ -62,6 +62,10 @@ class Tutor(models.Model):
     # sessions = models.ManyToManyField('scheduler.session')
 
     @property
+    def full_name(self):
+        return self.user.first_name + " " + self.user.last_name
+
+    @property
     def username(self):
         return self.user.username
 

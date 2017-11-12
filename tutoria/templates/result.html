@@ -4,16 +4,21 @@
 
 {% block content %}
 
-{% if results %}
+{% if object_list %}
 
     <div class="container">
         <div class="row">
             <div class="col-md-11 col-md-offset-1">
                 <div class="col-md-11">
                     <div class="list-group">
-                        <a href="{% url 'search:result' %}"
-                          class="list-group-item" id="id_category_all">{{keywords}}
-                        </a>
+                        <form action="{% url 'search:result' %}"
+                          method="GET" role="form" class="form-horizontal">
+                          <div class="form-group">
+                            <div class="col-md-12">
+                               <input type="text" class="form-control" name="keywords"
+                                autofocus value={{keywords}}>
+                            </div>
+                          </div>
                     <script type="text/javascript">
                         function key_up() {
                             var old_value = $('#id_search_input').val();
@@ -37,10 +42,12 @@
                         </tr>
                         </thead>
                         <tbody>
-                        {% for tutor in results %}
+                        {% for tutor in object_list %}
                             <tr>
                                 <td>
-                                  <img class="img-rounded" width=128px src="{{ tutor.avatar.url }}"><br>
+                                  <a href="{% url 'tutor:detail' tutor.id %}">
+                                    <img class="img-rounded" width=128px src="{{ tutor.avatar.url }}">
+                                  </a><br>
                                   <center>
                                     <a href="{% url 'tutor:detail' tutor.id %}">{{ tutor.first_name }}
                                       {{tutor.last_name }}</a>
