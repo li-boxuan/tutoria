@@ -4,63 +4,47 @@
   <div class="row">
     <div class="col-md-11 col-md-offset-1">
       <div class="col-md-11">
-        <!--    <div class="list-group">
-                        <a href="{% url 'search:result' %}"
-                          class="list-group-item" id="id_category_all">All Tutors
-                        </a>
-                    <script type="text/javascript">
-                        function key_up() {
-                            var old_value = $('#id_search_input').val();
-                            setTimeout(function () {
-                                var new_value = $('#id_search_input').val();
-                                if (old_value == new_value) {
-                                    document.search_form.submit();
-                                }
-                            }, 1500);
-                        }
-                    </script>  -->
         <table class="table table-hover" width="80%">
           <thead>
             <tr>
               <th>#</th>
-              <th>Tutor</th>
+              {% if user_type == 'Student' %}<th>Tutor</th>{% else %}<th>Student</th>{% endif %}
               <th>Type</th>
               <th>Start time</th>
               <th>End time</th>
-              <th>Status</th>
               <th>Hourly rate</th>
-              <th>Cancel</th>
+              <th>Status</th>
             </tr>
           </thead>
           <tbody>
             {% for record in records %}
             <tr>
               <td>{{forloop.counter}}</td>
-              <td>
+              <td>{% if user_type == 'Student' %}
                 <img class="img-rounded" width=128px src="{{ record.tutor.avatar.url }}"><br>
                 <center>
                   <a href="{% url 'tutor:detail' record.tutor.id %}">{{ record.tutor.first_name }}
                                       {{record.tutor.last_name }}</a>
-                </center>
+                </center>{% else %}{{ record.student.first_name }} {{ record.student.last_name }}{% endif %}
               </td>
 
 
               <td>
-                {% if record.tutor.tutor_type == 'CT' %} Contracted Tutor {% else %} Private Tutor {% endif %}
+                {% if record.tutor.tutor_type == 'CT' %} Contracted Tutoring {% else %} Private Tutoring {% endif %}
               </td>
 
               <td>{{record.session.start_time}}</td>
               <td>{{record.session.end_time}}</td>
-              <td>{{record.session.status}}</td>
               <td>{{record.tutor.hourly_rate }}</td>
-
+              {% if user_type == 'Student' %}
               <td> {% if record.status == 'F' %}Finished{% elif record.status == 'C' %}Canceled{% else %}      <form action="{% url 'dashboard:mybookings'%} " method="POST" onsubmit="return confirm('Do you really want to cancel this session?');">
                     {% csrf_token %}
                     <button type="submit" name="booking_id" value={{record.id}}>Cancel</button>
                    </form>
                 {% endif %}
               </td>
-
+              {% else %}<td> {% if record.status == 'F' %}Finished{% elif record.status == 'C' %}Canceled{% elif record.status == 'O' %}On-going{% else %}In-coming{% endif %}</td>
+              {% endif %}
             </tr>
             {% empty %}
             <tr>

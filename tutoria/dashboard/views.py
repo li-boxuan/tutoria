@@ -6,7 +6,7 @@ from django.views import generic
 
 from wallet.models import Transaction
 from scheduler.models import BookingRecord, Session
-from account.models import User, Student
+from account.models import User, Student, Tutor
 from django.contrib.auth.decorators import login_required
 
 from datetime import datetime, timedelta
@@ -34,7 +34,13 @@ class MytransactionsView(generic.ListView):
         else:
            usrn = self.request.session['username']
            user = User.objects.get(username=usrn)
-           usr = get_object_or_404(Student, user=user)
+           try:
+               usr = Student.objects.get(user=user)
+               context['user_type'] = 'Student' 
+           except Student.DoesNotExist:
+               usr = Tutor.objects.get(user=user)
+               context['user_type'] = 'Tutor' 
+#usr = get_object_or_404(Student, user=user)
            records = usr.bookingrecord_set.all()
            context['records'] = records
            transactions = []
@@ -64,7 +70,13 @@ class MybookingsView(generic.ListView):
         else:
             usrn = self.request.session['username']
             user = User.objects.get(username=usrn)
-            usr = get_object_or_404(Student, user=user)
+            try:
+                usr = Student.objects.get(user=user)
+                context['user_type'] = 'Student'
+            except Student.DoesNotExist:
+                usr = Tutor.objects.get(user=user)
+                context['user_type'] = 'Tutor'
+#usr = get_object_or_404(Student, user=user)
             context['records'] = usr.bookingrecord_set.all()
             #print usr.wallet_balance
             return context
@@ -91,7 +103,7 @@ class MybookingsView(generic.ListView):
             #print bkrc.status
             bkrc.save()
             tut = bkrc.tutor
-            send_mail('Session Canceled', 'Please check on Tutoria, your session has been canceled.', 'nonereplay@hola-inc.top', [usr.email, tut.email], False)
+            send_mail('Session Canceled', 'Please check on Tutoria, your session from ' + sess.start_time + ' to ' + sess.end_time +  ' has been canceled.', 'nonereplay@hola-inc.top', [usr.email, tut.email], False)
             return redirect('dashboard/mybookings/')
         else:
             return HttpResponse("This session is within 24 hours and can't be canceled!")

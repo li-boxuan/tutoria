@@ -10,7 +10,7 @@
           <thead>
             <tr>
               <th>#</th>
-              <th>Paid to</th>
+              {% if user_type == 'Student' %} <th>Paid to</th> {% else %} <th>Received from</th> {% endif %}
               <th>Type</th>
               <th>Session start time</th>
               <th>Session end time</th>
@@ -24,15 +24,19 @@
             <tr>
               <td>{{forloop.counter}}</td>
               <td>
+                 {% if user_type == 'Student' %}
                 <center>
                   <a href="{% url 'tutor:detail' record.tutor.id %}">{{ record.tutor.first_name }}
                                       {{record.tutor.last_name }}</a>
                 </center>
+                {% else %}
+                {{ record.student.first_name }} {{ record.student.last_name }}
+                {% endif %}
               </td>
 
 
               <td>
-                {% if record.tutor.tutor_type == 'CT' %} Contracted Tutor {% else %} Private Tutor {% endif %}
+                {% if record.tutor.tutor_type == 'CT' %} Contracted Tutoring {% else %} Private Tutoring {% endif %}
               </td>
 
               <td>{{record.session.start_time}}</td>
@@ -40,7 +44,7 @@
               <td>{{transaction.created_at}}</td>
               <td>{{record.tutor.hourly_rate }}</td>
 
-              <td> {% if record.status == 'F' %}Completed{% elif record.status == 'C' %}Refunded{% else %}Paid{% endif %}
+              <td> {% if record.status == 'F' %}Completed{% elif record.status == 'C' %} {% if user_type == 'Student' %}Refunded{% else %} Canceled {% endif %}{% else %} {% if user_type == 'Student' %}Paid{% else %}Pending completion{% endif %}{% endif %}
               </td>
 
             </tr>
