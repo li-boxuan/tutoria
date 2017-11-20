@@ -114,3 +114,8 @@ class MybookingsView(generic.ListView):
             return redirect('dashboard/mybookings/')
         else:
             return HttpResponse("This session is within 24 hours and can't be canceled!")
+
+class MyTimetableView(generic.ListView):
+    model = BookingRecord
+    template_name = 'my_timetable.html'
+    context_object_name = 'my_booking_records'
