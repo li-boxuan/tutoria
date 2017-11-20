@@ -1,0 +1,122 @@
+{% extends "base.html" %} {% load staticfiles %} {% block title %}Tutoria{% endblock %} {% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-10 col-md-offset-1">
+                <div class="col-md-5">
+                    {% if tutor.avatar %}
+                    <img class="img-rounded" src="{{ tutor.avatar.url }}">
+                    {% else %}
+                    <p class="text-center">No Avator</p>
+                    {% endif %}
+                </div>
+                <div class="col-md-6 col-md-offset-1">
+                    <!-- <h2 class="text-center">Detail</h2> -->
+                    <h3>Name </h3>
+                        <h5>{{ tutor.first_name }} {{tutor.last_name }}</h5>
+                    <h3>Type</h3>
+                        {% if tutor.tutor_type == 'CT' %}
+                        <h5>Contracted Tutor</h5>
+                        {% elif tutor.tutor_type == 'PT' %}
+                        <h5>Private Tutor</h5>
+                        {% endif %}
+                    <h3>Hourly Rate</h3>
+                        <h5> {{ tutor.hourly_rate }} </h5>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-10 col-md-offset-1">
+                <div class="col-md-5">
+                    <h3>Biography</h3>
+                        <h5> {{ tutor.bio }} </h5>
+                </div>
+                <div class="col-md-6 col-md-offset-1">
+                    <!-- <h2 class="text-center">Detail</h2> -->
+                    <h3>Name </h3>
+                        <h5>{{ tutor.first_name }} {{tutor.last_name }}</h5>
+                    <h3>Type</h3>
+                        {% if tutor.tutor_type == 'CT' %}
+                        <h5>Contracted Tutor</h5>
+                        {% elif tutor.tutor_type == 'PT' %}
+                        <h5>Private Tutor</h5>
+                        {% endif %}
+                    <h3>Hourly Rate</h3>
+                        <h5> {{ tutor.hourly_rate }} </h5>
+                    <h3>Rating</h3>
+                        <h5> N/A </h5>
+                    <h3>Phone Number</h3>
+                        {% if phone_visible == True %}
+                        <h5> {{ tutor.phone }}</h5>
+                        {% else %}
+                        <h5> Only visible to booked students</h5>
+                        {% endif %}
+                    <h3>Tags</h3>
+                        {% for tag in tutor.tags.all %}
+                        <h5> {{ tag.tag }} &nbsp; </h5>
+                        {% endfor %}
+                    <h3>Courses</h3>
+                        {% for course in tutor.courses.all %}
+                        <h5> {{ course.course_name }} &nbsp; {{ course.course_code }} </h5>
+                        {% endfor %}
+                    <h3>Chat</h3>
+                        <a class="btn btn-primary" href="#" role="button">Chat</a>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-10 col-md-offset-1">
+                <h3>Timetable</h3>
+                <table class="" border="1" cellpadding="0">
+                    <tbody>
+                        <tr>
+                            <td>Table</td>
+                            {% for i in "xxxxxxxxxxxxxxxxxxxxxxxx" %}
+                            {% if tutor.tutor_type == 'PT' %}
+                            <td colspan="1">
+                            {% else %}
+                            <td colspan="2">
+                            {% endif %}
+                            {% if forloop.counter0 < 10 %}
+                                0{{ forloop.counter0 }}:00
+                            {% else %}
+                                {{ forloop.counter0 }}:00
+                            {% endif %}
+                            </td>
+                            {% endfor %}
+                        </tr>
+                        {% for grid in timetable %}
+                        {% if tutor.tutor_type == 'PT' and forloop.counter0|divisibleby:24 or tutor.tutor_type == 'CT' and forloop.counter0|divisibleby:48 %}
+                        <tr class="slots">
+                            <td class="resourcename">
+                                {{ grid.date }}
+                            </td>
+                        {% endif %}
+                        {% if grid.status == 'A' %}
+                            <td colspan="1" class="bg-success" id="book">
+                                <form id="book-{{ grid.id }}" method="post" action="{% url 'tutor:confirm_booking' tutor_id=tutor.id %}">
+                                {% csrf_token %}
+                                <div onclick="document.getElementById('book-{{ grid.id }}').submit();">
+                                    <input type="hidden" name="session_id" value="{{ grid.id }}">&nbsp;
+                                </div>
+                                </form>
+                            </td>
+                        {% elif grid.status == 'B' %}
+                            <td colspan="1" class="bg-primary">&nbsp;
+                            </td>
+                        {% elif grid.status == 'X' %}
+                            <td colspan="1" class="bg-info">&nbsp;
+                            </td>
+                        {% endif %}
+                        {% if tutor.tutor_type == 'PT' and forloop.counter|divisibleby:24 or tutor.tutor_type == 'CT' and forloop.counter|divisibleby:48 %}
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+    </div>
+  {% endblock %}
