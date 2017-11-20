@@ -39,8 +39,24 @@
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 {% if user.is_authenticated %}
-								<li><a href="{% url 'dashboard:mybookings' %}">{{ user.first_name }}</a></li>
-                                <li><a href="{% url 'dashboard:mytransactions' %}">View Transactions</a></li>
+                    <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Dashboard<span class="caret"></span></a>
+                     <ul class="dropdown-menu">
+                       <li><a href="{% url 'dashboard:mybookings' %}">My Bookings</a></li>
+                       <li><a href="{% url 'dashboard:mytransactions' %}">My Transactions</a></li>
+                       <li><a href="#">My Timetable</a></li>
+                       <li><a href="#">My Wallet</a></li>
+                     </ul>
+                    </li>
+
+                     <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Profile<span class="caret"></span></a>
+                      <ul class="dropdown-menu">
+                       <li><a href="{% url 'dashboard:mybookings' %}">My Bookings</a></li>
+                       <li><a href="{% url 'dashboard:mytransactions' %}">My Transactions</a></li>
+                       <li><a href="#">My Timetable</a></li>
+                       <li><a href="#">My Wallet</a></li>
+                       </ul>
+                    </li>
+
                     <li><a href="{% url 'auth:logout' %}">Logout</a></li>
                 {% else %}
                     <li><a href="{% url 'auth:signup' %}">Sign Up</a></li>

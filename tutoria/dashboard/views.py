@@ -63,7 +63,7 @@ class MybookingsView(generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super(MybookingsView, self).get_context_data(**kwargs)
-        #print datetime.now()
+
         if self.request.session['username'] is None:
             context['records'] = None
             return context
@@ -77,9 +77,15 @@ class MybookingsView(generic.ListView):
                 usr = Tutor.objects.get(user=user)
                 context['user_type'] = 'Tutor'
 #usr = get_object_or_404(Student, user=user)
-            context['records'] = usr.bookingrecord_set.all()
-            #print usr.wallet_balance
-            return context
+            if 'id' in self.request.GET:
+                context['id'] = 'selected'
+                context['records'] =BookingRecord.objects.filter(id=self.request.GET['id'])
+                return context
+            else:
+                context['id'] = 'not_selected'
+                context['records'] = usr.bookingrecord_set.all()
+                #print usr.wallet_balance
+                return context
 
     def post(self, request, **kwargs):
         print(request)
@@ -103,7 +109,8 @@ class MybookingsView(generic.ListView):
             #print bkrc.status
             bkrc.save()
             tut = bkrc.tutor
-            send_mail('Session Canceled', 'Please check on Tutoria, your session from ' + sess.start_time + ' to ' + sess.end_time +  ' has been canceled.', 'nonereplay@hola-inc.top', [usr.email, tut.email], False)
+            send_mail('Session Canceled', 'Please check on Tutoria, your session with '+ bkrc.tutor.first_name + ' ' + bkrc.tutor.last_name +  ' from ' + str(sess.start_time) + ' to ' + str(sess.end_time) +  ' has been canceled.', 'nonereplay@hola-inc.top', [usr.email], False)
+            send_mail('Session Canceled', 'Please check on Tutoria, your session with '+ bkrc.student.first_name + ' ' + bkrc.student.last_name +  ' from ' + str(sess.start_time) + ' to ' + str(sess.end_time) +  ' has been canceled.', 'nonereplay@hola-inc.top', [tut.email], False)
             return redirect('dashboard/mybookings/')
         else:
             return HttpResponse("This session is within 24 hours and can't be canceled!")

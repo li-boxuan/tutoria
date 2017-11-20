@@ -43,7 +43,7 @@
                    </form>
                 {% endif %}
               </td>
-              {% else %}<td> {% if record.status == 'F' %}Finished{% elif record.status == 'C' %}Canceled{% elif record.status == 'O' %}On-going{% else %}In-coming{% endif %}</td>
+              {% else %}<td> {% if record.status == 'F' %}Finished{% elif record.status == 'C' %}Canceled{% elif record.status == 'O' %}On-going{% else %}Up-coming{% endif %}</td>
               {% endif %}
             </tr>
             {% empty %}
@@ -52,8 +52,8 @@
             </tr>
             {% endfor %}
           </tbody>
-        </table>
-
+          </table>
+          {% if id == 'selected' %}<th><center><h2><a href=" {% url 'dashboard:mybookings' %}">Back to view all my bookings</a></h2></center></th> {% endif %}
       </div>
     </div>
   </div>
