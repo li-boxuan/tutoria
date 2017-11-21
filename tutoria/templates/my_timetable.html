@@ -1,0 +1,58 @@
+{% extends "base.html" %} {% load staticfiles %} {% block title %}Tutoria{% endblock %} {% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-10 col-md-offset-1">
+                <h3>Timetable</h3>
+                <table class="" border="1" cellpadding="0">
+                    <tbody>
+                        <tr>
+                            <td>Table</td>
+                            {% for i in "xxxxxxxxxxxxxxxxxxxxxxxx" %}
+                            {% if tutor.tutor_type == 'PT' %}
+                            <td colspan="1">
+                            {% else %}
+                            <td colspan="2">
+                            {% endif %}
+                            {% if forloop.counter0 < 10 %}
+                                0{{ forloop.counter0 }}:00
+                            {% else %}
+                                {{ forloop.counter0 }}:00
+                            {% endif %}
+                            </td>
+                            {% endfor %}
+                        </tr>
+                        {% for grid in timetable %}
+                        {% if tutor.tutor_type == 'PT' and forloop.counter0|divisibleby:24 or tutor.tutor_type == 'CT' and forloop.counter0|divisibleby:48 %}
+                        <tr class="slots">
+                            <td class="resourcename">
+                                {{ grid.date }}
+                            </td>
+                        {% endif %}
+                        {% if grid.status == 'A' %}
+                            <td colspan="1" class="bg-success" id="book">
+                                <form id="book-{{ grid.id }}" method="post" action="{% url 'tutor:confirm_booking' tutor_id=tutor.id %}">
+                                {% csrf_token %}
+                                <div onclick="document.getElementById('book-{{ grid.id }}').submit();">
+                                    <input type="hidden" name="session_id" value="{{ grid.id }}">&nbsp;
+                                </div>
+                                </form>
+                            </td>
+                        {% elif grid.status == 'B' %}
+                            <td colspan="1" class="bg-primary">&nbsp;
+                            </td>
+                        {% elif grid.status == 'X' %}
+                            <td colspan="1" class="bg-info">&nbsp;
+                            </td>
+                        {% endif %}
+                        {% if tutor.tutor_type == 'PT' and forloop.counter|divisibleby:24 or tutor.tutor_type == 'CT' and forloop.counter|divisibleby:48 %}
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+    </div>
+  {% endblock %}

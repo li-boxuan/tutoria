@@ -176,7 +176,7 @@ def populate_tutor():
 
 
 def populate_session(tutors):
-    DEMO_DATE = date(2017, 11, 12)
+    DEMO_DATE = date(2017, 11, 17)
     if tutors is not None:
         for tutor in tutors:
             d = datetime.combine(DEMO_DATE, OFFICE_HOURS['begin'])
