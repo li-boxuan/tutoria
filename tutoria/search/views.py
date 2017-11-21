@@ -17,14 +17,13 @@ class ResultView(ListView):
 
     template_name = 'result.html'
     model = Tutor
+    sort_method = 'rating'  # Sort by rating by default
 
     def get_queryset(self):
         """Determine the list of tutors to be displayed."""
         keywords = self.request.GET['keywords']
         if 'sort' in self.request.GET:
-            sort_method = self.request.GET['sort']
-        else:
-            sort_method = 'rating'  # Sort by rating by default
+            self.sort_method = self.request.GET['sort']
         all_tutors = Tutor.objects.all()
         filtered_tutors = []
         for tutor in all_tutors:
@@ -39,7 +38,7 @@ class ResultView(ListView):
             # Regular expression match
             if re.search(keywords, tutor_info, re.IGNORECASE):
                 filtered_tutors.append(tutor)
-        if (sort_method == 'hourly_rate'):
+        if (self.sort_method == 'hourly_rate'):
             return sorted(filtered_tutors, key=lambda x: x.hourly_rate,
                           reverse=False)
         return sorted(filtered_tutors, key=lambda x: x.avgRating, reverse=True)
@@ -48,4 +47,5 @@ class ResultView(ListView):
         """Obtain search query keywords from GET request."""
         context = super(ResultView, self).get_context_data(**kwargs)
         context['keywords'] = self.request.GET['keywords']
+        context['sort'] = self.sort_method
         return context

@@ -22,8 +22,16 @@
                                 Sort:
                                 <form action="" method="get">
                                     <select name="sort" onChange="form.submit();">
-                                        <option value="rating" select="selected">Rating</option>
+                                        {% if sort == 'rating' %}
+                                        <option value="rating" selected>Rating</option>
+                                        {% else %}
+                                        <option value="rating">Rating</option>
+                                        {% endif %}
+                                        {% if sort == 'hourly_rate' %}
+                                        <option value="hourly_rate" selected>Hourly Rate</option>
+                                        {% else %}
                                         <option value="hourly_rate">Hourly Rate</option>
+                                        {% endif %}
                                     </select>
                                 </form>
                             </div>
