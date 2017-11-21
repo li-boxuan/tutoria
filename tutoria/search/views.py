@@ -22,10 +22,6 @@ class ResultView(generic.ListView):
         """Determine the list of tutors to be displayed."""
         keywords = self.request.GET['keywords']
         all_tutors = Tutor.objects.all()
-        # Shoot... lambda expression doesn't work... have to do it manually =[
-        # selected_tutor_list = list(
-        #     filter(lambda tutor: keywords in tutor.full_name,
-        #            Tutor.objects.all()))
         filtered_tutors = []
         for tutor in all_tutors:
             # Search in full name

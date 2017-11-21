@@ -62,8 +62,9 @@ class Tutor(models.Model):
     # sessions = models.ManyToManyField('scheduler.session')
 
     @property
-    def getAvgRating(self):
+    def avgRating(self):
         """Get the average rating of a tutor. Return 0 by default."""
+        # TODO: don't display untill more than 3 reviews received.
         review_list = self.review_set.all()
         if not review_list.exists():
             return 0
