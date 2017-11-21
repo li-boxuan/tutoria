@@ -18,6 +18,15 @@
                                <input type="text" class="form-control" name="keywords"
                                 autofocus value={{keywords}}>
                             </div>
+                            <div>
+                                Sort:
+                                <form action="" method="post">
+                                    <select name="sort" onChange="form.submit();">
+                                        <option value="rating">Rating</option>
+                                        <option value="hourly_rate">Hourly Rate</option>
+                                    </select>
+                                </form>
+                            </div>
                           </div>
                     <script type="text/javascript">
                         function key_up() {
