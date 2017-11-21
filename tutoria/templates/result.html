@@ -8,7 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>jQuery UI Slider - Range slider</title>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-<link rel="stylesheet" href="/resources/demos/style.css">
+{#<link rel="stylesheet" href="/resources/demos/style.css">#}
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script>
@@ -52,11 +52,12 @@ $( function() {
                                 <form action="" method="get">
                                     <input type="hidden" name="minPrice" value={{ minPrice }}>
                                     <input type="hidden" name="maxPrice" value={{ maxPrice }}>
+                                    <input type="hidden" name="tutor_type" value={{ tutor_type }}>
                                     <select name="sort" onChange="form.submit();">
                                         {% if sort == 'rating' %}
                                         <option value="rating" selected>Rating</option>
                                         {% else %}
-                                        <option value="rating">Rating</option>
+                                        <option valueƒ="rating">Rating</option>
                                         {% endif %}
                                         {% if sort == 'hourly_rate' %}
                                         <option value="hourly_rate" selected>Hourly Rate</option>
@@ -67,19 +68,43 @@ $( function() {
                                 </form>
                               </div>
                               <div class="col-md-4">
-                                  <div id="slider-range"></div>
-                                  <form action="" method="get">
+                                  <form action="" method="get" style="display: inline;">
                                     <label for="minPrice">Min Price:</label>
                                     <input type="text" id="minPrice" name="minPrice" readonly style="border:0; color:#f6931f; background-color:rgba(0, 0, 0, 0.06); font-weight:bold;">
                                     <label for="maxPrice">Max Price:</label>
                                     <input type="text" id="maxPrice" name="maxPrice" readonly style="border:0; color:#f6931f; background-color:rgba(0, 0, 0, 0.06); font-weight:bold;">
                                       <input type="hidden" name="keywords" value={{ keywords }}>
                                       <input type="hidden" name="sort" value={{ sort }}>
-                                  <input type="submit" value="Submit">
+                                      <input type="hidden" name="tutor_type" value={{ tutor_type }}>
+                                      <div id="slider-range"></div>
+                                  <input type="submit" value="Filter">
                                   </form>
                               </div>
                               <div class="col-md-4">
-                                  placeholder
+                                Tutor Type:
+                                <form action="" method="get">
+                                    <input type="hidden" name="minPrice" value={{ minPrice }}>
+                                    <input type="hidden" name="maxPrice" value={{ maxPrice }}>
+                                    <input type="hidden" name="sort" value={{ sort }}>
+                                    <input type="hidden" name="keywords" value={{ keywords }}>
+                                    <select name="tutor_type" onChange="form.submit();">
+                                        {% if tutor_type == 'CT' %}
+                                        <option value="CT" selected>Contracted</option>
+                                        {% else %}
+                                        <option value="CT">Contracted</option>
+                                        {% endif %}
+                                        {% if tutor_type == 'PT' %}
+                                        <option value="PT" selected>Private</option>
+                                        {% else %}
+                                        <option value="PT">Private</option>
+                                        {% endif %}
+                                        {% if tutor_type == 'ALL' %}
+                                        <option value="ALL" selected>All</option>
+                                        {% else %}
+                                        <option value="ALL">All</option>
+                                        {% endif %}
+                                    </select>
+                                </form>
                               </div>
                             </div>
                           </div>

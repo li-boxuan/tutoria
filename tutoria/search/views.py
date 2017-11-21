@@ -21,6 +21,7 @@ class ResultView(ListView):
     keywords = ''
     minPrice = 0  # Integer
     maxPrice = 500  # Integer
+    tutor_type = 'ALL'
 
     def get_queryset(self):
         """Determine the list of tutors to be displayed."""
@@ -33,6 +34,8 @@ class ResultView(ListView):
             self.minPrice = int(re.sub("\D", "", self.request.GET['minPrice']))
         if 'maxPrice' in self.request.GET:
             self.maxPrice = int(re.sub("\D", "", self.request.GET['maxPrice']))
+        if 'tutor_type' in self.request.GET:
+            self.tutor_type = self.request.GET['tutor_type']
         all_tutors = Tutor.objects.all()  # Obtain unfiltered results
         filtered_tutors = []
         for tutor in all_tutors:
@@ -50,6 +53,9 @@ class ResultView(ListView):
         # Filter according to hourly rate range.
         filtered_tutors = [t for t in filtered_tutors if
                            self.minPrice <= t.hourly_rate <= self.maxPrice]
+        # Filter according to tutor type
+        if self.tutor_type != 'ALL':
+            filtered_tutors = [t for t in filtered_tutors if t.tutor_type == self.tutor_type]
         if self.sort_method == 'hourly_rate':
             return sorted(filtered_tutors, key=lambda x: x.hourly_rate, reverse=False)
         return sorted(filtered_tutors, key=lambda x: x.avgRating, reverse=True)
@@ -64,4 +70,5 @@ class ResultView(ListView):
         context['sort'] = self.sort_method
         context['minPrice'] = self.minPrice
         context['maxPrice'] = self.maxPrice
+        context['tutor_type'] = self.tutor_type
         return context
