@@ -17,7 +17,7 @@ $( function() {
     range: true,
     min: 0,
     max: 500,
-    values: [ 75, 300 ],
+    values: [ {{ minPrice }}, {{ maxPrice }} ],
     slide: function( event, ui ) {
         $( "#minPrice" ).val( "$" + ui.values[0]);
         $( "#maxPrice" ).val( "$" + ui.values[1] );
@@ -50,6 +50,8 @@ $( function() {
                               <div class="col-md-4">
                                 Sort:
                                 <form action="" method="get">
+                                    <input type="hidden" name="minPrice" value={{ minPrice }}>
+                                    <input type="hidden" name="maxPrice" value={{ maxPrice }}>
                                     <select name="sort" onChange="form.submit();">
                                         {% if sort == 'rating' %}
                                         <option value="rating" selected>Rating</option>
@@ -67,9 +69,9 @@ $( function() {
                               <div class="col-md-4">
                                   <div id="slider-range"></div>
                                   <form action="" method="get">
-                                    <label for="minPrice">Price range:</label>
+                                    <label for="minPrice">Min Price:</label>
                                     <input type="text" id="minPrice" name="minPrice" readonly style="border:0; color:#f6931f; background-color:rgba(0, 0, 0, 0.06); font-weight:bold;">
-                                    <label for="maxPrice">Price range:</label>
+                                    <label for="maxPrice">Max Price:</label>
                                     <input type="text" id="maxPrice" name="maxPrice" readonly style="border:0; color:#f6931f; background-color:rgba(0, 0, 0, 0.06); font-weight:bold;">
                                       <input type="hidden" name="keywords" value={{ keywords }}>
                                       <input type="hidden" name="sort" value={{ sort }}>
