@@ -4,187 +4,200 @@
 
 
 {% block header %}
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>jQuery UI Slider - Range slider</title>
-<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-{#<link rel="stylesheet" href="/resources/demos/style.css">#}
-<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script>
-$( function() {
-  $( "#slider-range" ).slider({
-    range: true,
-    min: 0,
-    max: 500,
-    values: [ {{ minPrice }}, {{ maxPrice }} ],
-    slide: function( event, ui ) {
-        $( "#minPrice" ).val( "$" + ui.values[0]);
-        $( "#maxPrice" ).val( "$" + ui.values[1] );
-    }
-  });
-    $( "#minPrice" ).val( "$" + $( "#slider-range" ).slider( "values", 0 ) );
-    $( "#maxPrice" ).val( "$" + $( "#slider-range" ).slider( "values", 1 ) );
-} );
-</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>jQuery UI Slider - Range slider</title>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  {#<link rel="stylesheet" href="/resources/demos/style.css">#}
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script>
+    $( function() {
+      $( "#slider-range" ).slider({
+        range: true,
+        min: 0,
+        max: 500,
+        values: [ {{ minPrice }}, {{ maxPrice }} ],
+        slide: function( event, ui ) {
+          $( "#minPrice" ).val( "$" + ui.values[0]);
+          $( "#maxPrice" ).val( "$" + ui.values[1] );
+        }
+      });
+      $( "#minPrice" ).val( "$" + $( "#slider-range" ).slider( "values", 0 ) );
+      $( "#maxPrice" ).val( "$" + $( "#slider-range" ).slider( "values", 1 ) );
+    } );
+  </script>
 {% endblock %}
 
 
 {% block content %}
 
-{% if object_list %}
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2 well">
+        <h2>&emsp;&emsp;Search</h2>
+        <form action="{% url 'search:result' %}" method="GET" role="form" class="form-horizontal">
+          <div class="form-group">
+            <div class="col-md-12">
+              <input type="text" class="form-control" name="keywords" autofocus value={{keywords}}>
+            </div>
+          </div>
+        </form>
+        <div class="col-md-6">
+          Sort:
+          <form action="" method="get">
+            <input type="hidden" name="minPrice" value={{ minPrice }}>
+            <input type="hidden" name="maxPrice" value={{ maxPrice }}>
+            <input type="hidden" name="tutor_type" value={{ tutor_type }}>
+            <input type="hidden" name="keywords" value={{ keywords }}>
+            <select name="sort" onChange="form.submit();">
+              {% if sort == 'rating' %}
+                <option value="rating" selected>Rating</option>
+              {% else %}
+                <option valueƒ="rating">Rating</option>
+              {% endif %}
+              {% if sort == 'hourly_rate' %}
+                <option value="hourly_rate" selected>Hourly Rate</option>
+              {% else %}
+                <option value="hourly_rate">Hourly Rate</option>
+              {% endif %}
+            </select>
+          </form>
+        </div>
+        <div class="col-md-6">
+          Tutor Type:
+          <form action="" method="get">
+            <input type="hidden" name="minPrice" value={{ minPrice }}>
+            <input type="hidden" name="maxPrice" value={{ maxPrice }}>
+            <input type="hidden" name="sort" value={{ sort }}>
+            <input type="hidden" name="keywords" value={{ keywords }}>
+            <select name="tutor_type" onChange="form.submit();">
+              {% if tutor_type == 'CT' %}
+                <option value="CT" selected>Contracted</option>
+              {% else %}
+                <option value="CT">Contracted</option>
+              {% endif %}
+              {% if tutor_type == 'PT' %}
+                <option value="PT" selected>Private</option>
+              {% else %}
+                <option value="PT">Private</option>
+              {% endif %}
+              {% if tutor_type == 'ALL' %}
+                <option value="ALL" selected>All</option>
+              {% else %}
+                <option value="ALL">All</option>
+              {% endif %}
+            </select>
+          </form>
+        </div>
+        <div class="col-md-12"> <br> </div>
+          <form action="" method="get" id="priceFilter">
+            <div class="col-md-5">
+            <label for="minPrice">Min Price:</label>
+            <input type="text" id="minPrice" name="minPrice" readonly style="border:0; color:#f6931f; background-color:rgba(0, 0, 0, 0.06); font-weight:bold;">
+            </div>
+            <div class="col-md-5 col-md-offset-2">
+            <label for="maxPrice">Max Price:</label>
+            <input type="text" id="maxPrice" name="maxPrice" readonly style="border:0; color:#f6931f; background-color:rgba(0, 0, 0, 0.06); font-weight:bold;">
+            </div>
+            <input type="hidden" name="keywords" value={{ keywords }}>
+            <input type="hidden" name="sort" value={{ sort }}>
+            <input type="hidden" name="tutor_type" value={{ tutor_type }}>
+            <div id="slider-range" class="col-md-12"></div>
+{#            <div class="col-md-4 col-md-offset-4"><input type="submit" value="Filter"></div>#}
+          </form>
+      <div class="col-md-12"> <br> </div>
+      <div style="text-align: center"><button type="submit" class="btn btn-primary" form="priceFilter" value="Submit" style="margin: auto;">Filter</button></div>
+      </div>
+    </div>
+  </div>
+
+  {% if object_list %}
 
     <div class="container">
-        <div class="row">
-            <div class="col-md-11 col-md-offset-1">
-                <div class="col-md-11">
-                    <div class="list-group">
-                        <form action="{% url 'search:result' %}"
-                          method="GET" role="form" class="form-horizontal">
-                          <div class="form-group">
-                            <div class="col-md-12">
-                               <input type="text" class="form-control" name="keywords"
-                                autofocus value={{keywords}}>
-                            </div>
-                            <div class="col-md-12">
-                              <div class="col-md-4">
-                                Sort:
-                                <form action="" method="get">
-                                    <input type="hidden" name="minPrice" value={{ minPrice }}>
-                                    <input type="hidden" name="maxPrice" value={{ maxPrice }}>
-                                    <input type="hidden" name="tutor_type" value={{ tutor_type }}>
-                                    <select name="sort" onChange="form.submit();">
-                                        {% if sort == 'rating' %}
-                                        <option value="rating" selected>Rating</option>
-                                        {% else %}
-                                        <option valueƒ="rating">Rating</option>
-                                        {% endif %}
-                                        {% if sort == 'hourly_rate' %}
-                                        <option value="hourly_rate" selected>Hourly Rate</option>
-                                        {% else %}
-                                        <option value="hourly_rate">Hourly Rate</option>
-                                        {% endif %}
-                                    </select>
-                                </form>
-                              </div>
-                              <div class="col-md-4">
-                                  <form action="" method="get" style="display: inline;">
-                                    <label for="minPrice">Min Price:</label>
-                                    <input type="text" id="minPrice" name="minPrice" readonly style="border:0; color:#f6931f; background-color:rgba(0, 0, 0, 0.06); font-weight:bold;">
-                                    <label for="maxPrice">Max Price:</label>
-                                    <input type="text" id="maxPrice" name="maxPrice" readonly style="border:0; color:#f6931f; background-color:rgba(0, 0, 0, 0.06); font-weight:bold;">
-                                      <input type="hidden" name="keywords" value={{ keywords }}>
-                                      <input type="hidden" name="sort" value={{ sort }}>
-                                      <input type="hidden" name="tutor_type" value={{ tutor_type }}>
-                                      <div id="slider-range"></div>
-                                  <input type="submit" value="Filter">
-                                  </form>
-                              </div>
-                              <div class="col-md-4">
-                                Tutor Type:
-                                <form action="" method="get">
-                                    <input type="hidden" name="minPrice" value={{ minPrice }}>
-                                    <input type="hidden" name="maxPrice" value={{ maxPrice }}>
-                                    <input type="hidden" name="sort" value={{ sort }}>
-                                    <input type="hidden" name="keywords" value={{ keywords }}>
-                                    <select name="tutor_type" onChange="form.submit();">
-                                        {% if tutor_type == 'CT' %}
-                                        <option value="CT" selected>Contracted</option>
-                                        {% else %}
-                                        <option value="CT">Contracted</option>
-                                        {% endif %}
-                                        {% if tutor_type == 'PT' %}
-                                        <option value="PT" selected>Private</option>
-                                        {% else %}
-                                        <option value="PT">Private</option>
-                                        {% endif %}
-                                        {% if tutor_type == 'ALL' %}
-                                        <option value="ALL" selected>All</option>
-                                        {% else %}
-                                        <option value="ALL">All</option>
-                                        {% endif %}
-                                    </select>
-                                </form>
-                              </div>
-                            </div>
-                          </div>
-                    <script type="text/javascript">
-                        function key_up() {
-                            var old_value = $('#id_search_input').val();
-                            setTimeout(function () {
-                                var new_value = $('#id_search_input').val();
-                                if (old_value == new_value) {
-                                    document.search_form.submit();
-                                }
-                            }, 1500);
-                        }
-                    </script>
-                    <table class="table table-hover" width="80%">
-                        <thead>
-                        <tr>
-                            <th>Tutor</th>
-                            <th>Type</th>
-                            <th>Course</th>
-                            <th>Hourly Rate</th>
-                            <th>Tags</th>
-                            <th>Rating</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for tutor in object_list %}
-                            <tr>
-                                <td>
-                                  <a href="{% url 'tutor:detail' tutor.id %}">
-                                    <img class="img-rounded" width=128px src="{{ tutor.avatar.url }}">
-                                  </a><br>
-                                  <center>
-                                    <a href="{% url 'tutor:detail' tutor.id %}">{{ tutor.first_name }}
-                                      {{tutor.last_name }}</a>
-                                    </center>
-                                </td>
-                                <td>
-                                  {% if tutor.tutor_type == 'CT' %}
-                                    Contracted Tutor
-                                  {% else %}
-                                    Private Tutor
-                                  {% endif %}
-                                </td>
+    <div class="row">
+      <div class="col-md-11 col-md-offset-1">
+        <div class="col-md-11">
+          <div class="list-group">
+            <form action="{% url 'search:result' %}"
+                  method="GET" role="form" class="form-horizontal">
+              <script type="text/javascript">
+                function key_up() {
+                  var old_value = $('#id_search_input').val();
+                  setTimeout(function () {
+                    var new_value = $('#id_search_input').val();
+                    if (old_value == new_value) {
+                      document.search_form.submit();
+                    }
+                  }, 1500);
+                }
+              </script>
+              <table class="table table-hover" width="80%">
+                <thead>
+                <tr>
+                  <th>Tutor</th>
+                  <th>Type</th>
+                  <th>Course</th>
+                  <th>Hourly Rate</th>
+                  <th>Tags</th>
+                  <th>Rating</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for tutor in object_list %}
+                  <tr>
+                    <td>
+                      <a href="{% url 'tutor:detail' tutor.id %}">
+                        <img class="img-rounded" width=128px src="{{ tutor.avatar.url }}">
+                      </a><br>
+                      <center>
+                        <a href="{% url 'tutor:detail' tutor.id %}">{{ tutor.first_name }}
+                          {{tutor.last_name }}</a>
+                      </center>
+                    </td>
+                    <td>
+                      {% if tutor.tutor_type == 'CT' %}
+                        Contracted Tutor
+                      {% else %}
+                        Private Tutor
+                      {% endif %}
+                    </td>
 
-                                <td> <ul>
-                                  {% for course in tutor.courses.all %}
-                                  <li> {{course.course_code}} {{course.course_name }}<br>
-                                  {% endfor %}
-                                  </ul>
-                                </td>
-                                <td>{{ tutor.hourly_rate }}</td>
-                                <td>
-                                  <ul>
-                                  {% for tag in tutor.tags.all %}
-                                  <li> {{ tag.tag }} <br>
-                                  {% endfor %}
-                                  </ul>
-                                </td>
-                                <td>
-                                <td>{{tutor.avgRating}}</td>
-                                </td>
-                            </tr>
-                        {% empty %}
-                            <tr>
-                                <td>No tutor available for your query =(</td>
-                            </tr>
+                    <td> <ul>
+                      {% for course in tutor.courses.all %}
+                        <li> {{course.course_code}} {{course.course_name }}<br>
+                      {% endfor %}
+                    </ul>
+                    </td>
+                    <td>{{ tutor.hourly_rate }}</td>
+                    <td>
+                      <ul>
+                        {% for tag in tutor.tags.all %}
+                          <li> {{ tag.tag }} <br>
                         {% endfor %}
-                        </tbody>
-                    </table>
+                      </ul>
+                    </td>
+                    <td>
+                    <td>{{tutor.avgRating}}</td>
+                    </td>
+                  </tr>
+                {% empty %}
+                  <tr>
+                    <td>No tutor available for your query =(</td>
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
 
-                </div>
-            </div>
+          </div>
         </div>
+      </div>
     </div>
 
-{% else %}
+  {% else %}
 
-  <h3> No tutor available for your query. Would you want to search again? </h3>
+    <h3 align="center"> No tutor available for your query. Would you want to search again? </h3>
 
-{% endif %}
+  {% endif %}
 
 {% endblock %}
