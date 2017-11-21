@@ -62,6 +62,22 @@ class Tutor(models.Model):
     # sessions = models.ManyToManyField('scheduler.session')
 
     @property
+    def avgRating(self):
+        """Get the average rating of a tutor. Return 0 by default."""
+        # TODO: don't display untill more than 3 reviews received.
+        review_list = self.review_set.all()
+        if not review_list.exists():
+            return 0
+        rating_list = []
+        for review in review_list:
+            rating_list.append(review.rating)
+        return sum(rating_list) / float(len(rating_list))
+
+    @property
+    def full_name(self):
+        return self.user.first_name + " " + self.user.last_name
+
+    @property
     def username(self):
         return self.user.username
 

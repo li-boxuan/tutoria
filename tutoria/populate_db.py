@@ -14,6 +14,17 @@ from scheduler.models import Session
 from datetime import (datetime, timedelta, time, date)
 import django.utils.timezone as tz
 from uuid import uuid4
+from review.models import Review
+from account.models import Student, Tutor
+
+
+def add_review(content, rating, student, tutor, anonymous):
+    """Add a review."""
+    review, _ = Review.objects.get_or_create(
+        content=content, rating=rating, student=student, tutor=tutor,
+        anonymous=anonymous)
+    review.save()
+    return review
 
 
 def add_coupon(start_date, end_date, coupon_code):
@@ -165,7 +176,7 @@ def populate_tutor():
 
 
 def populate_session(tutors):
-    DEMO_DATE = date(2017, 11, 10)
+    DEMO_DATE = date(2017, 11, 17)
     if tutors is not None:
         for tutor in tutors:
             d = datetime.combine(DEMO_DATE, OFFICE_HOURS['begin'])
@@ -254,31 +265,53 @@ def populate_student():
 
 
 def populate_bookingrecord():
-    from scheduler.models import (Session, BookingRecord)
-    from account.models import (User, Student, Tutor)
-    from wallet.models import Transaction
-    # let it err rather than create improper users
-    user = User.objects.get(username='ckchui')
-    s = Student.objects.get(user=user)
-    user = User.objects.get(username='georgem')
-    t = Tutor.objects.get(user=user)
+    return
+    # from scheduler.models import (Session, BookingRecord)
+    # from account.models import (User, Student, Tutor)
+    # from wallet.models import Transaction
+    # # let it err rather than create improper users
+    # user = User.objects.get(username='ckchui')
+    # s = Student.objects.get(user=user)
+    # user = User.objects.get(username='georgem')
+    #
+    # DEMO_DATE = date(2017, 11, 1)
+    # DEMO_TIME = time(9, 30)
+    # d = datetime.combine(DEMO_DATE, DEMO_TIME)
+    # dn = d + OFFICE_HOUR_STEP['CT']
+    # tran, _ = Transaction.objects.get_or_create(
+    #     issuer=s, receiver=t, amount=100, created_at=tz.make_aware(d), commission=5.0)
+    # sess = t.session_set.all()[0]
+    # sess.status = Session.BOOKED
+    # sess.save()
+    # # use populated session
+    # # sess, _ = Session.objects.get_or_create(start_time=tz.make_aware(d), end_time=tz.make_aware(dn),tutor=t,status=Session.BOOKABLE)
+    # b, _ = BookingRecord.objects.get_or_create(
+    #     student=s, tutor=t, session=sess, entry_date=tz.make_aware(d), transaction=tran, status=BookingRecord.INCOMING)
 
-    DEMO_DATE = date(2017, 11, 1)
-    DEMO_TIME = time(9, 30)
-    d = datetime.combine(DEMO_DATE, DEMO_TIME)
-    dn = d + OFFICE_HOUR_STEP['CT']
-    tran, _ = Transaction.objects.get_or_create(
-        issuer=s, receiver=t, amount=100, created_at=tz.make_aware(d), commission=5.0)
-    sess = t.session_set.all()[0]
-    sess.status = Session.BOOKED
-    sess.save()
-    # use populated session
-    # sess, _ = Session.objects.get_or_create(start_time=tz.make_aware(d), end_time=tz.make_aware(dn),tutor=t,status=Session.BOOKABLE)
-    b, _ = BookingRecord.objects.get_or_create(
-        student=s, tutor=t, session=sess, entry_date=tz.make_aware(d), transaction=tran,status=BookingRecord.INCOMING)
+
+def populate_review():
+    """Populate some reviews into our database."""
+    review_list = []
+    student_list = Student.objects.all()
+    tutor_list = Tutor.objects.all()
+    review_list.append(add_review(content="Best tutor XD",
+                                  rating=5, student=student_list[0],
+                                  tutor=tutor_list[0], anonymous=False))
+    review_list.append(add_review(content="Nice tutor!",
+                                  rating=4, student=student_list[1],
+                                  tutor=tutor_list[1], anonymous=False))
+
+    review_list.append(add_review(content="Just a tutor...",
+                                  rating=2, student=student_list[2],
+                                  tutor=tutor_list[2], anonymous=False))
+    review_list.append(add_review(content="Bad tutor >_<",
+                                  rating=0, student=student_list[3],
+                                  tutor=tutor_list[3], anonymous=False))
+    return review_list
 
 
 def populate_coupon():
+    """Populate coupons into the database."""
     coupon_list = []
     coupon_list.append(add_coupon(datetime(1997, 6, 15), datetime(2097, 6, 15),
                                   uuid4()))
@@ -305,6 +338,7 @@ def populate():
     populate_session(tutors)
     populate_bookingrecord()
     coupons = populate_coupon()
+    populate_review()
     return [tutors, students]
 
 
