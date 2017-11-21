@@ -1,33 +1,15 @@
 """View for search results."""
-from django.shortcuts import get_object_or_404, render
-from django.http import HttpResponse, HttpResponseRedirect
-from django.urls import reverse
 from django.views.generic import ListView, TemplateView
 import re  # Regular expression for search matching
 
 from account.models import Tutor
-from .forms import SearchForm
 
 
 class IndexView(TemplateView):
+    """Render the search page."""
+
     template_name = 'search.html'
-    # context_object_name = 'index_context'
-
-
-# class IndexView(FormView):
-#     template_name = 'search.html'
-#     form_class = SearchForm
-#     success_url = '.'
-#
-#     def get_context_data(self, **kwargs):
-#         context = super(IndexView, self).get_context_data(**kwargs)
-#         return context
-#
-#     def form_valid(self, form):
-#         # This method is called when valid form data has been POSTed.
-#         # It should return an HttpResponse.
-#         # print "form is valid"
-#         return super(IndexView, self).form_valid(form)
+    context_object_name = 'index_context'
 
 
 class ResultView(ListView):
@@ -39,6 +21,10 @@ class ResultView(ListView):
     def get_queryset(self):
         """Determine the list of tutors to be displayed."""
         keywords = self.request.GET['keywords']
+        if 'sort' in self.request.GET:
+            sort_method = self.request.GET['sort']
+        else:
+            sort_method = 'rating'  # Sort by rating by default
         all_tutors = Tutor.objects.all()
         filtered_tutors = []
         for tutor in all_tutors:
@@ -53,6 +39,9 @@ class ResultView(ListView):
             # Regular expression match
             if re.search(keywords, tutor_info, re.IGNORECASE):
                 filtered_tutors.append(tutor)
+        if (sort_method == 'hourly_rate'):
+            return sorted(filtered_tutors, key=lambda x: x.hourly_rate,
+                          reverse=False)
         return sorted(filtered_tutors, key=lambda x: x.avgRating, reverse=True)
 
     def get_context_data(self, **kwargs):

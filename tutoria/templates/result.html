@@ -18,11 +18,11 @@
                                <input type="text" class="form-control" name="keywords"
                                 autofocus value={{keywords}}>
                             </div>
-                            <div>
+                            <div class="col-md-12">
                                 Sort:
-                                <form action="" method="post">
+                                <form action="" method="get">
                                     <select name="sort" onChange="form.submit();">
-                                        <option value="rating">Rating</option>
+                                        <option value="rating" select="selected">Rating</option>
                                         <option value="hourly_rate">Hourly Rate</option>
                                     </select>
                                 </form>
