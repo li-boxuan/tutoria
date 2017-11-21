@@ -35,7 +35,7 @@ class ResultView(generic.ListView):
             # Regular expression match
             if re.search(keywords, tutor_info, re.IGNORECASE):
                 filtered_tutors.append(tutor)
-        return filtered_tutors
+        return sorted(filtered_tutors, key=lambda x: x.avgRating, reverse=True)
 
     def get_context_data(self, **kwargs):
         """Obtain search query keywords from GET request."""
