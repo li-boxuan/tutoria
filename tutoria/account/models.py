@@ -65,9 +65,9 @@ class Tutor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='tutor_profile')
     bio = models.TextField(default='')
     phone_regex = RegexValidator(
-        regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+85212345678' or '12345678'. 8 or 11 digits are allowed.")
+        regex=r'^\d{9,15}$', message="Phone number must be entered in the format: '12345678'. 8 or 11 digits are allowed.")
     phone = models.CharField(
-        validators=[phone_regex], max_length=11, blank=True)
+        max_length=11, blank=True)
     university = models.CharField(
         max_length=128, default='The University of Hong Kong')
     hourly_rate = models.PositiveIntegerField(default=0)
