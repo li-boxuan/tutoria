@@ -32,6 +32,21 @@ class User(auth_models.User):
     wallet_balance = models.PositiveIntegerField(default=0)
     avatar = models.ImageField(default='default_avatar.png')
 
+    @property
+    def tutor(self):
+        try:
+            tutor = getattr(self, 'tutor_profile')
+        except:
+            tutor = None
+        return tutor
+
+    @property
+    def student(self):
+        try:
+            student = getattr(self, 'student_profile')
+        except:
+            student = None
+        return student
 
 class Tutor(models.Model):
     """Models the tutor."""
@@ -47,7 +62,7 @@ class Tutor(models.Model):
         default=CONTRACTED_TUTOR,
     )
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='tutor_profile')
     bio = models.TextField(default='')
     phone_regex = RegexValidator(
         regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+85212345678' or '12345678'. 8 or 11 digits are allowed.")
@@ -134,7 +149,7 @@ class Tutor(models.Model):
 
 
 class Student(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='student_profile')
 
     @property
     def full_name(self):
