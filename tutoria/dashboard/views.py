@@ -179,9 +179,32 @@ class MytimetableView(generic.ListView):
                 #print(index)
                 timetable[index]['status'] = str(session.status)
                 timetable[index]['id'] = session.id
+                if session.status == session.BOOKABLE:
+                    # if the session is bookable, then the tutor can black it out
+                    pass
+                elif session.status == session.BOOKED:
+                    # logic is a bit tricky here
+                    # note we won't pass session id but booking_record id here
+                    # because one session can have multiple booking records
+                    # tutor wants to see the latest record when clicking the slot
+                    records = session.bookingrecord_set.all()
+                    for record in records:
+                        if record.status == record.INCOMING:
+                            timetable[index]['id'] = record.id
+                            break
+
         context['timetable'] = timetable
         # print(timetable)
         return context
+
+    def post(self, request, **kwargs):
+        #print(request)
+        session_id = self.request.POST.get('session_id', '')
+        session = Session.objects.get(id=session_id)
+        session.status = Session.CLOSED
+        session.save()
+        return redirect('dashboard/mytimetable/')
+
 
 class MyWalletView(generic.TemplateView):
     template_name = 'my_wallet.html'

@@ -30,7 +30,7 @@
                         {% endif %}
                         {% if grid.status == 'A' %}
                             <td colspan="1" class="bg-success" id="book">
-                                <form id="book-{{ grid.id }}" method="post" action="{% url 'tutor:confirm_booking' tutor_id=tutor.id %}">
+                                <form id="book-{{ grid.id }}" method="post" action="{% url 'dashboard:mytimetable' %}">
                                 {% csrf_token %}
                                 <div onclick="document.getElementById('book-{{ grid.id }}').submit();">
                                     <input type="hidden" name="session_id" value="{{ grid.id }}">&nbsp;
@@ -38,8 +38,14 @@
                                 </form>
                             </td>
                         {% elif grid.status == 'B' %}
-                            <td colspan="1" class="bg-primary">&nbsp;
+                            <td colspan="1" class="bg-primary" id="book">
+                                <form id="book-{{ grid.id }}" method="get" action="{% url 'dashboard:mybookings' %}">
+                                <div onclick="document.getElementById('book-{{ grid.id }}').submit();">
+                                    <input type="hidden" name="id" value="{{ grid.id }}">&nbsp;
+                                </div>
+                                </form>
                             </td>
+
                         {% elif grid.status == 'X' %}
                             <td colspan="1" class="bg-info">&nbsp;
                             </td>
