@@ -151,12 +151,22 @@
                   <tbody>
                   <tr>
                     <td width="20%">
-                      <a href="">
-                        <img class="img-rounded" width=128px src="{{ review.student.avatar.url }}" style="display: block; margin: 0 auto;">
-                      </a>
+                        {% if review.anonymous %}
+                          <img class="img-rounded" width=128px src="https://openclipart.org/download/247319/abstract-user-flat-3.svg" style="display: block; margin: 0 auto;">
+                        {% else %}
+                          {% if review.student.avatar.url %}
+                            <a href=""><img class="img-rounded" width=128px src="{{ review.student.avatar.url }}" style="display: block; margin: 0 auto;"></a>
+                          {% else %}
+                            <a href=""><img class="img-rounded" width=128px src="https://openclipart.org/download/247319/abstract-user-flat-3.svg" style="display: block; margin: 0 auto;"></a>
+                          {% endif %}
+                        {% endif %}
                       <br>
                       <div style="text-align: center;">
-                        <a href="">{{ review.student.full_name }}</a>
+                        {% if not review.anonymous %}
+                          <a href="">{{ review.student.full_name }}</a>
+                        {% else %}
+                          Anonymous
+                        {% endif %}
                       </div>
                       <div style="text-align: center;">
                         <h5>Rating</h5>
