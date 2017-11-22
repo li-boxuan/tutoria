@@ -300,7 +300,7 @@ def populate_review():
                                   tutor=tutor_list[2], anonymous=False))
     review_list.append(add_review(content="Bad tutor >_<",
                                   rating=0, student=student_list[3],
-                                  tutor=tutor_list[3], anonymous=False))
+                                  tutor=tutor_list[3], anonymous=True))
     return review_list
 
 
