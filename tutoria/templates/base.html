@@ -15,6 +15,7 @@
 			<script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
 			<script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
 		<![endif]-->
+    {% block header %}{% endblock %}
 </head>
 <body>
 <!--Here is the navbar-->
@@ -43,8 +44,8 @@
                      <ul class="dropdown-menu">
                        <li><a href="{% url 'dashboard:mybookings' %}">My Bookings</a></li>
                        <li><a href="{% url 'dashboard:mytransactions' %}">My Transactions</a></li>
-                       <li><a href="#">My Timetable</a></li>
-                       <li><a href="#">My Wallet</a></li>
+                       <li><a href="{% url 'dashboard:mytimetable' %}">My Timetable</a></li>
+                       <li><a href="{% url 'dashboard:mywallet' %}">My Wallet</a></li>
                      </ul>
                     </li>
 
