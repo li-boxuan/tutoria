@@ -147,28 +147,31 @@
                   <th>Content</th>
                 </tr>
                 </thead>
-                <tbody>
-                <tr>
-                  <td>
-                    <a href="">
-                      <img class="img-rounded" width=128px src="https://pbs.twimg.com/media/CIMLtlwXAAAsA8c.jpg">
-                    </a><br>
-                    <div style="text-align: center;">
-                      <a href="">Zemin Jiang</a>
-                    </div>
-                    <div style="text-align: center;">
-                      <h5>Rating</h5>
-                      <span class="fa fa-star checked"></span>
-                      <span class="fa fa-star checked"></span>
-                      <span class="fa fa-star checked"></span>
-                      <span class="fa fa-star"></span>
-                      <span class="fa fa-star"></span>
-                    </div>
-                  </td>
-                  <td>
-                    Your media must pay attention to ah, do not "see the wind, it is rainy" ah. Received these messages, you have to judge the media itself, understand the meaning of it? If these are completely ... something out of nothing, you help him again, you equal to ... you also mean ... ... you also have a responsibility ah. No ... no (default, hand picked) meaning. In accordance with Hong Kong's basic principle ... ... in accordance with the election law - to produce ... ... ... ... you just ask me ah, I can answer your one "no comment", then you are unhappy, then what to do? I do not mean that I am handing him to be appointed. You ask me not ... support is not supported, I support it. I will tell you this explicitly. I think you, ah, you ... I feel you have to learn one of the press, you are very familiar with this Western value. After all, you too young (too young), understand this meaning. I tell you I'm experienced, see much! Ah, which country in the West have I never been to? Media They - you ... you have to know that America Wallace, than you do not know where to go up. Ah, I am laughing with him! So the media ah, want ... ... or to improve their knowledge level! Understand my meaning - do not know know ah? (Understand ah?) Oh, I also give you a hurry ah, really. You guys really ... I thought ... everywhere ... you guys have a good place to go all over the world, and you run faster than other Western reporters. However, ask questions, ah, too simple (superficial), ah, sometimes naïve! (Sometimes very naive) Understand no ah? Do not know know ah? I am very sorry, I am speaking to you as an elder today. I am not a journalist, but I see too much, I ... ... I have the necessary to tell you a little bit, the experience of life. What I just did ... I just wanted to miss it. That is, every time I come across you, I just say that there is a saying in China, "Silence makes a big fortune." I will not say anything. this is the best! But I think, I see you so passionate, ah, a word not to say is not good. So you must have - you have to be responsible for any deviations in your coverage in the future. I did not say to be appointed (Tung Chee Hwa), there is no such meaning. But you ask ... you must have to ask me ... do not support Mr TUNG. We do not support him? He is now the chief executive, how can we not support the chief executive?欸, but also in accordance with Hong Kong law, right? To ... follow Hong Kong ... Of course our decision is also important. Hong Kong Special Administrative Region ... The Special Administrative Region belongs to the Central People's Government of China ... People's Republic of China (People's Republic of China). what? At that time we will stand up! You guys, do not think ... like it ... get big news, say it has been made, and criticize me again. You, naïve! (Naive!) I'm angry! (I am angry!) I tell you, ah, you are like that!
-                  </td>
-                </tr>
+                {%  for review in review_list %}
+                  <tbody>
+                  <tr>
+                    <td width="20%">
+                        <a href="">
+                          <img class="img-rounded" width=128px src="{{ review.student.avatar.url }}" style="display: block; margin: 0 auto;">
+                        </a>
+                        <br>
+                        <div style="text-align: center;">
+                          <a href="">{{ review.student.full_name }}</a>
+                        </div>
+                        <div style="text-align: center;">
+                          <h5>Rating</h5>
+                          <span class="fa fa-star checked"></span>
+                          <span class="fa fa-star checked"></span>
+                          <span class="fa fa-star checked"></span>
+                          <span class="fa fa-star"></span>
+                          <span class="fa fa-star"></span>
+                        </div>
+                    </td>
+                    <td width="80%">
+                        {{ review.content }}
+                    </td>
+                  </tr>
+                {%  endfor %}
                 </tbody>
               </table>
             </form>

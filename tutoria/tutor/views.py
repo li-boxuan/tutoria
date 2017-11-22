@@ -10,6 +10,7 @@ from wallet.models import Transaction
 from django.views import generic
 from django.core.mail import send_mail
 
+
 class DetailView(generic.DetailView):
     """A class for the detailed view of tutor profile."""
 
@@ -30,17 +31,17 @@ class DetailView(generic.DetailView):
         # retrieve date of today
         today = date.today()
         for i in range(days_to_display * slots_per_day):
-            elem = {'status' : 'X', 'date' : str(today + timedelta(days=i / slots_per_day)), 'id': ''}
-            #print(elem)
-            timetable.append(elem) # closed
+            elem = {'status': 'X', 'date': str(today + timedelta(days=i / slots_per_day)), 'id': ''}
+            # print(elem)
+            timetable.append(elem)  # closed
         # print("tot: " + str(days_to_display * slots_per_day))
         # convert "date" of today to "datetime" of today's 0 'o clock
         # init_time = datetime.combine(today, datetime.min.time())
         for session in self.get_object().session_set.all():
             start_time = session.start_time
-            hour_diff = start_time.hour - 0 # if timetable starts from 0
-            hour_diff += 8 # timezone issue (todo)
-            #print(start_time, " hour ", start_time.hour)
+            hour_diff = start_time.hour - 0  # if timetable starts from 0
+            hour_diff += 8  # timezone issue (todo)
+            # print(start_time, " hour ", start_time.hour)
             minute_diff = start_time.minute
             date_diff = (start_time.date() - today).days
             # filter date within days_to_display
@@ -52,7 +53,7 @@ class DetailView(generic.DetailView):
                     index += hour_diff
                 # print("date_diff = ", date_diff, "hour_diff = ", hour_diff,
                 #        "minute_diff = ", minute_diff, "index = ", index)
-                #print(index)
+                # print(index)
                 timetable[index]['status'] = str(session.status)
                 timetable[index]['id'] = session.id
         context['timetable'] = timetable
@@ -68,11 +69,14 @@ class DetailView(generic.DetailView):
             for record in self.get_object().bookingrecord_set.all():
                 if visitor == record.student.user:
                     context['phone_visible'] = True
+        # Get reviews
+        context['review_list'] = self.get_object().review_set.all()
         return context
 
-# -----------------------------------------------------------------------------
-# ####### Book Session #######
 
+# -----------------------------------------------------------------------------
+
+# ####### Book Session #######
 
 @login_required(login_url='/auth/login/')
 def confirm_booking(request, tutor_id):
@@ -97,7 +101,7 @@ def confirm_booking(request, tutor_id):
         for hist_booking in hist_booking_list:
             if hist_booking.session.start_time.date() == \
                     new_session.start_time.date() and \
-                    hist_booking.tutor == tutor and hist_booking.status!='C':
+                            hist_booking.tutor == tutor and hist_booking.status != 'C':
                 return HttpResponse("You can only book one session per day!")
         return render(request, 'book.html',
                       {'tutor': tutor,
@@ -144,17 +148,17 @@ def save_booking(request, tutor_id):
         student.wallet_balance -= tutor.hourly_rate * 1.05
         # Send emails to both students and tutors.
         msgToStudent = 'Your booking with ' + tutor.first_name + ' ' + tutor.last_name + ' from ' + \
-            str(session.start_time) + ' to ' + \
-            str(session.end_time) + ' has been confirmed.'
+                       str(session.start_time) + ' to ' + \
+                       str(session.end_time) + ' has been confirmed.'
         send_mail('Booking Confirmed', msgToStudent,
                   'noreply@hola-inc.top', [student.email], False)
         msgToTutor = 'Your booking with ' + student.first_name + ' ' + student.last_name + ' from ' + \
-            str(session.start_time) + ' to ' + \
-            str(session.end_time) + ' has been confirmed.'
+                     str(session.start_time) + ' to ' + \
+                     str(session.end_time) + ' has been confirmed.'
         send_mail('Booking Confirmed', msgToTutor,
                   'noreply@hola-inc.top', [tutor.email], False)
         return redirect("/dashboard/mybookings/")
     else:
         return HttpResponse("not a legal POST request!")
 
-    # -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
