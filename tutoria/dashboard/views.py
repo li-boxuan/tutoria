@@ -9,7 +9,7 @@ from scheduler.models import BookingRecord, Session
 from account.models import User, Student, Tutor
 from django.contrib.auth.decorators import login_required
 
-from datetime import datetime, timedelta, date
+from datetime import datetime, timedelta, date, time
 from django.utils import timezone
 from django.core.mail import send_mail
 
@@ -156,12 +156,26 @@ class MytimetableView(generic.ListView):
         # retrieve date of today
         today = date.today()
         for i in range(days_to_display * slots_per_day):
-            elem = {'status' : 'X', 'date' : str(today + timedelta(days=i / slots_per_day)), 'id': ''}
-            #print(elem)
+            # add all timeslots that are not in database as CLOSED session
+            # TODO this part might be dirty, we should create all sessions in advance
+            d = today + timedelta(days = i / slots_per_day)
+            if is_contracted_tutor:
+                hour = (i % slots_per_day) / 2
+                minute = 0 if hour % 2 == 0 else 30
+            else:
+                hour = i % slots_per_day
+                minute = 0
+            start_time = datetime.combine(d, time(hour, minute))
+            if is_contracted_tutor:
+                end_time = start_time + timedelta(minutes = 30)
+            else:
+                end_time = start_time + timedelta(hours = 1)
+            session, _ = Session.objects.get_or_create(
+                start_time=timezone.make_aware(start_time),
+                end_time=timezone.make_aware(end_time),
+                tutor=usr)
+            elem = {'status' : session.status, 'date' : str(today + timedelta(days=i / slots_per_day)), 'id': session.id}
             timetable.append(elem) # closed
-
-        # TODO
-        # add all timeslots that are not in database as CLOSED session
 
         # print("tot: " + str(days_to_display * slots_per_day))
         # convert "date" of today to "datetime" of today's 0 'o clock
@@ -197,18 +211,21 @@ class MytimetableView(generic.ListView):
                             break
 
         context['timetable'] = timetable
-        # print(timetable)
+        #print(timetable)
         return context
 
     def post(self, request, **kwargs):
+        # TODO past time cannot be modified
         session_id = self.request.POST.get('session_id', '')
         session = Session.objects.get(id=session_id)
+        print("before update, session = ", session, " status = ", session.status)
         if session.status == session.CLOSED:
             session.status = session.BOOKABLE
         elif session.status == session.BOOKABLE:
             session.status = session.CLOSED
         session.save()
-        return redirect('dashboard/mytimetable/')
+        print("after update, session = ", session, " status = ", session.status)
+        return redirect('/dashboard/mytimetable/')
 
 
 class MyWalletView(generic.TemplateView):
