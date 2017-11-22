@@ -9,7 +9,7 @@ from scheduler.models import BookingRecord, Session
 from account.models import User, Student, Tutor
 from django.contrib.auth.decorators import login_required
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from django.utils import timezone
 from django.core.mail import send_mail
 
@@ -118,7 +118,7 @@ class MybookingsView(generic.ListView):
 class MytimetableView(generic.ListView):
     model = BookingRecord
     template_name = 'my_timetable.html'
-    context_object_name = 'my_booking_records'
+    context_object_name = 'my_timetable'
 
     def get_context_data(self, **kwargs):
         """Get context data."""
@@ -138,7 +138,7 @@ class MytimetableView(generic.ListView):
                 context['user_type'] = 'Tutor'
 
         # (todo:bxli) Assume usr is a teacher here
-
+        context['tutor'] = usr
         # generate a 1D array which stores the timetable
         # there are 14 days
         # private tutor has 24 timeslots per day while contracted tutor has 48
@@ -155,7 +155,7 @@ class MytimetableView(generic.ListView):
         # print("tot: " + str(days_to_display * slots_per_day))
         # convert "date" of today to "datetime" of today's 0 'o clock
         # init_time = datetime.combine(today, datetime.min.time())
-        for session in self.get_object().session_set.all():
+        for session in usr.session_set.all():
             start_time = session.start_time
             hour_diff = start_time.hour - 0 # if timetable starts from 0
             hour_diff += 8 # timezone issue (todo)
