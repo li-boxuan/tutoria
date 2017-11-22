@@ -147,28 +147,41 @@
                   <th>Content</th>
                 </tr>
                 </thead>
-                {%  for review in review_list %}
+                {%  for review, rating, compensate, num in review_rating_list %}
                   <tbody>
                   <tr>
                     <td width="20%">
-                        <a href="">
-                          <img class="img-rounded" width=128px src="{{ review.student.avatar.url }}" style="display: block; margin: 0 auto;">
-                        </a>
-                        <br>
-                        <div style="text-align: center;">
+                        {% if review.anonymous %}
+                          <img class="img-rounded" width=128px src="https://openclipart.org/download/247319/abstract-user-flat-3.svg" style="display: block; margin: 0 auto;">
+                        {% else %}
+                          {% if review.student.avatar.url %}
+                            <a href=""><img class="img-rounded" width=128px src="{{ review.student.avatar.url }}" style="display: block; margin: 0 auto;"></a>
+                          {% else %}
+                            <a href=""><img class="img-rounded" width=128px src="https://openclipart.org/download/247319/abstract-user-flat-3.svg" style="display: block; margin: 0 auto;"></a>
+                          {% endif %}
+                        {% endif %}
+                      <br>
+                      <div style="text-align: center;">
+                        {% if not review.anonymous %}
                           <a href="">{{ review.student.full_name }}</a>
-                        </div>
-                        <div style="text-align: center;">
-                          <h5>Rating</h5>
+                        {% else %}
+                          Anonymous
+                        {% endif %}
+                      </div>
+                      <div style="text-align: center;">
+                        <h5>Rating</h5>
+                        {% for i in rating %}
                           <span class="fa fa-star checked"></span>
-                          <span class="fa fa-star checked"></span>
-                          <span class="fa fa-star checked"></span>
+                        {%  endfor %}
+                        {% for i in compensate %}
                           <span class="fa fa-star"></span>
-                          <span class="fa fa-star"></span>
-                        </div>
+                        {% endfor %}
+                        <br>
+                        {{ num }}/5
+                      </div>
                     </td>
                     <td width="80%">
-                        {{ review.content }}
+                      {{ review.content }}
                     </td>
                   </tr>
                 {%  endfor %}

@@ -69,8 +69,17 @@ class DetailView(generic.DetailView):
             for record in self.get_object().bookingrecord_set.all():
                 if visitor == record.student.user:
                     context['phone_visible'] = True
-        # Get reviews
-        context['review_list'] = self.get_object().review_set.all()
+        # Get reviews and ratings
+        review_list = self.get_object().review_set.all()
+        rating_list = []  # Range for UI. Not numeric.
+        compensate_list = []  # 5 - rating. Used for UI.
+        num_list = []  # Numeric review rating.
+        for review in review_list:
+            rating_list.append(range(review.rating))
+            compensate_list.append(range(5 - review.rating))
+            num_list.append(review.rating)
+        context['review_rating_list'] = zip(review_list, rating_list,
+                                            compensate_list, num_list)  # Create list of tuples (review, rating, compensate)
         return context
 
 
