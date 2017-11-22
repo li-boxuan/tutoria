@@ -145,7 +145,7 @@ class MyWalletView(generic.TemplateView):
         balance = user.wallet_balance
         op = req.POST['operation']
         amount = int(req.POST['amount'])
-        print op
+        print(op)
         if op == 'topup':
             user.wallet_balance += amount;
             user.save()
