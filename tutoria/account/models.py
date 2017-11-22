@@ -137,6 +137,10 @@ class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     @property
+    def full_name(self):
+        return self.user.first_name + " " + self.user.last_name
+
+    @property
     def username(self):
         return self.user.username
 

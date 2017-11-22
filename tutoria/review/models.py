@@ -7,7 +7,7 @@ class Review(models.Model):
     """Model for tutor reviews."""
 
     content = models.TextField()  # Content of review
-    rating = models.FloatField()  # Rating varies from 0 to 5
+    rating = models.IntegerField()  # Rating varies from 0 to 5
     # Which student wrote this review. Many-to-one relation.
     student = models.ForeignKey('account.Student', on_delete=models.CASCADE)
     # Which tutor receives this review. Many-to-one relation.

@@ -1,14 +1,17 @@
-{% extends "base.html" %} {% load staticfiles %} {% block title %}Tutoria{% endblock %} {% block content %} {% if records is not None %}
+{% extends "base.html" %} {% load staticfiles %} {% block title %}Tutoria{% endblock %} {% block content %} 
 
 <div class="container">
   <div class="row">
     <div class="col-md-11 col-md-offset-1">
       <div class="col-md-11">
-        <table class="table table-hover" width="80%">
+
+
+        {% if id == 'selected' %}
+          <table class="table table-hover" width="80%">
           <thead>
             <tr>
               <th>#</th>
-              {% if user_type == 'Student' %}<th>Tutor</th>{% else %}<th>Student</th>{% endif %}
+              {% if selected_type == 'as_stu' %}<th>Tutor</th>{% else %}<th>Student</th>{% endif %}
               <th>Type</th>
               <th>Start time</th>
               <th>End time</th>
@@ -17,15 +20,73 @@
             </tr>
           </thead>
           <tbody>
-            {% for record in records %}
             <tr>
-              <td>{{forloop.counter}}</td>
-              <td>{% if user_type == 'Student' %}
+              <td>1</td>
+              {% if selected_type == 'as_stu' %}
+              <td>
+                <center>
                 <img class="img-rounded" width=128px src="{{ record.tutor.avatar.url }}"><br>
+                </center>
                 <center>
                   <a href="{% url 'tutor:detail' record.tutor.id %}">{{ record.tutor.first_name }}
                                       {{record.tutor.last_name }}</a>
-                </center>{% else %}{{ record.student.first_name }} {{ record.student.last_name }}{% endif %}
+                </center>
+              </td>
+              {% else %}
+              <td>{{ record.student.first_name }} {{ record.student.last_name }}</td>
+              {% endif %}
+
+
+              <td>
+                {% if record.tutor.tutor_type == 'CT' %} Contracted Tutoring {% else %} Private Tutoring {% endif %}
+              </td>
+
+              <td>{{record.session.start_time}}</td>
+              <td>{{record.session.end_time}}</td>
+              <td>{{record.tutor.hourly_rate }}</td>
+              {% if selected_type == 'as_stu' %}
+              <td> {% if record.status == 'F' %}Finished{% elif record.status == 'C' %}Canceled{% else %}      <form action="{% url 'dashboard:mybookings'%} " method="POST" onsubmit="return confirm('Do you really want to cancel this session?');">
+                    {% csrf_token %}
+                    <button type="submit" name="booking_id" value={{record.id}}>Cancel</button>
+                   </form>
+                {% endif %}
+              </td>
+              {% else %}<td> {% if record.status == 'F' %}Finished{% elif record.status == 'C' %}Canceled{% elif record.status == 'O' %}On-going{% else %}Up-coming{% endif %}</td>
+              {% endif %}             
+            </tr>
+          </tbody>
+          </table>
+
+          <th><center><h2><a href=" {% url 'dashboard:mybookings' %}">View all my bookings</a></h2></center></th>
+        
+
+
+        {% else %}
+        {% if is_student == 'true' %}
+        <table class="table table-hover" width="80%">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Tutor</th>
+              <th>Type</th>
+              <th>Start time</th>
+              <th>End time</th>
+              <th>Hourly rate</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for record in records_as_stu %}
+            <tr>
+              <td>{{forloop.counter}}</td>
+              <td>
+                <center>
+                <img class="img-rounded" width=128px src="{{ record.tutor.avatar.url }}"><br>
+                </center>
+                <center>
+                  <a href="{% url 'tutor:detail' record.tutor.id %}">{{ record.tutor.first_name }}
+                                      {{record.tutor.last_name }}</a>
+                </center>
               </td>
 
 
@@ -36,15 +97,12 @@
               <td>{{record.session.start_time}}</td>
               <td>{{record.session.end_time}}</td>
               <td>{{record.tutor.hourly_rate }}</td>
-              {% if user_type == 'Student' %}
               <td> {% if record.status == 'F' %}Finished{% elif record.status == 'C' %}Canceled{% else %}      <form action="{% url 'dashboard:mybookings'%} " method="POST" onsubmit="return confirm('Do you really want to cancel this session?');">
                     {% csrf_token %}
                     <button type="submit" name="booking_id" value={{record.id}}>Cancel</button>
                    </form>
                 {% endif %}
-              </td>
-              {% else %}<td> {% if record.status == 'F' %}Finished{% elif record.status == 'C' %}Canceled{% elif record.status == 'O' %}On-going{% else %}Up-coming{% endif %}</td>
-              {% endif %}
+              </td>              
             </tr>
             {% empty %}
             <tr>
@@ -53,12 +111,49 @@
             {% endfor %}
           </tbody>
           </table>
-          {% if id == 'selected' %}<th><center><h2><a href=" {% url 'dashboard:mybookings' %}">Back to view all my bookings</a></h2></center></th> {% endif %}
+        {% endif %}
+
+
+        {% if is_tutor == 'true' %}
+        <table class="table table-hover" width="80%">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Student</th>
+              <th>Type</th>
+              <th>Start time</th>
+              <th>End time</th>
+              <th>Hourly rate</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for record in records_as_tut %}
+            <tr>
+              <td>{{forloop.counter}}</td>
+              <td>{{ record.student.first_name }} {{ record.student.last_name }}</td>
+
+              <td>
+                {% if record.tutor.tutor_type == 'CT' %} Contracted Tutoring {% else %} Private Tutoring {% endif %}
+              </td>
+
+              <td>{{record.session.start_time}}</td>
+              <td>{{record.session.end_time}}</td>
+              <td>{{record.tutor.hourly_rate }}</td>
+              <td> {% if record.status == 'F' %}Finished{% elif record.status == 'C' %}Canceled{% elif record.status == 'O' %}On-going{% else %}Up-coming{% endif %}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td>No bookings found =(</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+          </table>
+          {% endif %}
+          {% endif %}
+
       </div>
     </div>
   </div>
 </div>
-
-{% else %}
-
-<h3> No bookings found. Just relax! </h3> {% endif %} {% endblock %}
+ {% endblock %}

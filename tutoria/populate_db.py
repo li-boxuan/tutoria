@@ -71,11 +71,15 @@ def add_tutor(username, password, email, first_name, last_name,
               tutor_type='CT',
               hourly_rate=0, phone='99999999',
               bio='',
-              courses=[['COMP3297', 'Software Engineering']],
-              tags=['Software Engineering'],
+              courses=None,
+              tags=None,
               wallet_balance=-1, avatar='default_avatar.png',
               sessions=None, university='The University of Hong Kong'):
-    from account.models import (User, Tutor, Course, SubjectTag)
+    if tags is None:
+        tags = ['Software Engineering']
+    if courses is None:
+        courses = [['COMP3297', 'Software Engineering']]
+    from account.models import (User, Tutor)
     if wallet_balance < 0:
         wallet_balance = random.randint(1, 300) * 10
     if tutor_type == 'CT':
@@ -83,10 +87,10 @@ def add_tutor(username, password, email, first_name, last_name,
     elif hourly_rate < 0:
         hourly_rate = random.randint(1, 300) * 10
 
-#    tutor = Tutor.objects.create_user(username, email, password, first_name=first_name, last_name=last_name)
+    # tutor = Tutor.objects.create_user(username, email, password, first_name=first_name, last_name=last_name)
 
     # user, _ = User.objects.get_or_create(username=username, email=email,
-        # 								  password=password,
+    # 								  password=password,
     #                                      first_name=first_name,
     #                                      last_name=last_name)
     try:
@@ -176,10 +180,10 @@ def populate_tutor():
 
 
 def populate_session(tutors):
-    DEMO_DATE = date(2017, 11, 23)
+    demo_date = date(2017, 11, 23)
     if tutors is not None:
         for tutor in tutors:
-            d = datetime.combine(DEMO_DATE, OFFICE_HOURS['begin'])
+            d = datetime.combine(demo_date, OFFICE_HOURS['begin'])
             while d.time() <= OFFICE_HOURS['end']:
                 dn = d + OFFICE_HOUR_STEP[tutor.tutor_type]
                 s, _ = Session.objects.get_or_create(
@@ -193,9 +197,9 @@ def populate_session(tutors):
     kitty = tutors[2]
     s, _ = Session.objects.get_or_create(
         start_time=tz.make_aware(datetime.combine(
-            date(2017, 11, 3), time(4, 00))),
+            date(2017, 11, 27), time(4, 00))),
         end_time=tz.make_aware(datetime.combine(
-            date(2017, 11, 3), time(5, 00))),
+            date(2017, 11, 27), time(5, 00))),
         tutor=kitty,
         status=Session.BOOKABLE)
 
@@ -246,25 +250,15 @@ def populate_session(tutors):
 
 
 def populate_student():
-    students = []
-    students.append(add_student(
-        'kpwat', 'kpwat', 'watkp@hku.hk', 'Kam Pui', 'Wat'
-    ))
-    students.append(add_student(
-        'ckchui', 'ckchui', 'ckchui@cs.hku.hk', 'Chun-Kit', 'Chui',
-        wallet_balance=500
-    ))
+    students = [add_student('kpwat', 'kpwat', 'watkp@hku.hk', 'Kam Pui', 'Wat'),
+                add_student('ckchui', 'ckchui', 'ckchui@cs.hku.hk', 'Chun-Kit', 'Chui', wallet_balance=500),
+                add_student('atam', 'atam', 'atam@cs.hku.hk', 'Anthony', 'Tam', wallet_balance=1000),
+                add_student('jrchow', 'jrchow', 'jrchow@hku.hk', 'Jingran', 'Zhou', wallet_balance=3000)]
 
-    students.append(add_student(
-        'atam', 'atam', 'atam@cs.hku.hk', 'Anthony', 'Tam', wallet_balance=1000
-    ))
-
-    students.append(add_student(
-        'jrchow', 'jrchow', 'jrchow@hku.hk', 'Jingran', 'Zhou', wallet_balance=3000
-    ))
+    return students
 
 
-def populate_bookingrecord():
+def populate_booking_record():
     return
     # from scheduler.models import (Session, BookingRecord)
     # from account.models import (User, Student, Tutor)
@@ -312,13 +306,12 @@ def populate_review():
 
 def populate_coupon():
     """Populate coupons into the database."""
-    coupon_list = []
-    coupon_list.append(add_coupon(datetime(1997, 6, 15), datetime(2097, 6, 15),
-                                  uuid4()))
-    coupon_list.append(add_coupon(datetime(2025, 6, 15), datetime(2035, 6, 15),
-                                  uuid4()))
-    coupon_list.append(add_coupon(datetime(1960, 6, 15), datetime(1997, 6, 15),
-                                  uuid4()))
+    coupon_list = [add_coupon(datetime(1997, 6, 15), datetime(2097, 6, 15),
+                              uuid4()),
+                   add_coupon(datetime(2025, 6, 15), datetime(2035, 6, 15),
+                              uuid4()),
+                   add_coupon(datetime(1960, 6, 15), datetime(1997, 6, 15),
+                              uuid4())]
     return coupon_list
 
 
@@ -336,7 +329,7 @@ def populate():
     tutors = populate_tutor()
     students = populate_student()
     populate_session(tutors)
-    populate_bookingrecord()
+    populate_booking_record()
     coupons = populate_coupon()
     populate_review()
     return [tutors, students]
