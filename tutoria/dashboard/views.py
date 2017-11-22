@@ -9,7 +9,7 @@ from scheduler.models import BookingRecord, Session
 from account.models import User, Student, Tutor
 from django.contrib.auth.decorators import login_required
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from django.utils import timezone
 from django.core.mail import send_mail
 
@@ -52,10 +52,6 @@ class MytransactionsView(generic.ListView):
            return context
 
 
-    
-
-
-
 class MybookingsView(generic.ListView):
     model = BookingRecord
     template_name = 'my_bookings.html'
@@ -71,20 +67,29 @@ class MybookingsView(generic.ListView):
             usrn = self.request.session['username']
             user = User.objects.get(username=usrn)
             try:
-                usr = Student.objects.get(user=user)
-                context['user_type'] = 'Student'
+                stu = Student.objects.get(user=user)
+                context['is_student'] = 'true'
             except Student.DoesNotExist:
-                usr = Tutor.objects.get(user=user)
-                context['user_type'] = 'Tutor'
-#usr = get_object_or_404(Student, user=user)
+                context['is_student'] = 'false'
+            try:
+                tut = Tutor.objects.get(user=user)
+                context['is_tutor'] = 'true'
+            except Tutor.DoesNotExist:
+                context['is_tutor'] = 'false'
             if 'id' in self.request.GET:
                 context['id'] = 'selected'
-                context['records'] =BookingRecord.objects.filter(id=self.request.GET['id'])
+                context['record'] =BookingRecord.objects.filter(id=self.request.GET['id']).first()
+                if context['record'].student == stu:
+                    context['selected_type'] = 'as_stu'
+                else:
+                    context['selected_type'] = 'as_tut'
                 return context
             else:
                 context['id'] = 'not_selected'
-                context['records'] = usr.bookingrecord_set.all()
-                #print usr.wallet_balance
+                if context['is_tutor'] == 'true':
+                    context['records_as_tut'] = tut.bookingrecord_set.all()
+                if context['is_student'] == 'true':
+                    context['records_as_stu'] = stu.bookingrecord_set.all()
                 return context
 
     def post(self, request, **kwargs):
@@ -115,7 +120,98 @@ class MybookingsView(generic.ListView):
         else:
             return HttpResponse("This session is within 24 hours and can't be canceled!")
 
-class MyTimetableView(generic.ListView):
+class MytimetableView(generic.ListView):
     model = BookingRecord
     template_name = 'my_timetable.html'
-    context_object_name = 'my_booking_records'
+    context_object_name = 'my_timetable'
+
+    def get_context_data(self, **kwargs):
+        """Get context data."""
+        context = super(MytimetableView, self).get_context_data(**kwargs)
+
+        if self.request.session['username'] is None:
+            context['timetable'] = None
+            return context
+        else:
+            usrn = self.request.session['username']
+            user = User.objects.get(username=usrn)
+            try:
+                usr = Student.objects.get(user=user)
+                context['user_type'] = 'Student'
+            except Student.DoesNotExist:
+                usr = Tutor.objects.get(user=user)
+                context['user_type'] = 'Tutor'
+
+        # (todo:bxli) Assume usr is a teacher here
+        context['tutor'] = usr
+        # generate a 1D array which stores the timetable
+        # there are 14 days
+        # private tutor has 24 timeslots per day while contracted tutor has 48
+        is_contracted_tutor = usr.tutor_type == 'CT'
+        slots_per_day = 48 if is_contracted_tutor else 24
+        days_to_display = 14
+        timetable = []
+        # retrieve date of today
+        today = date.today()
+        for i in range(days_to_display * slots_per_day):
+            elem = {'status' : 'X', 'date' : str(today + timedelta(days=i / slots_per_day)), 'id': ''}
+            #print(elem)
+            timetable.append(elem) # closed
+        # print("tot: " + str(days_to_display * slots_per_day))
+        # convert "date" of today to "datetime" of today's 0 'o clock
+        # init_time = datetime.combine(today, datetime.min.time())
+        for session in usr.session_set.all():
+            start_time = session.start_time
+            hour_diff = start_time.hour - 0 # if timetable starts from 0
+            hour_diff += 8 # timezone issue (todo)
+            #print(start_time, " hour ", start_time.hour)
+            minute_diff = start_time.minute
+            date_diff = (start_time.date() - today).days
+            # filter date within days_to_display
+            if 0 <= date_diff < days_to_display:
+                index = date_diff * slots_per_day
+                if is_contracted_tutor:
+                    index += hour_diff * 2 + minute_diff // 30
+                else:
+                    index += hour_diff
+                # print("date_diff = ", date_diff, "hour_diff = ", hour_diff,
+                #        "minute_diff = ", minute_diff, "index = ", index)
+                #print(index)
+                timetable[index]['status'] = str(session.status)
+                timetable[index]['id'] = session.id
+        context['timetable'] = timetable
+        # print(timetable)
+        return context
+
+class MyWalletView(generic.TemplateView):
+    template_name = 'my_wallet.html'
+        
+    def get_context_data(self, **kwargs):
+        context = super(MyWalletView, self).get_context_data(**kwargs)
+        if self.request.session['username'] is None:
+           return context
+        else:
+           context['status'] = 1
+           usrn = self.request.session['username']
+           user = User.objects.get(username=usrn)
+           context['balance'] = user.wallet_balance
+           return context
+
+    def post(self, req, *args, **kwargs):
+        usrn = self.request.session['username']
+        user = User.objects.get(username=usrn)
+        balance = user.wallet_balance
+        op = req.POST['operation']
+        amount = int(req.POST['amount'])
+        print(op)
+        if op == 'topup':
+            user.wallet_balance += amount;
+            user.save()
+            return render(req, self.template_name, {'status': 2, 'balance': user.wallet_balance})
+        else:
+            if amount > balance:
+                return render(req, self.template_name, {'status': 0, 'balance': user.wallet_balance})
+            else:
+                user.wallet_balance -= amount;
+                user.save()
+                return render(req, self.template_name, {'status': 2, 'balance': user.wallet_balance})
