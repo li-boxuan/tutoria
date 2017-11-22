@@ -29,7 +29,7 @@
                             </td>
                         {% endif %}
                         {% if grid.status == 'A' %}
-                            <td colspan="1" class="bg-success" id="book">
+                            <td colspan="1" class="bg-success">
                                 <form id="book-{{ grid.id }}" method="post" action="{% url 'dashboard:mytimetable' %}">
                                 {% csrf_token %}
                                 <div onclick="document.getElementById('book-{{ grid.id }}').submit();">
@@ -38,7 +38,7 @@
                                 </form>
                             </td>
                         {% elif grid.status == 'B' %}
-                            <td colspan="1" class="bg-primary" id="book">
+                            <td colspan="1" class="bg-primary">
                                 <form id="book-{{ grid.id }}" method="get" action="{% url 'dashboard:mybookings' %}">
                                 <div onclick="document.getElementById('book-{{ grid.id }}').submit();">
                                     <input type="hidden" name="id" value="{{ grid.id }}">&nbsp;
@@ -47,8 +47,15 @@
                             </td>
 
                         {% elif grid.status == 'X' %}
-                            <td colspan="1" class="bg-info">&nbsp;
+                            <td colspan="1" class="bg-info">
+                                <form id="book-{{ grid.id }}" method="post" action="{% url 'dashboard:mytimetable' %}">
+                                {% csrf_token %}
+                                <div onclick="document.getElementById('book-{{ grid.id }}').submit();">
+                                    <input type="hidden" name="session_id" value="{{ grid.id }}">&nbsp;
+                                </div>
+                                </form>
                             </td>
+
                         {% endif %}
                         {% if tutor.tutor_type == 'PT' and forloop.counter|divisibleby:24 or tutor.tutor_type == 'CT' and forloop.counter|divisibleby:48 %}
                         </tr>

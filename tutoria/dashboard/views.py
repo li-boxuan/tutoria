@@ -157,6 +157,10 @@ class MytimetableView(generic.ListView):
             elem = {'status' : 'X', 'date' : str(today + timedelta(days=i / slots_per_day)), 'id': ''}
             #print(elem)
             timetable.append(elem) # closed
+
+        # TODO
+        # add all timeslots that are not in database as CLOSED session
+
         # print("tot: " + str(days_to_display * slots_per_day))
         # convert "date" of today to "datetime" of today's 0 'o clock
         # init_time = datetime.combine(today, datetime.min.time())
@@ -179,10 +183,7 @@ class MytimetableView(generic.ListView):
                 #print(index)
                 timetable[index]['status'] = str(session.status)
                 timetable[index]['id'] = session.id
-                if session.status == session.BOOKABLE:
-                    # if the session is bookable, then the tutor can black it out
-                    pass
-                elif session.status == session.BOOKED:
+                if session.status == session.BOOKED:
                     # logic is a bit tricky here
                     # note we won't pass session id but booking_record id here
                     # because one session can have multiple booking records
@@ -198,10 +199,12 @@ class MytimetableView(generic.ListView):
         return context
 
     def post(self, request, **kwargs):
-        #print(request)
         session_id = self.request.POST.get('session_id', '')
         session = Session.objects.get(id=session_id)
-        session.status = Session.CLOSED
+        if session.status == session.CLOSED:
+            session.status = session.BOOKABLE
+        elif session.status == session.BOOKABLE:
+            session.status = session.CLOSED
         session.save()
         return redirect('dashboard/mytimetable/')
 
