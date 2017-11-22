@@ -1,5 +1,6 @@
 {% extends "base.html" %} {% load staticfiles %} {% block title %}Tutoria{% endblock %} {% block content %}
     <div class="container">
+        {% if is_tutor == True %}
         <div class="row">
             <div class="col-md-10 col-md-offset-1">
                 <h3>Tutor Timetable</h3>
@@ -21,7 +22,7 @@
                             </td>
                             {% endfor %}
                         </tr>
-                        {% for grid in timetable %}
+                        {% for grid in tutor_timetable %}
                         {% if tutor.tutor_type == 'PT' and forloop.counter0|divisibleby:24 or tutor.tutor_type == 'CT' and forloop.counter0|divisibleby:48 %}
                         <tr class="slots">
                             <td class="resourcename">
@@ -65,7 +66,56 @@
                 </table>
             </div>
         </div>
+        {% endif %}
 
+        {% if is_student == True %}
+        <div class="row">
+            <div class="col-md-10 col-md-offset-1">
+                <h3>Student Timetable</h3>
+                <table class="" border="1" cellpadding="0">
+                    <tbody>
+                        <tr>
+                            <td>Student Table</td>
+                            {% for i in "xxxxxxxxxxxxxxxxxxxxxxxx" %}
+                            <td colspan="2">
+                            {% if forloop.counter0 < 10 %}
+                                0{{ forloop.counter0 }}:00
+                            {% else %}
+                                {{ forloop.counter0 }}:00
+                            {% endif %}
+                            </td>
+                            {% endfor %}
+                        </tr>
+                        {% for grid in student_timetable %}
+                        {% if forloop.counter0|divisibleby:48 %}
+                        <tr class="slots">
+                            <td class="resourcename">
+                                {{ grid.date }}
+                            </td>
+                        {% endif %}
+                        {% if grid.status == 'A' %}
+                            <td colspan="1" class="bg-primary">
+                                <form id="book-{{ grid.id }}" method="get" action="{% url 'dashboard:mybookings' %}">
+                                <div onclick="document.getElementById('book-{{ grid.id }}').submit();">
+                                    <input type="hidden" name="id" value="{{ grid.id }}">&nbsp;
+                                </div>
+                                </form>
+                            </td>
+                        {% else %}
+                            <td colspan="1" class="bg-info">
+                                <input type="hidden" name="id" value="{{ grid.id }}">&nbsp;
+                            </td>
+
+                        {% endif %}
+                        {% if tutor.tutor_type == 'PT' and forloop.counter|divisibleby:24 or tutor.tutor_type == 'CT' and forloop.counter|divisibleby:48 %}
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
 
     </div>
   {% endblock %}
