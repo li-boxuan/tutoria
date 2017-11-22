@@ -1,6 +1,7 @@
 # Database
 *.sqlite3
 migrations/
+!migrations/__init__.py
 
 # Tmp files for OSX
 .DS_Store
