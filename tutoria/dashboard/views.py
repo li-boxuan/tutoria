@@ -9,7 +9,7 @@ from scheduler.models import BookingRecord, Session
 from account.models import User, Student, Tutor
 from django.contrib.auth.decorators import login_required
 
-from datetime import datetime, timedelta, date
+from datetime import datetime, timedelta, date, time
 from django.utils import timezone
 from django.core.mail import send_mail
 
@@ -130,6 +130,8 @@ class MytimetableView(generic.ListView):
     def get_context_data(self, **kwargs):
         """Get context data."""
         context = super(MytimetableView, self).get_context_data(**kwargs)
+        isStudent = False
+        isTutor = False
 
         if self.request.session['username'] is None:
             context['timetable'] = None
@@ -137,78 +139,142 @@ class MytimetableView(generic.ListView):
         else:
             usrn = self.request.session['username']
             user = User.objects.get(username=usrn)
-            try:
-                usr = Student.objects.get(user=user)
-                context['user_type'] = 'Student'
-            except Student.DoesNotExist:
-                usr = Tutor.objects.get(user=user)
-                context['user_type'] = 'Tutor'
+        
+        try:
+            usr = Tutor.objects.get(user=user)
+            isTutor = True
+        except Tutor.DoesNotExist:
+            pass
 
-        # (todo:bxli) Assume usr is a teacher here
-        context['tutor'] = usr
-        # generate a 1D array which stores the timetable
-        # there are 14 days
-        # private tutor has 24 timeslots per day while contracted tutor has 48
-        is_contracted_tutor = usr.tutor_type == 'CT'
-        slots_per_day = 48 if is_contracted_tutor else 24
-        days_to_display = 14
-        timetable = []
-        # retrieve date of today
-        today = date.today()
-        for i in range(days_to_display * slots_per_day):
-            elem = {'status' : 'X', 'date' : str(today + timedelta(days=i / slots_per_day)), 'id': ''}
-            #print(elem)
-            timetable.append(elem) # closed
-
-        # TODO
-        # add all timeslots that are not in database as CLOSED session
-
-        # print("tot: " + str(days_to_display * slots_per_day))
-        # convert "date" of today to "datetime" of today's 0 'o clock
-        # init_time = datetime.combine(today, datetime.min.time())
-        for session in usr.session_set.all():
-            start_time = session.start_time
-            hour_diff = start_time.hour - 0 # if timetable starts from 0
-            hour_diff += 8 # timezone issue (todo)
-            #print(start_time, " hour ", start_time.hour)
-            minute_diff = start_time.minute
-            date_diff = (start_time.date() - today).days
-            # filter date within days_to_display
-            if 0 <= date_diff < days_to_display:
-                index = date_diff * slots_per_day
+        context['is_tutor'] = isTutor
+        if isTutor:
+            context['tutor'] = usr
+            # generate a 1D array which stores the timetable
+            # there are 14 days
+            # private tutor has 24 timeslots per day while contracted tutor has 48
+            is_contracted_tutor = usr.tutor_type == 'CT'
+            slots_per_day = 48 if is_contracted_tutor else 24
+            days_to_display = 14
+            timetable = []
+            # retrieve date of today
+            today = date.today()
+            for i in range(days_to_display * slots_per_day):
+                # add all timeslots that are not in database as CLOSED session
+                # TODO this part might be dirty, we should create all sessions in advance
+                d = today + timedelta(days = i / slots_per_day)
                 if is_contracted_tutor:
-                    index += hour_diff * 2 + minute_diff // 30
+                    hour = (i % slots_per_day) / 2
+                    minute = 0 if hour % 2 == 0 else 30
                 else:
-                    index += hour_diff
-                # print("date_diff = ", date_diff, "hour_diff = ", hour_diff,
-                #        "minute_diff = ", minute_diff, "index = ", index)
-                #print(index)
-                timetable[index]['status'] = str(session.status)
-                timetable[index]['id'] = session.id
-                if session.status == session.BOOKED:
-                    # logic is a bit tricky here
-                    # note we won't pass session id but booking_record id here
-                    # because one session can have multiple booking records
-                    # tutor wants to see the latest record when clicking the slot
-                    records = session.bookingrecord_set.all()
-                    for record in records:
-                        if record.status == record.INCOMING:
-                            timetable[index]['id'] = record.id
-                            break
+                    hour = i % slots_per_day
+                    minute = 0
+                start_time = datetime.combine(d, time(hour, minute))
+                if is_contracted_tutor:
+                    end_time = start_time + timedelta(minutes = 30)
+                else:
+                    end_time = start_time + timedelta(hours = 1)
+                session, _ = Session.objects.get_or_create(
+                    start_time=timezone.make_aware(start_time),
+                    end_time=timezone.make_aware(end_time),
+                    tutor=usr)
+                elem = {'status' : session.status, 'date' : str(today + timedelta(days=i / slots_per_day)), 'id': session.id}
+                timetable.append(elem) # closed
 
-        context['timetable'] = timetable
-        # print(timetable)
+            # print("tot: " + str(days_to_display * slots_per_day))
+            # convert "date" of today to "datetime" of today's 0 'o clock
+            # init_time = datetime.combine(today, datetime.min.time())
+            for session in usr.session_set.all():
+                start_time = session.start_time
+                hour_diff = start_time.hour - 0 # if timetable starts from 0
+                hour_diff += 8 # timezone issue (todo)
+                #print(start_time, " hour ", start_time.hour)
+                minute_diff = start_time.minute
+                date_diff = (start_time.date() - today).days
+                # filter date within days_to_display
+                if 0 <= date_diff < days_to_display:
+                    index = date_diff * slots_per_day
+                    if is_contracted_tutor:
+                        index += hour_diff * 2 + minute_diff // 30
+                    else:
+                        index += hour_diff
+                    # print("date_diff = ", date_diff, "hour_diff = ", hour_diff,
+                    #        "minute_diff = ", minute_diff, "index = ", index)
+                    #print(index)
+                    timetable[index]['status'] = str(session.status)
+                    timetable[index]['id'] = session.id
+                    if session.status == session.BOOKED:
+                        # logic is a bit tricky here
+                        # note we won't pass session id but booking_record id here
+                        # because one session can have multiple booking records
+                        # tutor wants to see the latest record when clicking the slot
+                        records = session.bookingrecord_set.all()
+                        for record in records:
+                            if record.status == record.INCOMING:
+                                timetable[index]['id'] = record.id
+                                break
+
+            context['tutor_timetable'] = timetable
+            #print(timetable)
+
+        try:
+            usr = Student.objects.get(user=user)
+            isStudent = True
+        except Student.DoesNotExist:
+            pass
+
+        context['is_student'] = isStudent
+        if isStudent:
+            context['student'] = usr
+            # generate a 1D array which stores the timetable
+            # there are 14 days
+            slots_per_day = 48
+            days_to_display = 7
+            timetable = []
+            # retrieve date of today
+            today = date.today()
+            for i in range(days_to_display * slots_per_day):
+                elem = {'status' : 'X', 'date' : str(today + timedelta(days=i / slots_per_day)), 'id': ''}
+                timetable.append(elem) # closed
+
+            for record in usr.bookingrecord_set.all():
+                start_time = record.session.start_time
+                hour_diff = start_time.hour - 0 # if timetable starts from 0
+                hour_diff += 8 # timezone issue (todo)
+                #print(start_time, " hour ", start_time.hour)
+                minute_diff = start_time.minute
+                date_diff = (start_time.date() - today).days
+                # filter date within days_to_display
+                if 0 <= date_diff < days_to_display:
+                    index = date_diff * slots_per_day
+                    index += hour_diff * 2 + minute_diff // 30
+                    # print("date_diff = ", date_diff, "hour_diff = ", hour_diff,
+                    #        "minute_diff = ", minute_diff, "index = ", index)
+                    #print(index)
+                    if record.status == record.INCOMING or record.status == record.ONGOING:
+                        # TODO what about other states?
+                        timetable[index]['status'] = 'A' # use 'A' to represent this record has detail to be referred
+                        timetable[index]['id'] = record.id
+                    if record.tutor.tutor_type == record.tutor.PRIVATE_TUTOR:
+                        timetable[index + 1]['status'] = 'A'
+                        timetable[index + 1]['id'] = record.id
+            
+            context['student_timetable'] = timetable
+            #print(timetable)
+
         return context
 
     def post(self, request, **kwargs):
+        # TODO past time cannot be modified
         session_id = self.request.POST.get('session_id', '')
         session = Session.objects.get(id=session_id)
+        #print("before update, session = ", session, " status = ", session.status)
         if session.status == session.CLOSED:
             session.status = session.BOOKABLE
         elif session.status == session.BOOKABLE:
             session.status = session.CLOSED
         session.save()
-        return redirect('dashboard/mytimetable/')
+        #print("after update, session = ", session, " status = ", session.status)
+        return redirect('/dashboard/mytimetable/')
 
 
 class MyWalletView(generic.TemplateView):
