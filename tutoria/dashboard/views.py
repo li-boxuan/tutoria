@@ -157,10 +157,3 @@ class MyWalletView(generic.TemplateView):
                 user.wallet_balance -= amount;
                 user.save()
                 return render(req, self.template_name, {'status': 2, 'balance': user.wallet_balance})
-        
-
-
-
-
-
-
