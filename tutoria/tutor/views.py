@@ -76,6 +76,7 @@ class DetailView(generic.DetailView):
 
 @login_required(login_url='/auth/login/')
 def confirm_booking(request, tutor_id):
+    # TODO: if not a student, display error message and return
     """Confirm booking a new session."""
     if request.method == 'POST':
         user = User.objects.get(username=request.session['username'])

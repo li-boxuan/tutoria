@@ -115,7 +115,66 @@ class MybookingsView(generic.ListView):
         else:
             return HttpResponse("This session is within 24 hours and can't be canceled!")
 
-class MyTimetableView(generic.ListView):
+class MytimetableView(generic.ListView):
     model = BookingRecord
     template_name = 'my_timetable.html'
     context_object_name = 'my_booking_records'
+
+    def get_context_data(self, **kwargs):
+        """Get context data."""
+        context = super(MytimetableView, self).get_context_data(**kwargs)
+
+        if self.request.session['username'] is None:
+            context['timetable'] = None
+            return context
+        else:
+            usrn = self.request.session['username']
+            user = User.objects.get(username=usrn)
+            try:
+                usr = Student.objects.get(user=user)
+                context['user_type'] = 'Student'
+            except Student.DoesNotExist:
+                usr = Tutor.objects.get(user=user)
+                context['user_type'] = 'Tutor'
+
+        # (todo:bxli) Assume usr is a teacher here
+
+        # generate a 1D array which stores the timetable
+        # there are 14 days
+        # private tutor has 24 timeslots per day while contracted tutor has 48
+        is_contracted_tutor = usr.tutor_type == 'CT'
+        slots_per_day = 48 if is_contracted_tutor else 24
+        days_to_display = 14
+        timetable = []
+        # retrieve date of today
+        today = date.today()
+        for i in range(days_to_display * slots_per_day):
+            elem = {'status' : 'X', 'date' : str(today + timedelta(days=i / slots_per_day)), 'id': ''}
+            #print(elem)
+            timetable.append(elem) # closed
+        # print("tot: " + str(days_to_display * slots_per_day))
+        # convert "date" of today to "datetime" of today's 0 'o clock
+        # init_time = datetime.combine(today, datetime.min.time())
+        for session in self.get_object().session_set.all():
+            start_time = session.start_time
+            hour_diff = start_time.hour - 0 # if timetable starts from 0
+            hour_diff += 8 # timezone issue (todo)
+            #print(start_time, " hour ", start_time.hour)
+            minute_diff = start_time.minute
+            date_diff = (start_time.date() - today).days
+            # filter date within days_to_display
+            if 0 <= date_diff < days_to_display:
+                index = date_diff * slots_per_day
+                if is_contracted_tutor:
+                    index += hour_diff * 2 + minute_diff // 30
+                else:
+                    index += hour_diff
+                # print("date_diff = ", date_diff, "hour_diff = ", hour_diff,
+                #        "minute_diff = ", minute_diff, "index = ", index)
+                #print(index)
+                timetable[index]['status'] = str(session.status)
+                timetable[index]['id'] = session.id
+        context['timetable'] = timetable
+        # print(timetable)
+        return context
+
