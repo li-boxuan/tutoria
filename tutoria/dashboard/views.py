@@ -52,10 +52,6 @@ class MytransactionsView(generic.ListView):
            return context
 
 
-    
-
-
-
 class MybookingsView(generic.ListView):
     model = BookingRecord
     template_name = 'my_bookings.html'
@@ -71,20 +67,29 @@ class MybookingsView(generic.ListView):
             usrn = self.request.session['username']
             user = User.objects.get(username=usrn)
             try:
-                usr = Student.objects.get(user=user)
-                context['user_type'] = 'Student'
+                stu = Student.objects.get(user=user)
+                context['is_student'] = 'true'
             except Student.DoesNotExist:
-                usr = Tutor.objects.get(user=user)
-                context['user_type'] = 'Tutor'
-#usr = get_object_or_404(Student, user=user)
+                context['is_student'] = 'false'
+            try:
+                tut = Tutor.objects.get(user=user)
+                context['is_tutor'] = 'true'
+            except Tutor.DoesNotExist:
+                context['is_tutor'] = 'false'
             if 'id' in self.request.GET:
                 context['id'] = 'selected'
-                context['records'] =BookingRecord.objects.filter(id=self.request.GET['id'])
+                context['record'] =BookingRecord.objects.filter(id=self.request.GET['id']).first()
+                if context['record'].student == stu:
+                    context['selected_type'] = 'as_stu'
+                else:
+                    context['selected_type'] = 'as_tut'
                 return context
             else:
                 context['id'] = 'not_selected'
-                context['records'] = usr.bookingrecord_set.all()
-                #print usr.wallet_balance
+                if context['is_tutor'] == 'true':
+                    context['records_as_tut'] = tut.bookingrecord_set.all()
+                if context['is_student'] == 'true':
+                    context['records_as_stu'] = stu.bookingrecord_set.all()
                 return context
 
     def post(self, request, **kwargs):
@@ -119,3 +124,43 @@ class MyTimetableView(generic.ListView):
     model = BookingRecord
     template_name = 'my_timetable.html'
     context_object_name = 'my_booking_records'
+
+class MyWalletView(generic.TemplateView):
+    template_name = 'my_wallet.html'
+        
+    def get_context_data(self, **kwargs):
+        context = super(MyWalletView, self).get_context_data(**kwargs)
+        if self.request.session['username'] is None:
+           return context
+        else:
+           context['status'] = 1
+           usrn = self.request.session['username']
+           user = User.objects.get(username=usrn)
+           context['balance'] = user.wallet_balance
+           return context
+
+    def post(self, req, *args, **kwargs):
+        usrn = self.request.session['username']
+        user = User.objects.get(username=usrn)
+        balance = user.wallet_balance
+        op = req.POST['operation']
+        amount = int(req.POST['amount'])
+        print op
+        if op == 'topup':
+            user.wallet_balance += amount;
+            user.save()
+            return render(req, self.template_name, {'status': 2, 'balance': user.wallet_balance})
+        else:
+            if amount > balance:
+                return render(req, self.template_name, {'status': 0, 'balance': user.wallet_balance})
+            else:
+                user.wallet_balance -= amount;
+                user.save()
+                return render(req, self.template_name, {'status': 2, 'balance': user.wallet_balance})
+        
+
+
+
+
+
+

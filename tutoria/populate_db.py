@@ -193,9 +193,9 @@ def populate_session(tutors):
     kitty = tutors[2]
     s, _ = Session.objects.get_or_create(
         start_time=tz.make_aware(datetime.combine(
-            date(2017, 11, 3), time(4, 00))),
+            date(2017, 11, 27), time(4, 00))),
         end_time=tz.make_aware(datetime.combine(
-            date(2017, 11, 3), time(5, 00))),
+            date(2017, 11, 27), time(5, 00))),
         tutor=kitty,
         status=Session.BOOKABLE)
 
