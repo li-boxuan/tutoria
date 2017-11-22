@@ -14,14 +14,25 @@ from django.core.validators import RegexValidator
 
 WIDGET_STYLE_CLASS = {}#{'class' : 'form-control' }
 
+class UpdateUserForm(forms.ModelForm):
+	"""Models the form for User profile update."""
+	class Meta:
+		model = User
+		fields = ('first_name', 'last_name', 'email')
 
+class UpdateTutorForm(forms.ModelForm):
+	"""Models the form for Tutor profile update."""
+	class Meta:
+		model = Tutor
+		fields = ('bio', 'hourly_rate', 'phone', 'tags', 'courses', 'visible')
+
+	
 class UserForm(forms.ModelForm):
     """Models the form for User registration."""
     password = forms.CharField(
         label='Password',
         widget=forms.PasswordInput(),
     )
-
     class Meta:
         model = User
         fields = ('username', 'password', 'email', 'first_name', 'last_name')
@@ -63,6 +74,6 @@ class TutorForm(forms.ModelForm):
 
     class Meta:
         model = Tutor
-        fields = ('hourly_rate', 'bio', 'tutor_type', 'phone', 'university')
+        fields = ('bio', 'tutor_type', 'hourly_rate','phone', 'university')
         exclude = ('user', )
 

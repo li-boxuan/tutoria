@@ -13,13 +13,74 @@ from django.contrib.auth import (authenticate, login, logout)
 from django.contrib.auth.decorators import login_required
 from account.models import (User, Tutor, Student, SubjectTag,
                            Course)
-from .forms import (UserForm, TutorForm)
+from .forms import (UserForm, TutorForm, UpdateUserForm, UpdateTutorForm)
 
 class SINGUP_STATUS:
     NONE = 0
     SUCCESS = 1
     EXISTED = 2
     FAILED = 3
+
+class ProfileView(generic.TemplateView):
+	"""Models the profile view."""
+	model = User
+	template_name = 'profile.html'
+
+	def get_context_data(self, **kwargs):
+		context = super(ProfileView, self).get_context_data(**kwargs)
+		context['user_form'] = None
+		context['tutor_form'] = None
+		return context
+
+	def get(self, req, *args, **kwargs):
+		context = self.get_context_data(**kwargs)
+		user = User.objects.get(username=req.session['username'])
+		context['user_form'] = UpdateUserForm(prefix='user_form', instance=user)
+		if user.tutor is not None:
+			context['tutor_form'] = UpdateTutorForm(prefix='tutor_form', instance=user.tutor)
+		return self.render_to_response(context)
+
+	def post(self, req, *args, **kwargs):
+		context = self.get_context_data(**kwargs)
+		user = User.objects.get(username=req.session['username'])
+		user_form = UpdateUserForm(req.POST, prefix='user_form', instance=user)
+		if user_form.is_valid():
+			print(user_form)
+			user_form.save()
+		if user.tutor is not None:
+			tutor_form = UpdateTutorForm(req.POST, prefix='tutor_form', instance=user.tutor)
+			# print(tutor_form)
+			if tutor_form.is_valid():
+				tutor_form.save()
+				print('valid', tutor_form)
+		return HttpResponseRedirect(reverse('auth:profile'))
+
+class TutorSettingView(generic.TemplateView):
+	"""Models the view for tutor update."""
+	model = Tutor
+	template_name = 'profile.html'
+
+	def get_context_data(self, **kwargs):
+		context = super(TutorSettingView, self).get_context_data(**kwargs)
+		context['user_form'] = None
+		context['tutor_form'] = None
+		return context
+
+	def get(self, req, *args, **kwargs):
+		context = self.get_context_data(**kwargs)
+		user = User.objects.get(username=req.session['username'])
+
+		context['tutor_form'] = UpdateTutorForm(prefix='tutor_form', instance=user.tutor)
+		return self.render_to_response(context)
+
+	def post(self, req, *args, **kwargs):
+		context = self.get_context_data(**kwargs)
+		user = User.objects.get(username=req.session['username'])
+		tutor_form = UpdateTutorForm(req.POST, prefix='tutor_form', instance=user.tutor)
+		if tutor_form.is_valid():
+			tutor_form.save()
+		return self.render_to_response(context)
+
 
 
 class IndexView(generic.TemplateView):
@@ -83,7 +144,7 @@ class StudentView(IndexView):
         return self.render_to_response(context)
 
     def post(self, req, *args, **kwargs):
-        context = self.get_context_data()
+        context = self.get_context_data(**kwargs)
         form = UserForm(req.POST, prefix='user_form')
         if form.is_valid():
             username = form.cleaned_data['username']
@@ -190,3 +251,6 @@ PASSWORD_RESET_COMPLETE = """
 Your password has been set.
 You may go ahead and login now.
 """
+
+
+

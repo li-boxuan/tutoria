@@ -14,6 +14,8 @@ app_name = 'auth'
 
 urlpatterns = [
       url(r'^$', views.IndexView.as_view(), name='signup'),
+      # url(r'^tutor_profile/$', views.TutorSettingView.as_view(), name='tutor_profile'),
+      url(r'^profile/$', views.ProfileView.as_view(), name='profile'),
       url(r'^student/$', views.StudentView.as_view(), name='student'),
       url(r'^tutor/$', views.TutorView.as_view(), name='tutor'),
       url(r'^both/$', views.BothView.as_view(), name='both'),
