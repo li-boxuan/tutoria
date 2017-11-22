@@ -79,10 +79,12 @@ class MybookingsView(generic.ListView):
             if 'id' in self.request.GET:
                 context['id'] = 'selected'
                 context['record'] =BookingRecord.objects.filter(id=self.request.GET['id']).first()
-                if context['record'].student == stu:
-                    context['selected_type'] = 'as_stu'
-                else:
-                    context['selected_type'] = 'as_tut'
+                if context['is_student'] == 'true':
+                    if context['record'].student == stu:
+                        context['selected_type'] = 'as_stu'
+                if context['is_tutor'] == 'true':
+                    if context['record'].tutor == tut:
+                        context['selected_type'] = 'as_tut'
                 return context
             else:
                 context['id'] = 'not_selected'
