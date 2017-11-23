@@ -1,13 +1,9 @@
-# """Form-related classes."""
-#
-# from django import forms
-# from scheduler.models import BookingRecord
-#
-#
-# class BookForm(forms.ModelForm):
-#     """A form for booking sessions."""
-#
-#     class Meta:
-#         """Meta class holding the BookingRecord model."""
-#
-#         model = BookingRecord
+from django import forms
+from review.models import Review
+
+
+class ReviewForm(forms.ModelForm):
+
+    class Meta:
+        model = Review
+        exclude = ['student', 'tutor', 'date']
