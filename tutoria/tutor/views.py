@@ -5,7 +5,8 @@ from django.http import HttpResponse
 from account.models import Tutor, Student, User
 from scheduler.models import Session, BookingRecord
 from django.contrib.auth.decorators import login_required
-from datetime import datetime, date, timedelta
+from datetime import datetime, date, timedelta, time
+from django.utils import timezone
 from wallet.models import Transaction
 from django.views import generic
 from django.core.mail import send_mail
@@ -39,8 +40,10 @@ class DetailView(generic.DetailView):
         # init_time = datetime.combine(today, datetime.min.time())
         for session in self.get_object().session_set.all():
             start_time = session.start_time
-            hour_diff = start_time.hour - 0  # if timetable starts from 0
-            hour_diff += 8  # timezone issue (todo)
+            start_time_of_the_day = timezone.make_aware(datetime.combine(start_time.date(), time(0, 0)))
+            #print("start_time hour = ", start_time.hour, " start time of the day = ", start_time_of_the_day.hour)
+            hour_diff = (start_time - start_time_of_the_day).seconds // 3600
+            #print("hour diff = ", hour_diff)
             # print(start_time, " hour ", start_time.hour)
             minute_diff = start_time.minute
             date_diff = (start_time.date() - today).days
@@ -51,9 +54,9 @@ class DetailView(generic.DetailView):
                     index += hour_diff * 2 + minute_diff // 30
                 else:
                     index += hour_diff
-                # print("date_diff = ", date_diff, "hour_diff = ", hour_diff,
+                #print("date_diff = ", date_diff, "hour_diff = ", hour_diff,
                 #        "minute_diff = ", minute_diff, "index = ", index)
-                # print(index)
+                #print(index)
                 timetable[index]['status'] = str(session.status)
                 timetable[index]['id'] = session.id
         context['timetable'] = timetable
