@@ -316,17 +316,22 @@ def populate_coupon():
     return coupon_list
 
 
-def populate_admin():
+def populate_staff():
     # create superuser
     from django.contrib.auth.models import User as Admin
+    from account.models import User
     Admin.objects.create_user(username='admin',
                               password='admin',
+                              first_name='Admin',
                               is_staff=True,
                               is_superuser=True)
-
+    User.objects.create_user(username='mytutors',
+                           password='mytutors',
+                           first_name='MyTutors',
+                            is_staff=True)
 
 def populate():
-    populate_admin()
+    populate_staff()
     tutors = populate_tutor()
     students = populate_student()
     populate_session(tutors)
