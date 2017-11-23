@@ -15,6 +15,7 @@ from dateutil import parser
 from datetime import timedelta
 from wallet.models import Transaction
 from django.core.mail import send_mail
+from account.models import User
 
 def begin_all_sessions(time):
     print("begin all sessions, time = ", time)
@@ -66,7 +67,9 @@ def end_all_sessions(time):
                     send_mail('Session Finished & Balance Change', content, 'noreply@hola-inc.top', [receiver.email], False)
 
                     # (todo) company receives commission
-
+                    myTutor = User.objects.get(username='mytutors')
+                    myTutor.wallet_balance += commission
+                    myTutor.save()
                     #print("transaction id = ", transaction.id, "transfer tuition fee = ", amount, " to tutor = ", receiver)
 
                 # send email to student (review reminder)
