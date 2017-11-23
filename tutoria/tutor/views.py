@@ -2,13 +2,19 @@
 from __future__ import print_function
 from django.shortcuts import (render, redirect)
 from django.http import HttpResponse
+from django.urls import reverse_lazy
+
 from account.models import Tutor, Student, User
 from scheduler.models import Session, BookingRecord
 from django.contrib.auth.decorators import login_required
-from datetime import datetime, date, timedelta
+from datetime import datetime, date, timedelta, time
+from django.utils import timezone
 from wallet.models import Transaction
 from django.views import generic
 from django.core.mail import send_mail
+from .forms import ReviewForm
+from django.views.generic.edit import FormView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class DetailView(generic.DetailView):
@@ -39,8 +45,10 @@ class DetailView(generic.DetailView):
         # init_time = datetime.combine(today, datetime.min.time())
         for session in self.get_object().session_set.all():
             start_time = session.start_time
-            hour_diff = start_time.hour - 0  # if timetable starts from 0
-            hour_diff += 8  # timezone issue (todo)
+            start_time_of_the_day = timezone.make_aware(datetime.combine(start_time.date(), time(0, 0)))
+            #print("start_time hour = ", start_time.hour, " start time of the day = ", start_time_of_the_day.hour)
+            hour_diff = (start_time - start_time_of_the_day).seconds // 3600
+            #print("hour diff = ", hour_diff)
             # print(start_time, " hour ", start_time.hour)
             minute_diff = start_time.minute
             date_diff = (start_time.date() - today).days
@@ -51,9 +59,9 @@ class DetailView(generic.DetailView):
                     index += hour_diff * 2 + minute_diff // 30
                 else:
                     index += hour_diff
-                # print("date_diff = ", date_diff, "hour_diff = ", hour_diff,
+                #print("date_diff = ", date_diff, "hour_diff = ", hour_diff,
                 #        "minute_diff = ", minute_diff, "index = ", index)
-                # print(index)
+                #print(index)
                 timetable[index]['status'] = str(session.status)
                 timetable[index]['id'] = session.id
         context['timetable'] = timetable
@@ -79,7 +87,8 @@ class DetailView(generic.DetailView):
             compensate_list.append(range(5 - review.rating))
             num_list.append(review.rating)
         context['review_rating_list'] = zip(review_list, rating_list,
-                                            compensate_list, num_list)  # Create list of tuples (review, rating, compensate)
+                                            compensate_list,
+                                            num_list)  # Create list of tuples (review, rating, compensate)
         return context
 
 
@@ -121,7 +130,6 @@ def confirm_booking(request, tutor_id):
                        'total': tutor.hourly_rate * 1.05})
 
 
-# TODO: handle coupons (wait until Construction phase)
 @login_required(login_url='/auth/login/')
 def save_booking(request, tutor_id):
     """Save booking record and redirect to the dashboard."""
@@ -162,13 +170,30 @@ def save_booking(request, tutor_id):
                        str(session.end_time) + ' has been confirmed.'
         send_mail('Booking Confirmed', msgToStudent,
                   'noreply@hola-inc.top', [student.email], False)
-        msgToTutor = 'Your booking with ' + student.first_name + ' ' + student.last_name + ' from ' + \
-                     str(session.start_time) + ' to ' + \
-                     str(session.end_time) + ' has been confirmed.'
-        send_mail('Booking Confirmed', msgToTutor,
+        msg_to_tutor = 'Your booking with ' + student.first_name + ' ' + student.last_name + ' from ' + \
+                       str(session.start_time) + ' to ' + \
+                       str(session.end_time) + ' has been confirmed.'
+        send_mail('Booking Confirmed', msg_to_tutor,
                   'noreply@hola-inc.top', [tutor.email], False)
         return redirect("/dashboard/mybookings/")
     else:
         return HttpResponse("not a legal POST request!")
 
+
 # -----------------------------------------------------------------------------
+
+class ReviewView(LoginRequiredMixin, FormView):
+    template_name = 'review.html'  # TODO: build template.
+    form_class = ReviewForm
+    success_url = '/thanks/'  # TODO
+
+    login_url = '/auth/login/'
+    redirect_field_name = 'redirect_to'
+
+    def form_valid(self, form):
+        review = form.save(commit=False)
+        review.student = User.objects.get(username=self.request.session['username']).student
+        tutor_id = self.kwargs['tutor_id']
+        review.tutor = Tutor.objects.get(pk=tutor_id)
+        review.save()
+        return HttpResponse("Submitted!") # TODO

@@ -71,6 +71,10 @@
   <div class="row">
     <div class="col-md-10 col-md-offset-1">
       <h3>Timetable</h3>
+      LEGEND:&nbsp;
+      <button type="button" class="bg-primary" onclick="return confirm('Booked means this session is booked by someone')">Booked</button>&nbsp;
+      <button type="button" class="bg-success" onclick="return confirm('Click on bookable slot to book it')">Bookable</button>&nbsp;
+      <button type="button" class="bg-info" onclick="return confirm('Closed means this session is not open')">Closed</button>&nbsp;
       <table class="" border="1" cellpadding="0">
         <tbody>
         <tr>
@@ -98,7 +102,7 @@
           {% endif %}
         {% if grid.status == 'A' %}
           <td colspan="1" class="bg-success" id="book">
-            <form id="book-{{ grid.id }}" method="post" action="{% url 'tutor:confirm_booking' tutor_id=tutor.id %}">
+            <form id="book-{{ grid.id }}" method="post" action="{% url 'tutor:confirm_booking' tutor_id=tutor.id %}" style="cursor:pointer">
               {% csrf_token %}
               <div onclick="document.getElementById('book-{{ grid.id }}').submit();">
                 <input type="hidden" name="session_id" value="{{ grid.id }}">&nbsp;
