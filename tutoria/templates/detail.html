@@ -48,18 +48,8 @@
       </div>
       <div class="col-md-6 col-md-offset-1">
         <!-- <h2 class="text-center">Detail</h2> -->
-        <h3>Name </h3>
-        <h5>{{ tutor.first_name }} {{tutor.last_name }}</h5>
-        <h3>Type</h3>
-        {% if tutor.tutor_type == 'CT' %}
-          <h5>Contracted Tutor</h5>
-        {% elif tutor.tutor_type == 'PT' %}
-          <h5>Private Tutor</h5>
-        {% endif %}
-        <h3>Hourly Rate</h3>
-        <h5> {{ tutor.hourly_rate }} </h5>
         <h3>Rating</h3>
-        <h5> N/A </h5>
+        <h5> {{ tutor.avgRating }} </h5>
         <h3>Phone Number</h3>
         {% if phone_visible == True %}
           <h5> {{ tutor.phone }}</h5>
