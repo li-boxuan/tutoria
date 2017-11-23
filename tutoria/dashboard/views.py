@@ -32,6 +32,7 @@ class MytransactionsView(generic.ListView):
            context['records'] = None
            return context
         else:
+           context['username'] = self.request.session['username']
            usrn = self.request.session['username']
            user = User.objects.get(username=usrn)
            try:

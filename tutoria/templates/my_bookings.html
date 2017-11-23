@@ -13,6 +13,7 @@
               <th>#</th>
               {% if selected_type == 'as_stu' %}<th>Tutor</th>{% else %}<th>Student</th>{% endif %}
               <th>Type</th>
+              <th>Contact</th>
               <th>Start time</th>
               <th>End time</th>
               <th>Hourly rate</th>
@@ -40,6 +41,7 @@
               <td>
                 {% if record.tutor.tutor_type == 'CT' %} Contracted Tutoring {% else %} Private Tutoring {% endif %}
               </td>
+              {% if selected_type == 'as_stu' %}<th>{{ record.tutor.phone }}</th>{% else %}<th>{{ record.student.phone }}</th>{% endif %}
 
               <td>{{record.session.start_time}}</td>
               <td>{{record.session.end_time}}</td>
@@ -63,12 +65,14 @@
 
         {% else %}
         {% if is_student == 'true' %}
+        <tr><h2>My bookings as a student</h2></tr>
         <table class="table table-hover" width="80%">
           <thead>
             <tr>
               <th>#</th>
               <th>Tutor</th>
               <th>Type</th>
+              <th>Contact</th>
               <th>Start time</th>
               <th>End time</th>
               <th>Hourly rate</th>
@@ -93,6 +97,7 @@
               <td>
                 {% if record.tutor.tutor_type == 'CT' %} Contracted Tutoring {% else %} Private Tutoring {% endif %}
               </td>
+              <th>{{ record.tutor.phone }}</th>
 
               <td>{{record.session.start_time}}</td>
               <td>{{record.session.end_time}}</td>
@@ -115,12 +120,14 @@
 
 
         {% if is_tutor == 'true' %}
+        <tr><h2>My bookings as a tutor</h2></tr>
         <table class="table table-hover" width="80%">
           <thead>
             <tr>
               <th>#</th>
               <th>Student</th>
               <th>Type</th>
+              <th>Contact</th>
               <th>Start time</th>
               <th>End time</th>
               <th>Hourly rate</th>
@@ -136,7 +143,7 @@
               <td>
                 {% if record.tutor.tutor_type == 'CT' %} Contracted Tutoring {% else %} Private Tutoring {% endif %}
               </td>
-
+              <th>{{ record.student.phone }}</th>
               <td>{{record.session.start_time}}</td>
               <td>{{record.session.end_time}}</td>
               <td>{{record.tutor.hourly_rate }}</td>

@@ -10,8 +10,9 @@
           <thead>
             <tr>
               <th>#</th>
-              {% if user_type == 'Student' %} <th>Paid to</th> {% else %} <th>Received from</th> {% endif %}
-              <th>Type</th>
+              <th>Transaction type</th>
+              <th>Transaction with</th>
+              <th>Session Type</th>
               <th>Session start time</th>
               <th>Session end time</th>
               <th>Transaction time</th>
@@ -23,8 +24,12 @@
             {% for record, transaction in zipped %}
             <tr>
               <td>{{forloop.counter}}</td>
+              
               <td>
-                 {% if user_type == 'Student' %}
+                {% if username == record.student.username %}Paid to{% else %}Received from{% endif %}
+              </td>
+              <td>
+                 {% if username == record.student.username %}
                 <center>
                   <a href="{% url 'tutor:detail' record.tutor.id %}">{{ record.tutor.first_name }}
                                       {{record.tutor.last_name }}</a>
@@ -33,8 +38,6 @@
                 {{ record.student.first_name }} {{ record.student.last_name }}
                 {% endif %}
               </td>
-
-
               <td>
                 {% if record.tutor.tutor_type == 'CT' %} Contracted Tutoring {% else %} Private Tutoring {% endif %}
               </td>
@@ -50,7 +53,7 @@
             </tr>
             {% empty %}
             <tr>
-              <td>No bookings found =(</td>
+              <td>No transactions found =(</td>
             </tr>
             {% endfor %}
           </tbody>
@@ -63,4 +66,4 @@
 
 {% else %}
 
-<h3> No bookings found. Just relax! </h3> {% endif %} {% endblock %}
+<h3> No transactions found.</h3> {% endif %} {% endblock %}
