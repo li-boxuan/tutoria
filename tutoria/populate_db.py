@@ -47,7 +47,7 @@ OFFICE_HOUR_STEP = {'CT': timedelta(hours=0.5),
                     'PT': timedelta(hours=1.0)}
 
 
-def add_student(username, password, email, first_name, last_name, wallet_balance=-1):
+def add_student(username, password, email, first_name, last_name, wallet_balance=-1, phone=99999999):
     from account.models import (User, Student)
     if wallet_balance < 0:
         wallet_balance = random.randint(1, 300) * 10
@@ -58,7 +58,8 @@ def add_student(username, password, email, first_name, last_name, wallet_balance
         user = User.objects.create_user(username=username, email=email,
                                         password=password,
                                         first_name=first_name,
-                                        last_name=last_name)
+                                        last_name=last_name,
+									    phone=phone)
         user.wallet_balance = wallet_balance
 
     student, _ = Student.objects.get_or_create(user=user)
@@ -99,13 +100,13 @@ def add_tutor(username, password, email, first_name, last_name,
         user = User.objects.create_user(username=username, email=email,
                                         password=password,
                                         first_name=first_name,
-                                        last_name=last_name)
+                                        last_name=last_name,
+									    phone=phone)
 
     tutor, _ = Tutor.objects.get_or_create(user=user)
     tutor.tutor_type = tutor_type
     tutor.wallet_balance = wallet_balance
     tutor.avatar = avatar
-    tutor.phone = phone
     tutor.university = university
     tutor.hourly_rate = hourly_rate
     tutor.bio = bio

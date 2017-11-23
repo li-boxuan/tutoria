@@ -9,7 +9,7 @@ from django.db import models
 import django.contrib.auth.models as auth_models
 import os
 from django.core.validators import RegexValidator
-
+from django.core.exceptions import ValidationError
 
 class SubjectTag(models.Model):
     """Models subject tags."""
@@ -31,7 +31,9 @@ class Course(models.Model):
 class User(auth_models.User):
     wallet_balance = models.PositiveIntegerField(default=0)
     avatar = models.ImageField(default='default_avatar.png')
-
+    phone_regex = RegexValidator(regex=r'^\d{9,15}$', message="Phone number must be entered in the format: '12345678'. 8 or 11 digits are allowed.")
+    phone = models.CharField(
+        max_length=11, blank=True)
     @property
     def tutor(self):
         try:
@@ -47,6 +49,14 @@ class User(auth_models.User):
         except:
             student = None
         return student
+
+def _hourly_rate_validator(val):
+    """Validate whether an hourly_rate is a positive multiple of 10."""
+    if not (val >= 0 and val % 10 == 0):
+        raise ValidationError(
+            _('%(value) must be a positive multiple of 10'),
+            params={'value': val}
+        )
 
 class Tutor(models.Model):
     """Models the tutor."""
@@ -64,17 +74,16 @@ class Tutor(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='tutor_profile')
     bio = models.TextField(default='')
-    phone_regex = RegexValidator(
-        regex=r'^\d{9,15}$', message="Phone number must be entered in the format: '12345678'. 8 or 11 digits are allowed.")
-    phone = models.CharField(
-        max_length=11, blank=True)
+
     university = models.CharField(
         max_length=128, default='The University of Hong Kong')
-    hourly_rate = models.PositiveIntegerField(default=0)
+
+
+
+    hourly_rate = models.PositiveIntegerField(default=0, validators=[_hourly_rate_validator])
     tags = models.ManyToManyField(SubjectTag, default=None)
     courses = models.ManyToManyField(Course, default=None)
     visible = models.BooleanField(default=True)
-    # sessions = models.ManyToManyField('scheduler.session')
 
     @property
     def avgRating(self):
@@ -86,6 +95,10 @@ class Tutor(models.Model):
         for review in review_list:
             rating_list.append(review.rating)
         return sum(rating_list) / float(len(rating_list))
+
+    @property
+    def phone(self):
+        return self.user.phone
 
     @property
     def full_name(self):
@@ -150,6 +163,10 @@ class Tutor(models.Model):
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='student_profile')
 
+    @property
+    def phone(self):
+        return self.user.phone
+    
     @property
     def full_name(self):
         return self.user.first_name + " " + self.user.last_name
