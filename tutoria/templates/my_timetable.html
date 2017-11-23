@@ -4,6 +4,11 @@
         <div class="row">
             <div class="col-md-10 col-md-offset-1">
                 <h3>Tutor Timetable</h3>
+                LEGEND:&nbsp; 
+                <button type="button" class="bg-primary" onclick="return confirm('Click on booked slot to see detail')">Booked</button>&nbsp;
+                <button type="button" class="bg-success" onclick="return confirm('Click on bookable slot to close')">Bookable</button>&nbsp;
+                <button type="button" class="bg-info" onclick="return confirm('Click on closed slot to open')">Closed</button>
+                <br />
                 <table class="" border="1" cellpadding="0">
                     <tbody>
                         <tr>
@@ -31,7 +36,7 @@
                         {% endif %}
                         {% if grid.status == 'A' %}
                             <td colspan="1" class="bg-success">
-                                <form id="book-{{ grid.id }}" method="post" action="{% url 'dashboard:mytimetable' %}">
+                                <form id="book-{{ grid.id }}" method="post" action="{% url 'dashboard:mytimetable' %}" style="cursor:pointer">
                                 {% csrf_token %}
                                 <div onclick="document.getElementById('book-{{ grid.id }}').submit();">
                                     <input type="hidden" name="session_id" value="{{ grid.id }}">&nbsp;
@@ -40,7 +45,7 @@
                             </td>
                         {% elif grid.status == 'B' %}
                             <td colspan="1" class="bg-primary">
-                                <form id="book-{{ grid.id }}" method="get" action="{% url 'dashboard:mybookings' %}">
+                                <form id="book-{{ grid.id }}" method="get" action="{% url 'dashboard:mybookings' %}" style="cursor:pointer">
                                 <div onclick="document.getElementById('book-{{ grid.id }}').submit();">
                                     <input type="hidden" name="id" value="{{ grid.id }}">&nbsp;
                                 </div>
@@ -49,7 +54,7 @@
 
                         {% elif grid.status == 'X' %}
                             <td colspan="1" class="bg-info">
-                                <form id="book-{{ grid.id }}" method="post" action="{% url 'dashboard:mytimetable' %}">
+                                <form id="book-{{ grid.id }}" method="post" action="{% url 'dashboard:mytimetable' %}" style="cursor:pointer">
                                 {% csrf_token %}
                                 <div onclick="document.getElementById('book-{{ grid.id }}').submit();">
                                     <input type="hidden" name="session_id" value="{{ grid.id }}">&nbsp;
@@ -72,6 +77,9 @@
         <div class="row">
             <div class="col-md-10 col-md-offset-1">
                 <h3>Student Timetable</h3>
+                LEGEND:&nbsp; 
+                <button type="button" class="bg-success" onclick="return confirm('Click on booked slot to see detail')">Booked</button>&nbsp;
+                <button type="button" class="bg-info" onclick="return confirm('Free slot means you have no booking at that time')">Free</button>
                 <table class="" border="1" cellpadding="0">
                     <tbody>
                         <tr>
@@ -94,8 +102,8 @@
                             </td>
                         {% endif %}
                         {% if grid.status == 'A' %}
-                            <td colspan="1" class="bg-primary">
-                                <form id="book-{{ grid.id }}" method="get" action="{% url 'dashboard:mybookings' %}">
+                            <td colspan="1" class="bg-success">
+                                <form id="book-{{ grid.id }}" method="get" action="{% url 'dashboard:mybookings' %}" style="cursor:pointer">
                                 <div onclick="document.getElementById('book-{{ grid.id }}').submit();">
                                     <input type="hidden" name="id" value="{{ grid.id }}">&nbsp;
                                 </div>
