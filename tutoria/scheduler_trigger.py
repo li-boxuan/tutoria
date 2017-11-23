@@ -12,42 +12,42 @@ import random
 from scheduler.models import Session
 from django.utils import timezone
 from dateutil import parser
+from datetime import timedelta
 from wallet.models import Transaction
 from django.core.mail import send_mail
+from account.models import User
 
 def begin_all_sessions(time):
-    #print(time)
-
+    print("begin all sessions, time = ", time)
     # get all sessions start at specific time
     sessions = Session.objects.filter(start_time=time)
     
     for session in sessions:
-        print("\nsession.id = ", session.id)
+        #print("\nsession.id = ", session.id)
         records = session.bookingrecord_set.all()
         for record in records:
             if record.status == record.INCOMING:
                 record.status = record.ONGOING
                 record.save()
-                print("set record (id: ", record.id, ") status from INCOMING to ONGOING")
-        print("set session from ", session.status, " to ", session.CLOSED)
+                #print("set record (id: ", record.id, ") status from INCOMING to ONGOING")
+        #print("set session from ", session.status, " to ", session.CLOSED)
         session.status = session.CLOSED
         session.save()
 
 
 def end_all_sessions(time):
-    #print(time)
-
+    print("end all sessions, time = ", time)
     # get all sessions end at specific time
     sessions = Session.objects.filter(end_time=time)
 
     for session in sessions:
-        print("\nsession.id = ", session.id)
+        #print("\nsession.id = ", session.id)
         records = session.bookingrecord_set.all()
         for record in records:
             if record.status == record.ONGOING:
                 record.status = record.FINISHED
                 record.save()
-                print("set record (id: ", record.id, ") status from ONGOING to FINISHED")
+                #print("set record (id: ", record.id, ") status from ONGOING to FINISHED")
                 # only Private Tutor session has transaction
                 if session.tutor.tutor_type == session.tutor.PRIVATE_TUTOR:
                     transaction = record.transaction
@@ -67,13 +67,17 @@ def end_all_sessions(time):
                     send_mail('Session Finished & Balance Change', content, 'noreply@hola-inc.top', [receiver.email], False)
 
                     # (todo) company receives commission
-
-                    print("transaction id = ", transaction.id, "transfer tuition fee = ", amount, " to tutor = ", receiver)
+                    myTutor = User.objects.get(username='mytutors')
+                    myTutor.wallet_balance += commission
+                    myTutor.save()
+                    #print("transaction id = ", transaction.id, "transfer tuition fee = ", amount, " to tutor = ", receiver)
 
                 # send email to student (review reminder)
                 content = "Please check on Tutoria, your session " + str(session.id)
-                content += " has finished and you can give a comment to the tutor"
+                content += " has finished and you can give a comment to the tutor at "
+                content += "http://127.0.0.1:8000/tutor/" + str(session.tutor.id) + "/"
                 send_mail('Session Finished, Please give your comment', content, 'noreply@hola-inc.top', [record.student.email], False)
+        session.status = session.CLOSED
 
 def run(flag, time):
     # parse the time string to datetime format
@@ -85,10 +89,24 @@ def run(flag, time):
     else:
         end_all_sessions(time)
 
+def run_range(start_time, end_time):
+    start_time = parser.parse(start_time)
+    start_time = timezone.make_aware(start_time, timezone.get_current_timezone())
+    end_time = parser.parse(end_time)
+    end_time = timezone.make_aware(end_time, timezone.get_current_timezone())
+    time = start_time
+    while time <= end_time:
+        begin_all_sessions(time)
+        end_all_sessions(time)
+        time += timedelta(minutes=30)
+
 def help():
     print("call run(flag, time) to start/end all sessions")
-    print("=== example ===")
-    print("run(True, \"Nov 17 2017 9:00AM\") means begin all sessions")
+    print("example: run(True, \"Nov 17 2017 9:00AM\") means begin all sessions")
+
+    print("\n\n================================")
+    print("call run_range(start_time, end_time) to go over the range")
+    print("example: run_range(\"Nov 17 2017 0:00AM\", \"Nov 17 2017 11:30PM\") would begin & end all sessions in the day in turn")
 
 if __name__ == '__main__':
     run(True, "Nov 17 2017 9:00AM")
