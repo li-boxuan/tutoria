@@ -74,7 +74,8 @@ def end_all_sessions(time):
 
                 # send email to student (review reminder)
                 content = "Please check on Tutoria, your session " + str(session.id)
-                content += " has finished and you can give a comment to the tutor"
+                content += " has finished and you can give a comment to the tutor at "
+                content += "http://127.0.0.1:8000/tutor/" + str(session.tutor.id) + "/"
                 send_mail('Session Finished, Please give your comment', content, 'noreply@hola-inc.top', [record.student.email], False)
         session.status = session.CLOSED
 
