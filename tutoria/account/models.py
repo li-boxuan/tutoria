@@ -54,7 +54,7 @@ def _hourly_rate_validator(val):
     """Validate whether an hourly_rate is a positive multiple of 10."""
     if not (val >= 0 and val % 10 == 0):
         raise ValidationError(
-            _('%(value) must be a positive multiple of 10'),
+            ('%(value) must be a positive multiple of 10'),
             params={'value': val}
         )
 

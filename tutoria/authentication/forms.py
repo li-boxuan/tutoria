@@ -26,6 +26,12 @@ class UpdateTutorForm(forms.ModelForm):
 		model = Tutor
 		fields = ('bio', 'hourly_rate', 'tags', 'courses', 'visible')
 
+	hourly_rate = forms.IntegerField(
+		widget=forms.widgets.TextInput(attrs={'type': 'number',
+										'min': 0, 'step': 10}),
+        label='Hourly rate (multiple of 10)',
+    )
+
 	def __init__(self, *args, **kwargs):
 		super(UpdateTutorForm, self).__init__(*args, **kwargs)
 		instance = getattr(self, 'instance', None)
@@ -69,7 +75,7 @@ class TutorForm(forms.ModelForm):
     hourly_rate = forms.IntegerField(
 		widget=forms.widgets.TextInput(attrs={'type': 'number',
 										'min': 0, 'step': 10}),
-        label='Tell us how much your work worth (multiple of 10).',
+        label='Tell us how much your work worth (per hour, multiple of 10).',
     )
 
     bio = forms.CharField(
