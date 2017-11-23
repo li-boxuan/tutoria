@@ -79,10 +79,9 @@ class Tutor(models.Model):
     @property
     def avgRating(self):
         """Get the average rating of a tutor. Return 0 by default."""
-        # TODO: don't display untill more than 3 reviews received.
         review_list = self.review_set.all()
-        if not review_list.exists():
-            return 0
+        if (not review_list.exists()) or (len(review_list) <= 3):
+            return 5  # Give tutor a 5-star rating by default TODO: add to documentation
         rating_list = []
         for review in review_list:
             rating_list.append(review.rating)
