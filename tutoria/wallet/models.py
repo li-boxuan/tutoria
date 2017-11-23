@@ -14,7 +14,7 @@ class Transaction(models.Model):
                                related_name='issuer')
     receiver = models.ForeignKey('account.Tutor', on_delete=models.CASCADE,
                                  related_name='receiver')
-    amount = models.PositiveIntegerField()
+    amount = models.FloatField()
     created_at = models.DateTimeField()
     commission = models.FloatField()
 

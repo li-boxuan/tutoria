@@ -13,9 +13,11 @@
               <th>#</th>
               {% if selected_type == 'as_stu' %}<th>Tutor</th>{% else %}<th>Student</th>{% endif %}
               <th>Type</th>
+              <th>Contact</th>
               <th>Start time</th>
               <th>End time</th>
               <th>Hourly rate</th>
+              <th>Commission</th>
               <th>Status</th>
             </tr>
           </thead>
@@ -40,10 +42,12 @@
               <td>
                 {% if record.tutor.tutor_type == 'CT' %} Contracted Tutoring {% else %} Private Tutoring {% endif %}
               </td>
+              {% if selected_type == 'as_stu' %}<th>{{ record.tutor.phone }}</th>{% else %}<th>{{ record.student.phone }}</th>{% endif %}
 
               <td>{{record.session.start_time}}</td>
               <td>{{record.session.end_time}}</td>
               <td>{{record.tutor.hourly_rate }}</td>
+              <td>{{record.transaction.commission }}</td>
               {% if selected_type == 'as_stu' %}
               <td> {% if record.status == 'F' %}Finished{% elif record.status == 'C' %}Canceled{% else %}      <form action="{% url 'dashboard:mybookings'%} " method="POST" onsubmit="return confirm('Do you really want to cancel this session?');">
                     {% csrf_token %}
@@ -63,15 +67,18 @@
 
         {% else %}
         {% if is_student == 'true' %}
+        <tr><h2>My bookings as a student</h2></tr>
         <table class="table table-hover" width="80%">
           <thead>
             <tr>
               <th>#</th>
               <th>Tutor</th>
               <th>Type</th>
+              <th>Contact</th>
               <th>Start time</th>
               <th>End time</th>
               <th>Hourly rate</th>
+              <th>Commission</th>
               <th>Status</th>
             </tr>
           </thead>
@@ -93,10 +100,12 @@
               <td>
                 {% if record.tutor.tutor_type == 'CT' %} Contracted Tutoring {% else %} Private Tutoring {% endif %}
               </td>
+              <th>{{ record.tutor.phone }}</th>
 
               <td>{{record.session.start_time}}</td>
               <td>{{record.session.end_time}}</td>
               <td>{{record.tutor.hourly_rate }}</td>
+              <td>{{record.transaction.commission }}</td>
               <td> {% if record.status == 'F' %}Finished{% elif record.status == 'C' %}Canceled{% else %}      <form action="{% url 'dashboard:mybookings'%} " method="POST" onsubmit="return confirm('Do you really want to cancel this session?');">
                     {% csrf_token %}
                     <button type="submit" name="booking_id" value={{record.id}}>Cancel</button>
@@ -115,15 +124,18 @@
 
 
         {% if is_tutor == 'true' %}
+        <tr><h2>My bookings as a tutor</h2></tr>
         <table class="table table-hover" width="80%">
           <thead>
             <tr>
               <th>#</th>
               <th>Student</th>
               <th>Type</th>
+              <th>Contact</th>
               <th>Start time</th>
               <th>End time</th>
               <th>Hourly rate</th>
+              <th>Commission</th>
               <th>Status</th>
             </tr>
           </thead>
@@ -136,10 +148,11 @@
               <td>
                 {% if record.tutor.tutor_type == 'CT' %} Contracted Tutoring {% else %} Private Tutoring {% endif %}
               </td>
-
+              <th>{{ record.student.phone }}</th>
               <td>{{record.session.start_time}}</td>
               <td>{{record.session.end_time}}</td>
               <td>{{record.tutor.hourly_rate }}</td>
+              <td>{{record.transaction.commission }}</td>
               <td> {% if record.status == 'F' %}Finished{% elif record.status == 'C' %}Canceled{% elif record.status == 'O' %}On-going{% else %}Up-coming{% endif %}</td>
             </tr>
             {% empty %}
