@@ -25,6 +25,7 @@ class ProfileView(generic.TemplateView):
 	"""Models the profile view."""
 	model = User
 	template_name = 'profile.html'
+	login_required = True
 
 	def get_context_data(self, **kwargs):
 		context = super(ProfileView, self).get_context_data(**kwargs)

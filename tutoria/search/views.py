@@ -39,6 +39,7 @@ class ResultView(ListView):
             self.tutor_type = self.request.GET['tutor_type']
         all_tutors = Tutor.objects.all()  # Obtain unfiltered results
         filtered_tutors = []
+        # Filter according to keywords
         for tutor in all_tutors:
             # Search query in full name
             tutor_info = tutor.full_name
@@ -57,6 +58,8 @@ class ResultView(ListView):
         # Filter according to tutor type
         if self.tutor_type != 'ALL':
             filtered_tutors = [t for t in filtered_tutors if t.tutor_type == self.tutor_type]
+        # TODO: check if tutor has any available session in the next 7 days
+        # Sort tutors
         if self.sort_method == 'hourly_rate':
             return sorted(filtered_tutors, key=lambda x: x.hourly_rate, reverse=False)
         return sorted(filtered_tutors, key=lambda x: x.avgRating, reverse=True)

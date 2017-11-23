@@ -60,10 +60,15 @@ class UserForm(forms.ModelForm):
 
 class TutorForm(forms.ModelForm):
     """Models the form for Tutor profile."""
- 
+
     TUTOR_TYPE_CHOICES = (
         ('CT', 'Contracted Tutor'),
         ('PT', 'Private Tutor')
+    )
+
+    UNIVERSITY_CHOICES = (
+        ('HKU', 'University of Hong Kong'),
+        ('Other', 'Other University')
     )
 
     tutor_type = forms.ChoiceField(
@@ -83,9 +88,10 @@ class TutorForm(forms.ModelForm):
         label='Share yourself to your prospective students.',
     )
 
-
-
-    university = forms.CharField()
+    university = forms.ChoiceField(
+        label='Unverisity',
+        choices=UNIVERSITY_CHOICES,
+    )
 
     class Meta:
         model = Tutor
