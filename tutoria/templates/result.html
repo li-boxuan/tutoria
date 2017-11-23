@@ -92,22 +92,24 @@
         </div>
         <div class="col-md-12"> <br> </div>
         <form action="" method="get" id="priceFilter">
-          <div class="col-md-5">
+          <div class="col-md-4 col-md-offset-2">
             <label for="minPrice">Min Price:</label>
             <input type="text" id="minPrice" name="minPrice" readonly style="border:0; color:#f6931f; background-color:rgba(0, 0, 0, 0.06); font-weight:bold;">
           </div>
-          <div class="col-md-5 col-md-offset-2">
+          <div class="col-md-4 col-md-offset-1">
             <label for="maxPrice">Max Price:</label>
             <input type="text" id="maxPrice" name="maxPrice" readonly style="border:0; color:#f6931f; background-color:rgba(0, 0, 0, 0.06); font-weight:bold;">
           </div>
           <input type="hidden" name="keywords" value={{ keywords }}>
           <input type="hidden" name="sort" value={{ sort }}>
           <input type="hidden" name="tutor_type" value={{ tutor_type }}>
-          <div id="slider-range" class="col-md-12"></div>
-          {#            <div class="col-md-4 col-md-offset-4"><input type="submit" value="Filter"></div>#}
+          <div id="slider-range" class="col-md-8 col-md-offset-2"></div>
+          <div class="col-md-2"> </div>
         </form>
-        <div class="col-md-12"> <br> </div>
-        <div style="text-align: center"><button type="submit" class="btn btn-primary" form="priceFilter" value="Submit" style="margin: auto;">Filter</button></div>
+        <div class="col-md-12"><br></div>
+        <div class="col-md-12">
+          <div style="text-align: center"><button type="submit" class="btn btn-primary" form="priceFilter" value="Submit" style="margin: auto;">Filter</button></div>
+        </div>
       </div>
     </div>
   </div>
