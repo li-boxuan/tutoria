@@ -107,7 +107,7 @@
                             </td>
 
                         {% endif %}
-                        {% if tutor.tutor_type == 'PT' and forloop.counter|divisibleby:24 or tutor.tutor_type == 'CT' and forloop.counter|divisibleby:48 %}
+                        {% if forloop.counter|divisibleby:48 %}
                         </tr>
                         {% endif %}
                         {% endfor %}
