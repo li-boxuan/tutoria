@@ -17,6 +17,7 @@
               <th>Start time</th>
               <th>End time</th>
               <th>Hourly rate</th>
+              <th>Commission</th>
               <th>Status</th>
             </tr>
           </thead>
@@ -46,6 +47,7 @@
               <td>{{record.session.start_time}}</td>
               <td>{{record.session.end_time}}</td>
               <td>{{record.tutor.hourly_rate }}</td>
+              <td>{{record.transaction.commission }}</td>
               {% if selected_type == 'as_stu' %}
               <td> {% if record.status == 'F' %}Finished{% elif record.status == 'C' %}Canceled{% else %}      <form action="{% url 'dashboard:mybookings'%} " method="POST" onsubmit="return confirm('Do you really want to cancel this session?');">
                     {% csrf_token %}
@@ -76,6 +78,7 @@
               <th>Start time</th>
               <th>End time</th>
               <th>Hourly rate</th>
+              <th>Commission</th>
               <th>Status</th>
             </tr>
           </thead>
@@ -102,6 +105,7 @@
               <td>{{record.session.start_time}}</td>
               <td>{{record.session.end_time}}</td>
               <td>{{record.tutor.hourly_rate }}</td>
+              <td>{{record.transaction.commission }}</td>
               <td> {% if record.status == 'F' %}Finished{% elif record.status == 'C' %}Canceled{% else %}      <form action="{% url 'dashboard:mybookings'%} " method="POST" onsubmit="return confirm('Do you really want to cancel this session?');">
                     {% csrf_token %}
                     <button type="submit" name="booking_id" value={{record.id}}>Cancel</button>
@@ -131,6 +135,7 @@
               <th>Start time</th>
               <th>End time</th>
               <th>Hourly rate</th>
+              <th>Commission</th>
               <th>Status</th>
             </tr>
           </thead>
@@ -147,6 +152,7 @@
               <td>{{record.session.start_time}}</td>
               <td>{{record.session.end_time}}</td>
               <td>{{record.tutor.hourly_rate }}</td>
+              <td>{{record.transaction.commission }}</td>
               <td> {% if record.status == 'F' %}Finished{% elif record.status == 'C' %}Canceled{% elif record.status == 'O' %}On-going{% else %}Up-coming{% endif %}</td>
             </tr>
             {% empty %}

@@ -104,17 +104,13 @@ class MybookingsView(generic.ListView):
         if one_day_from_now < sess.start_time:
             sess.status = Session.BOOKABLE
             sess.save()  # save is needed for functioning  - Jiayao
-            refund = bkrc.transaction.amount
+            refund = bkrc.transaction.amount + bkrc.transaction.commission
             usrn = self.request.session['username']
             user = User.objects.get(username=usrn)
             usr = get_object_or_404(Student, user=user)
-            #print usr.wallet_balance
             usr.wallet_balance += refund
             usr.save()
-            #print "refund!" + str(refund)
-            #print usr.wallet_balance
             bkrc.status = BookingRecord.CANCELED
-            #print bkrc.status
             bkrc.save()
             tut = bkrc.tutor
             send_mail('Session Canceled', 'Please check on Tutoria, your session with '+ bkrc.tutor.first_name + ' ' + bkrc.tutor.last_name +  ' from ' + str(sess.start_time) + ' to ' + str(sess.end_time) +  ' has been canceled.', 'nonereplay@hola-inc.top', [usr.email], False)
@@ -297,7 +293,7 @@ class MyWalletView(generic.TemplateView):
         user = User.objects.get(username=usrn)
         balance = user.wallet_balance
         op = req.POST['operation']
-        amount = int(req.POST['amount'])
+        amount = float(req.POST['amount'])
         print(op)
         if op == 'topup':
             user.wallet_balance += amount;

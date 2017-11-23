@@ -17,6 +17,7 @@
               <th>Session end time</th>
               <th>Transaction time</th>
               <th>Amount</th>
+              <th>Commission</th>
               <th>Status</th>
             </tr>
           </thead>
@@ -45,8 +46,8 @@
               <td>{{record.session.start_time}}</td>
               <td>{{record.session.end_time}}</td>
               <td>{{transaction.created_at}}</td>
-              <td>{{record.tutor.hourly_rate }}</td>
-
+              <td>{{transaction.amount }}</td>
+              <td>{{transaction.commission }}</td>
               <td> {% if record.status == 'F' %}Completed{% elif record.status == 'C' %} {% if user_type == 'Student' %}Refunded{% else %} Canceled {% endif %}{% else %} {% if user_type == 'Student' %}Paid{% else %}Pending completion{% endif %}{% endif %}
               </td>
 

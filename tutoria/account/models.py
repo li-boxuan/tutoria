@@ -29,7 +29,7 @@ class Course(models.Model):
 
 
 class User(auth_models.User):
-    wallet_balance = models.PositiveIntegerField(default=0)
+    wallet_balance = models.FloatField(default=0)
     avatar = models.ImageField(default='default_avatar.png')
     phone_regex = RegexValidator(regex=r'^\d{9,15}$', message="Phone number must be entered in the format: '12345678'. 8 or 11 digits are allowed.")
     phone = models.CharField(
@@ -80,7 +80,7 @@ class Tutor(models.Model):
 
 
 
-    hourly_rate = models.PositiveIntegerField(default=0, validators=[_hourly_rate_validator])
+    hourly_rate = models.FloatField(default=0, validators=[_hourly_rate_validator])
     tags = models.ManyToManyField(SubjectTag, default=None)
     courses = models.ManyToManyField(Course, default=None)
     visible = models.BooleanField(default=True)
