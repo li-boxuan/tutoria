@@ -1,13 +1,15 @@
 """Models for tutor reviews. -- Jingran."""
 from django.db import models
 # from django.utils import timezone
-
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 class Review(models.Model):
     """Model for tutor reviews."""
 
     content = models.TextField()  # Content of review
-    rating = models.IntegerField()  # Rating varies from 0 to 5
+    RATING_CHOICES = [(i, i) for i in range(6)]
+    rating = models.IntegerField(choices = RATING_CHOICES,
+                                 validators=[MinValueValidator(0), MaxValueValidator(5)])  # Rating varies from 0 to 5
     # Which student wrote this review. Many-to-one relation.
     student = models.ForeignKey('account.Student', on_delete=models.CASCADE)
     # Which tutor receives this review. Many-to-one relation.
