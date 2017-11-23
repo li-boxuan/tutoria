@@ -187,10 +187,15 @@ class ReviewView(LoginRequiredMixin, FormView):
     login_url = '/auth/login/'
     redirect_field_name = 'redirect_to'
 
+    def get_context_data(self, **kwargs):
+        context = super(ReviewView, self).get_context_data(**kwargs)
+        context['tutor'] = Tutor.objects.get(pk=self.kwargs['tutor_id'])
+        return context
+
     def form_valid(self, form):
         review = form.save(commit=False)
         review.student = User.objects.get(username=self.request.session['username']).student
         tutor_id = self.kwargs['tutor_id']
         review.tutor = Tutor.objects.get(pk=tutor_id)
         review.save()
-        return HttpResponse("Submitted!") # TODO
+        return HttpResponse("Submitted!")  # TODO
