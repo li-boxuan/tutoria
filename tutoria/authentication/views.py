@@ -32,7 +32,6 @@ class ProfileView(generic.TemplateView):
 		context['tutor_form'] = None
 		return context
 
-	@login_required
 	def get(self, req, *args, **kwargs):
 		context = self.get_context_data(**kwargs)
 		user = User.objects.get(username=req.session['username'])
@@ -41,7 +40,6 @@ class ProfileView(generic.TemplateView):
 			context['tutor_form'] = UpdateTutorForm(prefix='tutor_form', instance=user.tutor)
 		return self.render_to_response(context)
 
-	@login_required
 	def post(self, req, *args, **kwargs):
 		context = self.get_context_data(**kwargs)
 		user = User.objects.get(username=req.session['username'])
