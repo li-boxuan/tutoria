@@ -25,6 +25,7 @@ class ResultView(ListView):
 
     def get_queryset(self):
         """Determine the list of tutors to be displayed."""
+        # TODO: add support for multiple keywords
         print(self.request.GET)
         if 'keywords' in self.request.GET:
             self.keywords = self.request.GET['keywords']

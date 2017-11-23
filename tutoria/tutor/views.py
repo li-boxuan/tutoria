@@ -2,6 +2,8 @@
 from __future__ import print_function
 from django.shortcuts import (render, redirect)
 from django.http import HttpResponse
+from django.urls import reverse_lazy
+
 from account.models import Tutor, Student, User
 from scheduler.models import Session, BookingRecord
 from django.contrib.auth.decorators import login_required
@@ -10,6 +12,9 @@ from django.utils import timezone
 from wallet.models import Transaction
 from django.views import generic
 from django.core.mail import send_mail
+from .forms import ReviewForm
+from django.views.generic.edit import FormView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class DetailView(generic.DetailView):
@@ -82,7 +87,8 @@ class DetailView(generic.DetailView):
             compensate_list.append(range(5 - review.rating))
             num_list.append(review.rating)
         context['review_rating_list'] = zip(review_list, rating_list,
-                                            compensate_list, num_list)  # Create list of tuples (review, rating, compensate)
+                                            compensate_list,
+                                            num_list)  # Create list of tuples (review, rating, compensate)
         return context
 
 
@@ -124,7 +130,6 @@ def confirm_booking(request, tutor_id):
                        'total': tutor.hourly_rate * 1.05})
 
 
-# TODO: handle coupons (wait until Construction phase)
 @login_required(login_url='/auth/login/')
 def save_booking(request, tutor_id):
     """Save booking record and redirect to the dashboard."""
@@ -165,13 +170,30 @@ def save_booking(request, tutor_id):
                        str(session.end_time) + ' has been confirmed.'
         send_mail('Booking Confirmed', msgToStudent,
                   'noreply@hola-inc.top', [student.email], False)
-        msgToTutor = 'Your booking with ' + student.first_name + ' ' + student.last_name + ' from ' + \
-                     str(session.start_time) + ' to ' + \
-                     str(session.end_time) + ' has been confirmed.'
-        send_mail('Booking Confirmed', msgToTutor,
+        msg_to_tutor = 'Your booking with ' + student.first_name + ' ' + student.last_name + ' from ' + \
+                       str(session.start_time) + ' to ' + \
+                       str(session.end_time) + ' has been confirmed.'
+        send_mail('Booking Confirmed', msg_to_tutor,
                   'noreply@hola-inc.top', [tutor.email], False)
         return redirect("/dashboard/mybookings/")
     else:
         return HttpResponse("not a legal POST request!")
 
+
 # -----------------------------------------------------------------------------
+
+class ReviewView(LoginRequiredMixin, FormView):
+    template_name = 'review.html'  # TODO: build template.
+    form_class = ReviewForm
+    success_url = '/thanks/'  # TODO
+
+    login_url = '/auth/login/'
+    redirect_field_name = 'redirect_to'
+
+    def form_valid(self, form):
+        review = form.save(commit=False)
+        review.student = User.objects.get(username=self.request.session['username']).student
+        tutor_id = self.kwargs['tutor_id']
+        review.tutor = Tutor.objects.get(pk=tutor_id)
+        review.save()
+        return HttpResponse("Submitted!") # TODO

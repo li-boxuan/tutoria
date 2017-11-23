@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block title %}Review Your Tutor{% endblock %}
+
+{% block content %}
+  <form action="" method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Submit Review" />
+  </form>
+{% endblock %}

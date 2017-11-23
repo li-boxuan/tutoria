@@ -30,7 +30,7 @@
 
 
 {% block content %}
-
+{#  TODO: unify div widths of search box and results. #}
   <div class="container">
     <div class="row">
       <div class="col-md-8 col-md-offset-2 well">
@@ -146,6 +146,7 @@
                 </thead>
                 <tbody>
                 {% for tutor in object_list %}
+								{% if tutor.visible %}
                   <tr>
                     <td>
                       <a href="{% url 'tutor:detail' tutor.id %}">
@@ -182,6 +183,7 @@
                     <td>{{tutor.avgRating}}</td>
                     </td>
                   </tr>
+								{% endif %}
                 {% empty %}
                   <tr>
                     <td>No tutor available for your query =(</td>

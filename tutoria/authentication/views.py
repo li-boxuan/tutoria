@@ -45,45 +45,21 @@ class ProfileView(generic.TemplateView):
 		user = User.objects.get(username=req.session['username'])
 		user_form = UpdateUserForm(req.POST, prefix='user_form', instance=user)
 		if user_form.is_valid():
-			print(user_form)
 			user_form.save()
+		else:
+			return render(req, 'message.html', {'message_title': 'Profile Update Failure',
+                                            'message_content': 'Please enter valid information.'})
+
 		if user.tutor is not None:
 			tutor_form = UpdateTutorForm(req.POST, prefix='tutor_form', instance=user.tutor)
 			# print(tutor_form)
 			if tutor_form.is_valid():
 				tutor_form.save()
-				print('valid', tutor_form)
 			else:
-				print(tutor_form.errors)
-		return HttpResponseRedirect(reverse('auth:profile'))
-
-class TutorSettingView(generic.TemplateView):
-	"""Models the view for tutor update."""
-	model = Tutor
-	template_name = 'profile.html'
-
-	def get_context_data(self, **kwargs):
-		context = super(TutorSettingView, self).get_context_data(**kwargs)
-		context['user_form'] = None
-		context['tutor_form'] = None
-		return context
-
-	def get(self, req, *args, **kwargs):
-		context = self.get_context_data(**kwargs)
-		user = User.objects.get(username=req.session['username'])
-
-		context['tutor_form'] = UpdateTutorForm(prefix='tutor_form', instance=user.tutor)
-		return self.render_to_response(context)
-
-	def post(self, req, *args, **kwargs):
-		context = self.get_context_data(**kwargs)
-		user = User.objects.get(username=req.session['username'])
-		tutor_form = UpdateTutorForm(req.POST, prefix='tutor_form', instance=user.tutor)
-		if tutor_form.is_valid():
-			tutor_form.save()
-		return self.render_to_response(context)
-
-
+				return render(req, 'message.html', {'message_title': 'Profile Update Failure',
+                                            'message_content': 'Please enter valid information.'})
+		return render(req, 'message.html', {'message_title': 'Profile',
+                                            'message_content': 'Update Successful.'})
 
 class IndexView(generic.TemplateView):
     """Models the index view."""
