@@ -53,6 +53,8 @@ class ProfileView(generic.TemplateView):
 			if tutor_form.is_valid():
 				tutor_form.save()
 				print('valid', tutor_form)
+			else:
+				print(tutor_form.errors)
 		return HttpResponseRedirect(reverse('auth:profile'))
 
 class TutorSettingView(generic.TemplateView):

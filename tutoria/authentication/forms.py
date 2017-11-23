@@ -26,6 +26,12 @@ class UpdateTutorForm(forms.ModelForm):
 		model = Tutor
 		fields = ('bio', 'hourly_rate', 'phone', 'tags', 'courses', 'visible')
 
+	def __init__(self, *args, **kwargs):
+		super(UpdateTutorForm, self).__init__(*args, **kwargs)
+		instance = getattr(self, 'instance', None)
+		if instance is not None and instance.tutor_type == 'CT':
+			self.fields.pop('hourly_rate')
+
 	
 class UserForm(forms.ModelForm):
     """Models the form for User registration."""
