@@ -36,6 +36,13 @@ class DetailView(generic.DetailView):
         timetable = []
         # retrieve date of today
         today = date.today()
+        
+        now = datetime.now()
+        if is_contracted_tutor:
+            now_index = now.hour * 2 + now.minute // 30
+        else:
+            now_index = now.hour
+
         for i in range(days_to_display * slots_per_day):
             elem = {'status': 'X', 'date': str(today + timedelta(days=i / slots_per_day)), 'id': ''}
             # print(elem)
@@ -64,6 +71,10 @@ class DetailView(generic.DetailView):
                 #print(index)
                 timetable[index]['status'] = str(session.status)
                 timetable[index]['id'] = session.id
+        
+        for i in range(days_to_display * slots_per_day):
+            if i <= now_index:
+                timetable[i]['status'] = "PASSED"
         context['timetable'] = timetable
         # print(timetable)
         context['phone_visible'] = False
