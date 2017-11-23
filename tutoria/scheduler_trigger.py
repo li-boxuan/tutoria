@@ -74,6 +74,7 @@ def end_all_sessions(time):
                 content = "Please check on Tutoria, your session " + str(session.id)
                 content += " has finished and you can give a comment to the tutor"
                 send_mail('Session Finished, Please give your comment', content, 'noreply@hola-inc.top', [record.student.email], False)
+        session.status = session.CLOSED
 
 def run(flag, time):
     # parse the time string to datetime format
