@@ -146,6 +146,7 @@
                 </thead>
                 <tbody>
                 {% for tutor in object_list %}
+								{% if tutor.visible %}
                   <tr>
                     <td>
                       <a href="{% url 'tutor:detail' tutor.id %}">
@@ -182,6 +183,7 @@
                     <td>{{tutor.avgRating}}</td>
                     </td>
                   </tr>
+								{% endif %}
                 {% empty %}
                   <tr>
                     <td>No tutor available for your query =(</td>
