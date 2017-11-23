@@ -2,10 +2,10 @@
 from __future__ import print_function
 from django.shortcuts import (render, redirect)
 from django.http import HttpResponse
-from django.urls import reverse_lazy
 
 from account.models import Tutor, Student, User
 from scheduler.models import Session, BookingRecord
+from review.models import Review
 from django.contrib.auth.decorators import login_required
 from datetime import datetime, date, timedelta
 from wallet.models import Transaction
@@ -187,6 +187,18 @@ class ReviewView(LoginRequiredMixin, FormView):
     login_url = '/auth/login/'
     redirect_field_name = 'redirect_to'
 
+    def can_review(self):
+        student = User.objects.get(username=self.request.session['username']).student
+        tutor = Tutor.objects.get(pk=self.kwargs['tutor_id'])
+        finished_booking_list = BookingRecord.objects.filter(tutor=tutor, student=student, status=FINISHED)
+        review_list = Review.objects.filter(tutor=tutor, student=student)
+        return len(finished_booking_list) > len(review_list)
+
+    def dispatch(self, request, *args, **kwargs):
+        if self.can_review():
+            return super(ReviewView, self).dispatch(request, *args, **kwargs)
+        return redirect('/')
+
     def get_context_data(self, **kwargs):
         context = super(ReviewView, self).get_context_data(**kwargs)
         context['tutor'] = Tutor.objects.get(pk=self.kwargs['tutor_id'])
@@ -198,4 +210,4 @@ class ReviewView(LoginRequiredMixin, FormView):
         tutor_id = self.kwargs['tutor_id']
         review.tutor = Tutor.objects.get(pk=tutor_id)
         review.save()
-        return HttpResponse("Submitted!")  # TODO
+        return HttpResponse("Review submitted! Thank you.")  # TODO
