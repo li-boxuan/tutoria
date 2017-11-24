@@ -48,17 +48,18 @@ class ResultView(ListView):
         filtered_tutors = []
         # Filter according to keywords
         for tutor in all_tutors:
-            # Search query in full name
-            tutor_info = tutor.full_name
-            # Search query in courses
-            for course in tutor.courses.all():
-                tutor_info += (" " + str(course))
-            # Search query in tags
-            for tag in tutor.tags.all():
-                tutor_info += (" " + str(tag))
-            # Regular expression match
-            if re.search(self.keywords, tutor_info, re.IGNORECASE):
-                filtered_tutors.append(tutor)
+                # Search query in full name
+                tutor_info = tutor.full_name
+                # Search query in courses
+                for course in tutor.courses.all():
+                    tutor_info += (" " + str(course))
+                # Search query in tags
+                for tag in tutor.tags.all():
+                    tutor_info += (" " + str(tag))
+                # Regular expression match
+                for keyword in self.keywords.split():
+                    if re.search(keyword, tutor_info, re.IGNORECASE) and tutor not in filtered_tutors:
+                        filtered_tutors.append(tutor)
         # Filter according to hourly rate range.
         filtered_tutors = [t for t in filtered_tutors if
                            self.minPrice <= t.hourly_rate <= self.maxPrice]
@@ -80,6 +81,7 @@ class ResultView(ListView):
             context['keywords'] = self.request.GET['keywords']
         else:
             context['keywords'] = self.keywords
+        print('keywords ===> ' + context['keywords'])
         context['sort'] = self.sort_method
         context['minPrice'] = self.minPrice
         context['maxPrice'] = self.maxPrice
