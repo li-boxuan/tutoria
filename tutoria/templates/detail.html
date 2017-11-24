@@ -42,7 +42,7 @@
           <h5>Private Tutor</h5>
         {% endif %}
         <h3>Hourly Rate</h3>
-        <h5> {{ tutor.hourly_rate }} </h5>
+        <h5 style="color: cornflowerblue;"> ${{ tutor.hourly_rate }} </h5>
       </div>
     </div>
   </div>
@@ -58,7 +58,7 @@
         <h5> {{ tutor.avgRating }} </h5>
         <h3>Phone Number</h3>
         {% if phone_visible == True %}
-          <h5> {{ tutor.phone }}</h5>
+          <h5 style="color: dodgerblue;"><u>{{ tutor.phone }}</u></h5>
         {% else %}
           <h5> Only visible to booked students</h5>
         {% endif %}

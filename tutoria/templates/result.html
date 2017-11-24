@@ -183,7 +183,7 @@
                           </div>
                         </td>
 
-                        <td style="text-align: center;">
+                        <td style="text-align: center; vertical-align: middle;">
                           {% if tutor.university == 'HKU' %}
                             <img class="img-rounded" width=36px src="http://www.arch.hku.hk/media/upload/hku-logo-color1.png">
                           {% else %}
@@ -206,7 +206,7 @@
                             {% endfor %}
                           </ul>
                         </td>
-                        <td>{{ tutor.hourly_rate }}</td>
+                        <td><p style="color: cornflowerblue;">${{ tutor.hourly_rate }}</p></td>
                         <td>
                           <ul style="list-style-type:circle">
                             {% for tag in tutor.tags.all %}
