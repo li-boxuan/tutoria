@@ -75,7 +75,7 @@ def add_tutor(username, password, email, first_name, last_name,
               courses=None,
               tags=None,
               wallet_balance=-1, avatar='default_avatar.png',
-              sessions=None, university='The University of Hong Kong'):
+              sessions=None, university='HKU'):
     if tags is None:
         tags = ['Software Engineering']
     if courses is None:
