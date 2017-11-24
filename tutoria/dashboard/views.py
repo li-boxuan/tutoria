@@ -164,9 +164,9 @@ class MytimetableView(generic.ListView):
             for i in range(days_to_display * slots_per_day):
                 # add all timeslots that are not in database as CLOSED session
                 # TODO this part might be dirty, we should create all sessions in advance
-                d = today + timedelta(days = i / slots_per_day)
+                d = today + timedelta(days = i // slots_per_day)
                 if is_contracted_tutor:
-                    hour = (i % slots_per_day) / 2
+                    hour = (i % slots_per_day) // 2
                     minute = 0 if hour % 2 == 0 else 30
                 else:
                     hour = i % slots_per_day
@@ -180,7 +180,7 @@ class MytimetableView(generic.ListView):
                     start_time=timezone.make_aware(start_time),
                     end_time=timezone.make_aware(end_time),
                     tutor=usr)
-                elem = {'status' : session.status, 'date' : str(today + timedelta(days=i / slots_per_day)), 'id': session.id}
+                elem = {'status' : session.status, 'date' : str(today + timedelta(days=i // slots_per_day)), 'id': session.id}
                 timetable.append(elem) # closed
 
             # print("tot: " + str(days_to_display * slots_per_day))
@@ -241,7 +241,7 @@ class MytimetableView(generic.ListView):
             now = datetime.now()
             now_index = now.hour * 2 + now.minute // 30
             for i in range(days_to_display * slots_per_day):
-                elem = {'status' : 'X', 'date' : str(today + timedelta(days=i / slots_per_day)), 'id': ''}
+                elem = {'status' : 'X', 'date' : str(today + timedelta(days=i // slots_per_day)), 'id': ''}
                 timetable.append(elem) # closed
 
             for record in usr.bookingrecord_set.all():
