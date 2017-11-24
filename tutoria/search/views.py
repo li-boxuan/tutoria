@@ -56,6 +56,8 @@ class ResultView(ListView):
                 # Search query in tags
                 for tag in tutor.tags.all():
                     tutor_info += (" " + str(tag))
+                # Search query in university
+                tutor_info += (" " + tutor.university)
                 # Regular expression match
                 for keyword in self.keywords.split():
                     if re.search(keyword, tutor_info, re.IGNORECASE) and tutor not in filtered_tutors:
