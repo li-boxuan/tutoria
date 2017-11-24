@@ -30,7 +30,7 @@
 
 
 {% block content %}
-  {#  TODO: unify div widths of search box and results. #}
+
   <div class="container">
     <div class="row">
       <div class="col-md-8 col-md-offset-2 well">
@@ -136,85 +136,87 @@
   </div>
 
   {% if object_list %}
+
     {#  TODO: add university #}
 
     <div class="container">
-    <div class="row">
-      <div class="col-md-11 col-md-offset-1">
-        <div class="col-md-11">
-          <div class="list-group">
-            <form action="{% url 'search:result' %}"
-                  method="GET" role="form" class="form-horizontal">
-              <script type="text/javascript">
-                function key_up() {
-                  var old_value = $('#id_search_input').val();
-                  setTimeout(function () {
-                    var new_value = $('#id_search_input').val();
-                    if (old_value == new_value) {
-                      document.search_form.submit();
-                    }
-                  }, 1500);
-                }
-              </script>
-              <table class="table table-hover" width="80%">
-                <thead>
-                <tr>
-                  <th>Tutor</th>
-                  <th>Type</th>
-                  <th>Course</th>
-                  <th>Hourly Rate</th>
-                  <th>Tags</th>
-                  <th>Rating</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for tutor in object_list %}
-                  {% if tutor.visible %}
-                    <tr>
-                      <td>
-                        <a href="{% url 'tutor:detail' tutor.id %}">
-                          <img class="img-rounded" width=128px src="{{ tutor.avatar.url }}">
-                        </a><br>
-                        <div style="text-align: center;">
-                          <a href="{% url 'tutor:detail' tutor.id %}">{{ tutor.first_name }}
-                            {{tutor.last_name }}</a>
-                        </div>
-                      </td>
-                      <td>
-                        {% if tutor.tutor_type == 'CT' %}
-                          Contracted Tutor
-                        {% else %}
-                          Private Tutor
-                        {% endif %}
-                      </td>
-
-                      <td> <ul>
-                        {% for course in tutor.courses.all %}
-                          <li> {{course.course_code}} {{course.course_name }}<br>
-                        {% endfor %}
-                      </ul>
-                      </td>
-                      <td>{{ tutor.hourly_rate }}</td>
-                      <td>
-                        <ul>
-                          {% for tag in tutor.tags.all %}
-                            <li> {{ tag.tag }} <br>
-                          {% endfor %}
-                        </ul>
-                      </td>
-                      <td>
-                      <td>{{tutor.avgRating}}</td>
-                      </td>
-                    </tr>
-                  {% endif %}
-                {% empty %}
+      <div class="row">
+        <div class="col-md-12 col-md-offset-0">
+          <div class="col-md-12">
+            <div class="list-group">
+              <form action="{% url 'search:result' %}"
+                    method="GET" role="form" class="form-horizontal">
+                <script type="text/javascript">
+                  function key_up() {
+                    var old_value = $('#id_search_input').val();
+                    setTimeout(function () {
+                      var new_value = $('#id_search_input').val();
+                      if (old_value == new_value) {
+                        document.search_form.submit();
+                      }
+                    }, 1500);
+                  }
+                </script>
+                <table class="table table-hover" width="100%">
+                  <thead align="center">
                   <tr>
-                    <td>No tutor available for your query =(</td>
+                    <th class="not_mapped_style" style="text-align:center">Tutor</th>
+                    <th class="not_mapped_style" style="text-align:center">Type</th>
+                    <th class="not_mapped_style" style="text-align:center">Course</th>
+                    <th class="not_mapped_style" style="text-align:center">Hourly Rate</th>
+                    <th class="not_mapped_style" style="text-align:center">Tags</th>
+                    <th class="not_mapped_style" style="text-align:center">Rating</th>
                   </tr>
-                {% endfor %}
-                </tbody>
-              </table>
-            </form>
+                  </thead>
+                  <tbody>
+                  {% for tutor in object_list %}
+                    {% if tutor.visible %}
+                      <tr>
+                        <td>
+                          <a href="{% url 'tutor:detail' tutor.id %}">
+                            <img class="img-rounded" width=128px src="{{ tutor.avatar.url }}">
+                          </a><br>
+                          <div style="text-align: center;">
+                            <a href="{% url 'tutor:detail' tutor.id %}">{{ tutor.first_name }}
+                              {{tutor.last_name }}</a>
+                          </div>
+                        </td>
+                        <td>
+                          {% if tutor.tutor_type == 'CT' %}
+                            Contracted
+                          {% else %}
+                            Private
+                          {% endif %}
+                        </td>
+                        <td>
+                          <ul>
+                            {% for course in tutor.courses.all %}
+                              <li> <strong>{{course.course_code}}</strong> {{course.course_name }}<br>
+                            {% endfor %}
+                          </ul>
+                        </td>
+                        <td>{{ tutor.hourly_rate }}</td>
+                        <td>
+                          <ul style="list-style-type:circle">
+                            {% for tag in tutor.tags.all %}
+                              <li>{{ tag.tag }}<br>
+                            {% endfor %}
+                          </ul>
+                        </td>
+                        <td>
+                        <td>{{tutor.avgRating}}</td>
+                        </td>
+                      </tr>
+                    {% endif %}
+                  {% empty %}
+                    <tr>
+                      <td>No tutor available for your query =(</td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </form>
+            </div>
           </div>
         </div>
       </div>
