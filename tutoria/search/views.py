@@ -44,7 +44,7 @@ class ResultView(ListView):
         if 'only_show_available' in self.request.GET:
             self.only_show_available = eval(self.request.GET['only_show_available'])
 
-        all_tutors = Tutor.objects.all()  # Obtain unfiltered results
+        all_tutors = Tutor.objects.filter(visible=True)  # Obtain visible tutors
         filtered_tutors = []
         # Filter according to keywords
         for tutor in all_tutors:

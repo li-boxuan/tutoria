@@ -51,11 +51,12 @@ class User(auth_models.User):
             student = None
         return student
 
+
 def _hourly_rate_validator(val):
     """Validate whether an hourly_rate is a positive multiple of 10."""
     if not (val >= 0 and val % 10 == 0):
         raise ValidationError(
-            ('%(value) must be a positive multiple of 10'),
+            '%(value) must be a positive multiple of 10',
             params={'value': val}
         )
 
@@ -79,8 +80,6 @@ class Tutor(models.Model):
 
     university = models.CharField(
         max_length=128, default='The University of Hong Kong')
-
-
 
     hourly_rate = models.FloatField(default=0, validators=[_hourly_rate_validator])
     tags = models.ManyToManyField(SubjectTag, default=None)
