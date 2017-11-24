@@ -3,6 +3,9 @@ from django.views.generic import ListView, TemplateView
 import re  # Regular expression for search matching
 
 from account.models import Tutor
+from scheduler.models import Session
+
+from datetime import datetime, timedelta
 
 
 class IndexView(TemplateView):
@@ -19,9 +22,10 @@ class ResultView(ListView):
     model = Tutor
     sort_method = 'rating'  # Sort by rating by default
     keywords = ''
-    minPrice = 0  # Integer
-    maxPrice = 500  # Integer
+    minPrice = 0  # Integer. Minimum hourly rate.
+    maxPrice = 500  # Integer. Maximum hourly rate.
     tutor_type = 'ALL'
+    only_show_available = False  # Only show tutor with available session in the coming 7 days?
 
     def get_queryset(self):
         """Determine the list of tutors to be displayed."""
@@ -37,6 +41,9 @@ class ResultView(ListView):
             self.maxPrice = int(re.sub("\D", "", self.request.GET['maxPrice']))
         if 'tutor_type' in self.request.GET:
             self.tutor_type = self.request.GET['tutor_type']
+        if 'only_show_available' in self.request.GET:
+            self.only_show_available = eval(self.request.GET['only_show_available'])
+
         all_tutors = Tutor.objects.all()  # Obtain unfiltered results
         filtered_tutors = []
         # Filter according to keywords
@@ -59,6 +66,8 @@ class ResultView(ListView):
         if self.tutor_type != 'ALL':
             filtered_tutors = [t for t in filtered_tutors if t.tutor_type == self.tutor_type]
         # TODO: check if tutor has any available session in the next 7 days
+        if self.only_show_available:
+            filtered_tutors = [t for t in filtered_tutors if tutor_available(t)]
         # Sort tutors
         if self.sort_method == 'hourly_rate':
             return sorted(filtered_tutors, key=lambda x: x.hourly_rate, reverse=False)
@@ -75,4 +84,14 @@ class ResultView(ListView):
         context['minPrice'] = self.minPrice
         context['maxPrice'] = self.maxPrice
         context['tutor_type'] = self.tutor_type
+        context['only_show_available'] = self.only_show_available
         return context
+
+
+def tutor_available(tutor):
+    """Test if tutor has any available session in the coming 7 days."""
+    today_min = datetime.combine(datetime.today(), datetime.min.time())
+    future_max = datetime.combine(datetime.today() + timedelta(7), datetime.max.time())
+    available_sessions = Session.objects.filter(tutor=tutor, status='A', start_time__gte=today_min,
+                                                end_time__lte=future_max)
+    return available_sessions.count() > 0

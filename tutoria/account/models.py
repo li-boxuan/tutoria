@@ -11,6 +11,7 @@ import os
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 
+
 class SubjectTag(models.Model):
     """Models subject tags."""
     tag = models.CharField(max_length=128)
@@ -57,6 +58,7 @@ def _hourly_rate_validator(val):
             ('%(value) must be a positive multiple of 10'),
             params={'value': val}
         )
+
 
 class Tutor(models.Model):
     """Models the tutor."""

@@ -204,7 +204,7 @@ class ReviewView(LoginRequiredMixin, FormView):
     def can_review(self):
         student = User.objects.get(username=self.request.session['username']).student
         tutor = Tutor.objects.get(pk=self.kwargs['tutor_id'])
-        finished_booking_list = BookingRecord.objects.filter(tutor=tutor, student=student, status=FINISHED)
+        finished_booking_list = BookingRecord.objects.filter(tutor=tutor, student=student, status='F')
         review_list = Review.objects.filter(tutor=tutor, student=student)
         return len(finished_booking_list) > len(review_list)
 

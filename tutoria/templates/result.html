@@ -38,17 +38,23 @@
         <form action="{% url 'search:result' %}" method="GET" role="form" class="form-horizontal">
           <div class="form-group">
             <div class="col-md-12">
+              <input type="hidden" name="minPrice" value={{ minPrice }}>
+              <input type="hidden" name="maxPrice" value={{ maxPrice }}>
+              <input type="hidden" name="tutor_type" value={{ tutor_type }}>
+              <input type="hidden" name="sort" value={{ sort }}>
+              <input type="hidden" name="only_show_available" value={{ only_show_available }}>
               <input type="text" class="form-control" name="keywords" autofocus value={{keywords}}>
             </div>
           </div>
         </form>
-        <div class="col-md-6">
+        <div class="col-md-4">
           Sort:
           <form action="" method="get">
             <input type="hidden" name="minPrice" value={{ minPrice }}>
             <input type="hidden" name="maxPrice" value={{ maxPrice }}>
             <input type="hidden" name="tutor_type" value={{ tutor_type }}>
             <input type="hidden" name="keywords" value={{ keywords }}>
+            <input type="hidden" name="only_show_available" value={{ only_show_available }}>
             <select name="sort" onChange="form.submit();">
               {% if sort == 'rating' %}
                 <option value="rating" selected>Rating</option>
@@ -63,13 +69,29 @@
             </select>
           </form>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
+          <br>
+          <form action="" method="get">
+            <input type="hidden" name="minPrice" value={{ minPrice }}>
+            <input type="hidden" name="maxPrice" value={{ maxPrice }}>
+            <input type="hidden" name="tutor_type" value={{ tutor_type }}>
+            <input type="hidden" name="sort" value={{ sort }}>
+            <input type="hidden" name="keywords" value={{ keywords }}>
+            {% if only_show_available == True %}
+              <input type="checkbox" name="only_show_available" value="True" onchange="form.submit()" checked> Hide Unavailable Tutor
+            {% else %}
+              <input type="checkbox" name="only_show_available" value="True" onchange="form.submit()"> Hide Unavailable Tutor
+            {% endif %}
+          </form>
+        </div>
+        <div class="col-md-4">
           Tutor Type:
           <form action="" method="get">
             <input type="hidden" name="minPrice" value={{ minPrice }}>
             <input type="hidden" name="maxPrice" value={{ maxPrice }}>
             <input type="hidden" name="sort" value={{ sort }}>
             <input type="hidden" name="keywords" value={{ keywords }}>
+            <input type="hidden" name="only_show_available" value={{ only_show_available }}>
             <select name="tutor_type" onChange="form.submit();">
               {% if tutor_type == 'CT' %}
                 <option value="CT" selected>Contracted</option>
