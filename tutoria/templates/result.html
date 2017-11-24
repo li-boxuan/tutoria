@@ -161,6 +161,7 @@
                   <thead align="center">
                   <tr>
                     <th class="not_mapped_style" style="text-align:center">Tutor</th>
+                    <th class="not_mapped_style" style="text-align:center">School</th>
                     <th class="not_mapped_style" style="text-align:center">Type</th>
                     <th class="not_mapped_style" style="text-align:center">Course</th>
                     <th class="not_mapped_style" style="text-align:center">Hourly Rate</th>
@@ -180,6 +181,16 @@
                             <a href="{% url 'tutor:detail' tutor.id %}">{{ tutor.first_name }}
                               {{tutor.last_name }}</a>
                           </div>
+                        </td>
+
+                        <td style="text-align: center;">
+                          {% if tutor.university == 'HKU' %}
+                            <img class="img-rounded" width=36px src="http://www.arch.hku.hk/media/upload/hku-logo-color1.png">
+                          {% else %}
+                            <img class="img-rounded" width=36px src="https://image.flaticon.com/icons/png/512/169/169857.png">
+                          {% endif %}
+                          <br>
+                          {{tutor.university}}
                         </td>
                         <td>
                           {% if tutor.tutor_type == 'CT' %}
