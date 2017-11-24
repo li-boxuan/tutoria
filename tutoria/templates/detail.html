@@ -21,13 +21,20 @@
         {% if tutor.avatar %}
           <img class="img-rounded" src="{{ tutor.avatar.url }}">
         {% else %}
-          <p class="text-center">No Avator</p>
+          <p class="text-center">No Avatar</p>
         {% endif %}
       </div>
       <div class="col-md-6 col-md-offset-1">
         <!-- <h2 class="text-center">Detail</h2> -->
         <h3>Name </h3>
         <h5>{{ tutor.first_name }} {{tutor.last_name }}</h5>
+        <h3>University </h3>
+        {% if tutor.university == 'HKU' %}
+          <img class="img-rounded" width=36px src="http://www.arch.hku.hk/media/upload/hku-logo-color1.png">
+        {% else %}
+          <img class="img-rounded" width=36px src="https://image.flaticon.com/icons/png/512/169/169857.png">
+        {% endif %}
+        <h5>{{ tutor.university }}</h5>
         <h3>Type</h3>
         {% if tutor.tutor_type == 'CT' %}
           <h5>Contracted Tutor</h5>
@@ -148,15 +155,15 @@
                   <tbody>
                   <tr>
                     <td width="20%">
-                        {% if review.anonymous %}
-                          <img class="img-rounded" width=128px src="https://openclipart.org/download/247319/abstract-user-flat-3.svg" style="display: block; margin: 0 auto;">
+                      {% if review.anonymous %}
+                        <img class="img-rounded" width=128px src="https://openclipart.org/download/247319/abstract-user-flat-3.svg" style="display: block; margin: 0 auto;">
+                      {% else %}
+                        {% if review.student.avatar.url %}
+                          <a href=""><img class="img-rounded" width=128px src="{{ review.student.avatar.url }}" style="display: block; margin: 0 auto;"></a>
                         {% else %}
-                          {% if review.student.avatar.url %}
-                            <a href=""><img class="img-rounded" width=128px src="{{ review.student.avatar.url }}" style="display: block; margin: 0 auto;"></a>
-                          {% else %}
-                            <a href=""><img class="img-rounded" width=128px src="https://openclipart.org/download/247319/abstract-user-flat-3.svg" style="display: block; margin: 0 auto;"></a>
-                          {% endif %}
+                          <a href=""><img class="img-rounded" width=128px src="https://openclipart.org/download/247319/abstract-user-flat-3.svg" style="display: block; margin: 0 auto;"></a>
                         {% endif %}
+                      {% endif %}
                       <br>
                       <div style="text-align: center;">
                         {% if not review.anonymous %}
