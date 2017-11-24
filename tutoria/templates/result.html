@@ -57,14 +57,21 @@
             <input type="hidden" name="only_show_available" value={{ only_show_available }}>
             <select name="sort" onChange="form.submit();">
               {% if sort == 'rating' %}
-                <option value="rating" selected>Rating</option>
+                <option value="rating" selected>&uarr; Rating</option>
               {% else %}
-                <option valueƒ="rating">Rating</option>
+                <option valueƒ="rating">&uarr; Rating</option>
               {% endif %}
-              {% if sort == 'hourly_rate' %}
-                <option value="hourly_rate" selected>Hourly Rate</option>
+
+              {% if sort == 'hourly_rate_inc' %}
+                <option value="hourly_rate_inc" selected>&uarr; Hourly Rate</option>
               {% else %}
-                <option value="hourly_rate">Hourly Rate</option>
+                <option value="hourly_rate_inc">&uarr; Hourly Rate</option>
+              {% endif %}
+
+              {% if sort == 'hourly_rate_dec' %}
+                <option value="hourly_rate_dec" selected>&darr; Hourly Rate</option>
+              {% else %}
+                <option value="hourly_rate_dec">&darr; Hourly Rate</option>
               {% endif %}
             </select>
           </form>

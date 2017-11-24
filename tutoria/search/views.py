@@ -72,8 +72,10 @@ class ResultView(ListView):
         if self.only_show_available:
             filtered_tutors = [t for t in filtered_tutors if tutor_available(t)]
         # Sort tutors
-        if self.sort_method == 'hourly_rate':
+        if self.sort_method == 'hourly_rate_inc':
             return sorted(filtered_tutors, key=lambda x: x.hourly_rate, reverse=False)
+        if self.sort_method == 'hourly_rate_dec':
+            return sorted(filtered_tutors, key=lambda x: x.hourly_rate, reverse=True)
         return sorted(filtered_tutors, key=lambda x: x.avgRating, reverse=True)
 
     def get_context_data(self, **kwargs):
