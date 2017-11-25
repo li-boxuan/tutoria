@@ -320,6 +320,7 @@ def populate_staff():
     # create superuser
     from django.contrib.auth.models import User as Admin
     from account.models import User
+    from django.contrib.auth.models import Permission
     Admin.objects.create_user(username='admin',
                               password='admin',
                               first_name='Admin',
@@ -329,6 +330,19 @@ def populate_staff():
                            password='mytutors',
                            first_name='MyTutors',
                             is_staff=True)
+    ca = User.objects.create_user(username='course_admin',
+							password='course_admin',
+							first_name='Course Admin',
+							is_staff=True)
+    ca.user_permissions.add(Permission.objects.get(name='Can add course'))
+    ca.user_permissions.add(Permission.objects.get(name='Can change course'))
+    ca.user_permissions.add(Permission.objects.get(name='Can delete course'))
+    ca.user_permissions.add(Permission.objects.get(name='Can add subject tag'))
+    ca.user_permissions.add(Permission.objects.get(name='Can change subject tag'))
+    ca.user_permissions.add(Permission.objects.get(name='Can delete subject tag'))
+    ca.user_permissions.add(Permission.objects.get(name='Can add coupon'))
+    ca.user_permissions.add(Permission.objects.get(name='Can change coupon'))
+    ca.user_permissions.add(Permission.objects.get(name='Can delete coupon'))
 
 def populate():
     populate_staff()
