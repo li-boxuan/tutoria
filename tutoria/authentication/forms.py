@@ -24,22 +24,32 @@ class UpdateTutorForm(forms.ModelForm):
 	"""Models the form for Tutor profile update."""
 	class Meta:
 		model = Tutor
-		fields = ('bio', 'hourly_rate', 'tags', 'courses', 'visible', 'tutor_type')
+		fields = ('bio', 'new_tags', 'courses', 'visible', 'hourly_rate')
+
+	new_tags = forms.CharField(required=False, label='Add new tags:', help_text='Please use comma to saperate tags')
 
 	hourly_rate = forms.IntegerField(
 		widget=forms.widgets.TextInput(attrs={'type': 'number',
-										'min': 0, 'step': 10,
-										'onkeydown': 'return false'}),
+										'min': 0, 'step': 10}),
         label='Hourly rate (multiple of 10)',
     )
 
+	def save(self, commit=True):
+		new_tags = self.cleaned_data['new_tags']
+		tags = new_tags.split(',')
+		for tag in tags:
+			data_tag, _ = SubjectTag.objects.get_or_create(tag=tag)
+			data_tag.save()
+			self.instance.tags.add(data_tag)
+		self.instance.save()
+		return super(UpdateTutorForm, self).save(commit=commit)
+
 	def __init__(self, *args, **kwargs):
 		super(UpdateTutorForm, self).__init__(*args, **kwargs)
-		self.fields['tags'].label = 'Tag subjects you can tutor (hold Command or Control for multiple selection):'
+		#self.fields['tags'].label = 'Tag subjects you can tutor (hold Command or Control for multiple selection):'
 		self.fields['courses'].label = 'Tag courses you can tutor (hold Command or Control key for multiples selection):'
 		self.fields['visible'].label = 'Make me visible to prospective students.'
 		instance = getattr(self, 'instance', None)
-		self.fields['tutor_type'].widget.attrs['disabled'] = 'disabled'
 		if instance is not None and instance.tutor_type == 'CT':
 			self.fields.pop('hourly_rate')
 
@@ -94,8 +104,7 @@ class TutorForm(forms.ModelForm):
 
     hourly_rate = forms.IntegerField(
 		widget=forms.widgets.TextInput(attrs={'type': 'number',
-										'min': 0, 'step': 10,
-										'onkeydown': 'return false'}),
+										'min': 0, 'step': 10, }),
         label='Tell us how much your work worth (per hour, multiple of 10).',
 		initial=0
     )

@@ -19,7 +19,8 @@
 													{% if user_form is not None %}
 														{{ user_form.as_p }}
 													{% endif %}
-                          {% if tutor_form is not None %}
+                          {% if tutor_type is not None %}
+													<h5>My tutor type: {{ tutor_type }}</h5>
                             {{tutor_form.as_p}}
                           {% endif %}
                         </table>
