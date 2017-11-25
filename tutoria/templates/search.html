@@ -8,8 +8,7 @@
     <div class="row">
       <div class="col-md-8 col-md-offset-2 well">
         <h2>&emsp;&emsp;Search</h2>
-        <form action="{% url 'search:result' %}"
-              method="GET" role="form" class="form-horizontal">
+        <form action="{% url 'search:result' %}" id="search" method="GET" role="form" class="form-horizontal">
           <div class="form-group">
             <div class="col-md-12">
               <input type="text" class="form-control" name="keywords"
@@ -17,6 +16,12 @@
             </div>
           </div>
         </form>
+        <div class="col-md-12"><br></div>
+        <div class="col-md-12">
+          <div style="text-align: center">
+            <button type="submit" class="btn btn-primary" form="search" value="Submit" style="margin: auto;">Search</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>

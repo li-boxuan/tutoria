@@ -35,15 +35,18 @@
     <div class="row">
       <div class="col-md-8 col-md-offset-2 well">
         <h2>&emsp;&emsp;Search</h2>
-        <form action="{% url 'search:result' %}" method="GET" role="form" class="form-horizontal">
+        <form action="{% url 'search:result' %}" method="GET" role="form" class="form-horizontal" id="searchForm">
           <div class="form-group">
-            <div class="col-md-12">
+            <div class="col-md-10">
               <input type="hidden" name="minPrice" value={{ minPrice }}>
               <input type="hidden" name="maxPrice" value={{ maxPrice }}>
               <input type="hidden" name="tutor_type" value={{ tutor_type }}>
               <input type="hidden" name="sort" value={{ sort }}>
               <input type="hidden" name="only_show_available" value={{ only_show_available }}>
               <input type="text" class="form-control" name="keywords" autofocus value="{{keywords}}">
+            </div>
+            <div class="col-md-2">
+              <button type="submit" class="btn btn-primary" form="searchForm" value="Submit" style="margin: auto;">Search</button>
             </div>
           </div>
         </form>
@@ -137,7 +140,7 @@
         </form>
         <div class="col-md-12"><br></div>
         <div class="col-md-12">
-          <div style="text-align: center"><button type="submit" class="btn btn-primary" form="priceFilter" value="Submit" style="margin: auto;">Filter</button></div>
+          <div style="text-align: center"><button type="submit" class="btn btn-default" form="priceFilter" value="Submit" style="margin: auto;">Filter</button></div>
         </div>
       </div>
     </div>
