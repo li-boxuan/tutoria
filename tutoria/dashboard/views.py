@@ -232,14 +232,9 @@ class MytimetableView(generic.ListView):
                             if record.status == record.INCOMING:
                                 timetable[index]['id'] = record.id
                                 break
-            lock_index = now_index + slots_per_day
             for i in range(days_to_display * slots_per_day):
                 if i <= now_index:
                     timetable[i]['status'] = "PASSED"
-                elif i <= lock_index:
-                    if timetable[i]['status'] == session.BOOKABLE:
-                        #even if tutor tries to open a session within 24 hours, it doesn't change
-                        timetable[i]['status'] = session.CLOSED
 
             context['tutor_timetable'] = timetable
             #print(timetable)
@@ -297,9 +292,12 @@ class MytimetableView(generic.ListView):
         return context
 
     def post(self, request, **kwargs):
-        # TODO past time cannot be modified
         session_id = self.request.POST.get('session_id', '')
         session = Session.objects.get(id=session_id)
+        start_time = session.start_time
+        now = timezone.make_aware(datetime.now())
+        if (now + timedelta(days = 1) > start_time):
+            return HttpResponse("Session within 24 hours before start time is locked!")
         #print("before update, session = ", session, " status = ", session.status)
         if session.status == session.CLOSED:
             session.status = session.BOOKABLE
