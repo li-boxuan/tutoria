@@ -15,6 +15,24 @@ are incorporated for granting state-of-the-art user experience.
 
 Tutoria is proudly powered by [Django](https://www.djangoproject.com/)<sup>®</sup>.
 
+
+## News
+
+- [Fixed] Balance checking with commisssions.
+
+- [Fixed] Newly created Tutors with *no* reviews have a default rating of 0 instead of 5, and the rating is hidden until at least 3 reviews are submitted.
+
+## Features
+
+- Fuzzy Search and Asychronized Auto-Completion
+
+- Anonymous Review
+
+- Dedicated Admin/Staff Site for Easy Management.
+
+- Begin/End Session Automation
+
+
 ## Installation
 
 Before installation, you should have a working `django` copy. To obtain one,
@@ -38,14 +56,14 @@ via `localhost`:
 
     python manage.py runserver
 
-Note that begin_all_sessions & end_all_sessions are implemented in the scheduler_trigger.py.
-You need to begin/end all sessions using scheduler_trigger via Django shell:
+Note that `begin_all_sessions` & `end_all_sessions` are implemented in the `scheduler_trigger.py`.
+You need to begin/end all sessions using `scheduler_trigger` via Django shell:
 
     python manage.py shell
     from scheduler_trigger import *
     help() # see usage description
 
-In the django shell, you can start all session at a specific time making use of scheduler_trigger:
+In the django shell, you can start all session at a specific time making use of `scheduler_trigger`:
 
     run(True, "Nov 25 2017, 9:00p.m.") # start all sessions
 
@@ -67,6 +85,17 @@ For your convenience, you can let the scheduler do begin/end all sessions in tur
 <sup>&ast;</sup>The contributors are with the
 [Department of Computer Science](https://www.cs.hku.hk/),
 [The University of Hong Kong](https://www.hku.hk/), equally contributed.
+
+**Hola Inc.** is hiring! Send your CV to `careers@hola-inc.top`.
+
+## Future Release
+
+Tentatively, we identify the limitations in the current release and
+plan to have them ready for future releases.
+
+- MyTutors can view the transaction histories of the commisssions it collected in future releases.
+
+- Chatting functionality is to be supported.
 
 ## Acknowledgment
 
