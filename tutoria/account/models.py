@@ -28,13 +28,20 @@ class Course(models.Model):
     def __str__(self):
         return self.course_code + " " + self.course_name
 
+PHONE_REGEX = r'^\d{8}$'
+
+def _phone_number_validator(val):
+	"""Validates phone number field."""
+	import re
+	if not re.match(PHONE_REGEX, val):
+		print('phone not valid')
+		raise ValidationError("Phone number must be entered in the format: '12345678'. 8 digits are allowed.", code='invalid_phone')
+	print('phone valid')
 
 class User(auth_models.User):
     wallet_balance = models.FloatField(default=0)
     avatar = models.ImageField(default='default_avatar.png')
-    phone_regex = RegexValidator(regex=r'^\d{9,15}$', message="Phone number must be entered in the format: '12345678'. 8 or 11 digits are allowed.")
-    phone = models.CharField(
-        max_length=11, blank=True)
+    phone = models.CharField(max_length=11, blank=True) #validators=[_phone_number_validator])
     @property
     def tutor(self):
         try:
@@ -57,7 +64,8 @@ def _hourly_rate_validator(val):
     if not (val >= 0 and val % 10 == 0):
         raise ValidationError(
             '%(value) must be a positive multiple of 10',
-            params={'value': val}
+            params={'value': val},
+			code='invalid_hourly_rate'
         )
 
 
