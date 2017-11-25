@@ -31,7 +31,7 @@ class ResultView(ListView):
 
     def dispatch(self, request, *args, **kwargs):
         self.price_limit = list(Tutor.objects.all().aggregate(Max('hourly_rate')).values())[0]
-        self.maxPrice = self.price_limit/2
+        self.maxPrice = self.price_limit
         return super(ResultView, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
