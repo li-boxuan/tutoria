@@ -41,6 +41,7 @@ def end_all_sessions(time):
     sessions = Session.objects.filter(end_time=time)
 
     for session in sessions:
+        #end sessions which just finish
         #print("\nsession.id = ", session.id)
         records = session.bookingrecord_set.all()
         for record in records:
@@ -77,7 +78,16 @@ def end_all_sessions(time):
                 content += " has finished and you can give a comment to the tutor at "
                 content += "http://127.0.0.1:8000/tutor/" + str(session.tutor.id) + "/"
                 send_mail('Session Finished, Please give your comment', content, 'noreply@hola-inc.top', [record.student.email], False)
-        session.status = session.CLOSED
+
+    lock_time_bound = time + timedelta(days=1)
+    print("lock_time_bound = ", lock_time_bound)
+    sessions = Session.objects.filter(start_time__gt=time, start_time__lt=lock_time_bound)
+    for session in sessions:
+        if session.status == session.BOOKABLE:
+            print(session)
+            session.status = session.CLOSED
+            session.save()
+
 
 def run(flag, time):
     # parse the time string to datetime format
@@ -96,8 +106,8 @@ def run_range(start_time, end_time):
     end_time = timezone.make_aware(end_time, timezone.get_current_timezone())
     time = start_time
     while time <= end_time:
-        begin_all_sessions(time)
         end_all_sessions(time)
+        begin_all_sessions(time)
         time += timedelta(minutes=30)
 
 def help():
