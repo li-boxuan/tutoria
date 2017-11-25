@@ -181,7 +181,7 @@
                   {% for tutor in object_list %}
                     {% if tutor.visible %}
                       <tr>
-                        <td>
+                        <td style="text-align: center; vertical-align: middle;">
                           <a href="{% url 'tutor:detail' tutor.id %}">
                             <img class="img-rounded" width=128px src="{{ tutor.avatar.url }}">
                           </a><br>
@@ -200,31 +200,29 @@
                           <br>
                           {{tutor.university}}
                         </td>
-                        <td>
+                        <td style="text-align: center; vertical-align: middle;">
                           {% if tutor.tutor_type == 'CT' %}
                             Contracted
                           {% else %}
                             Private
                           {% endif %}
                         </td>
-                        <td>
+                        <td style="text-align: left; vertical-align: middle;">
                           <ul>
                             {% for course in tutor.courses.all %}
                               <li> <strong>{{course.course_code}}</strong> {{course.course_name }}<br>
                             {% endfor %}
                           </ul>
                         </td>
-                        <td><p style="color: cornflowerblue;">${{ tutor.hourly_rate }}</p></td>
-                        <td>
+                        <td style="text-align: center; vertical-align: middle;"><p style="color: cornflowerblue;">${{ tutor.hourly_rate }}</p></td>
+                        <td style="text-align: left; vertical-align: middle;">
                           <ul style="list-style-type:circle">
                             {% for tag in tutor.tags.all %}
                               <li>{{ tag.tag }}<br>
                             {% endfor %}
                           </ul>
                         </td>
-                        <td>
-                        <td>{{tutor.avgRating}}</td>
-                        </td>
+                        <td style="text-align: center; vertical-align: middle;">{{tutor.avgRating}}</td>
                       </tr>
                     {% endif %}
                   {% empty %}

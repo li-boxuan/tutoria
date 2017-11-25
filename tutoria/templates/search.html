@@ -4,34 +4,34 @@
 
 {% block content %}
 
-    <div class="container">
-        <div class="row">
-            <div class="col-md-8 col-md-offset-2 well">
-                <h2>&emsp;&emsp;Search</h2>
-                <form action="{% url 'search:result' %}"
-                  method="GET" role="form" class="form-horizontal">
-                  <div class="form-group">
-                    <div class="col-md-12">
-                       <input type="text" class="form-control" name="keywords"
-                        autofocus placeholder="Tutor Name / University / Course / Subject Tag">
-                    </div>
-                  </div>
-                </form>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2 well">
+        <h2>&emsp;&emsp;Search</h2>
+        <form action="{% url 'search:result' %}"
+              method="GET" role="form" class="form-horizontal">
+          <div class="form-group">
+            <div class="col-md-12">
+              <input type="text" class="form-control" name="keywords"
+                     autofocus placeholder="Tutor Name / University / Course / Subject Tag">
             </div>
-        </div>
+          </div>
+        </form>
+      </div>
     </div>
+  </div>
 
 {% endblock %}
 {% block js %}
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" type="text/javascript"></script>
-	<script type="text/javascript">
-	$(function() {
-  $("input[name='keywords']").autocomplete({
-		source: "{% url 'get_keywords' %}",
-    minLength: 2,
-  });
-});
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    $(function() {
+      $("input[name='keywords']").autocomplete({
+        source: "{% url 'get_keywords' %}",
+        minLength: 2,
+      });
+    });
 
-	</script>
+  </script>
 {% endblock %}
