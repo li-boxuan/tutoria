@@ -173,6 +173,8 @@ def save_booking(request, tutor_id):
         session.status = session.BOOKED
         session.save()
         now = datetime.now()
+        if (student.wallet_balance - tutor.hourly_rate * 1.05) < 0:
+            return HttpResponse("No enough money!")
         # Create a new transaction and save it.
         transaction = Transaction(issuer=student, receiver=tutor,
                                   amount=tutor.hourly_rate,
@@ -216,7 +218,9 @@ class ReviewView(LoginRequiredMixin, FormView):
         student = User.objects.get(username=self.request.session['username']).student
         tutor = Tutor.objects.get(pk=self.kwargs['tutor_id'])
         finished_booking_list = BookingRecord.objects.filter(tutor=tutor, student=student, status='F')
+        print(finished_booking_list)
         review_list = Review.objects.filter(tutor=tutor, student=student)
+        print(review_list)
         return len(finished_booking_list) > len(review_list)
 
     def dispatch(self, request, *args, **kwargs):
