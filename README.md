@@ -37,6 +37,24 @@ via `localhost`:
 
     python manage.py runserver
 
+Note that begin_all_sessions & end_all_sessions are implemented in the scheduler_trigger.py.
+You need to begin/end all sessions using scheduler_trigger via Django shell:
+
+    python manage.py shell
+    from scheduler_trigger import *
+    help() # see usage description
+
+In the django shell, you can start all session at a specific time making use of scheduler_trigger:
+
+    run(True, "Nov 25 2017, 9:00p.m.") # start all sessions
+
+or end all session:
+
+    run(False, "Nov 25 2017, 9:00p.m.") # end all sessions
+
+For your convenience, you can let the scheduler do begin/end all sessions in turn within a time range:
+
+    run_range("Nov 25 2017, 8:00a.m.", "Nov 26 2017, 9:00p.m.") # start & end all sessions in turn
 
 ## Development
 
