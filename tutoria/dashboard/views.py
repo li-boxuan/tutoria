@@ -171,7 +171,7 @@ class MytimetableView(generic.ListView):
                 d = today + timedelta(days = i // slots_per_day)
                 if is_contracted_tutor:
                     hour = (i % slots_per_day) // 2
-                    minute = 0 if hour % 2 == 0 else 30
+                    minute = 0 if i % 2 == 0 else 30
                 else:
                     hour = i % slots_per_day
                     minute = 0
@@ -185,6 +185,7 @@ class MytimetableView(generic.ListView):
                     end_time=timezone.make_aware(end_time),
                     tutor=usr)
                 elem = {'status' : session.status, 'date' : str(today + timedelta(days=i // slots_per_day)), 'id': session.id}
+                #print("elem = ", elem)
                 timetable.append(elem) # closed
 
             # print("tot: " + str(days_to_display * slots_per_day))
@@ -209,6 +210,7 @@ class MytimetableView(generic.ListView):
                     #print(index)
                     timetable[index]['status'] = str(session.status)
                     timetable[index]['id'] = session.id
+                    #print("index = ", index, " session id = ", session.id)
                     if session.status == session.BOOKED:
                         # logic is a bit tricky here
                         # note we won't pass session id but booking_record id here
@@ -219,9 +221,14 @@ class MytimetableView(generic.ListView):
                             if record.status == record.INCOMING:
                                 timetable[index]['id'] = record.id
                                 break
+            lock_index = now_index + slots_per_day
             for i in range(days_to_display * slots_per_day):
                 if i <= now_index:
                     timetable[i]['status'] = "PASSED"
+                elif i <= lock_index:
+                    if timetable[i]['status'] == session.BOOKABLE:
+                        #even if tutor tries to open a session within 24 hours, it doesn't change
+                        timetable[i]['status'] = session.CLOSED
 
             context['tutor_timetable'] = timetable
             #print(timetable)
