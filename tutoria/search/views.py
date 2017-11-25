@@ -24,14 +24,18 @@ class ResultView(ListView):
     sort_method = 'rating'  # Sort by rating by default
     keywords = ''
     minPrice = 0  # Integer. Minimum hourly rate.
-    price_limit = list(Tutor.objects.all().aggregate(Max('hourly_rate')).values())[0]
-    maxPrice = price_limit  # Integer. Maximum hourly rate.
+    price_limit = 1000
+    maxPrice = 500  # Integer. Maximum hourly rate.
     tutor_type = 'ALL'
     only_show_available = False  # Only show tutor with available session in the coming 7 days?
 
+    def dispatch(self, request, *args, **kwargs):
+        self.price_limit = list(Tutor.objects.all().aggregate(Max('hourly_rate')).values())[0]
+        self.maxPrice = self.price_limit/2
+        return super(ResultView, self).dispatch(request, *args, **kwargs)
+
     def get_queryset(self):
         """Determine the list of tutors to be displayed."""
-        print(self.request.GET)
         if 'keywords' in self.request.GET:
             self.keywords = self.request.GET['keywords']
         if 'sort' in self.request.GET:
