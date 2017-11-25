@@ -43,6 +43,7 @@
               <input type="hidden" name="tutor_type" value={{ tutor_type }}>
               <input type="hidden" name="sort" value={{ sort }}>
               <input type="hidden" name="only_show_available" value={{ only_show_available }}>
+              <input type="hidden" name="price_limit" value={{ price_limit }}>
               <input type="text" class="form-control" name="keywords" autofocus value="{{keywords}}">
             </div>
             <div class="col-md-2">
@@ -58,6 +59,7 @@
             <input type="hidden" name="tutor_type" value={{ tutor_type }}>
             <input type="hidden" name="keywords" value="{{ keywords }}">
             <input type="hidden" name="only_show_available" value={{ only_show_available }}>
+          <input type="hidden" name="price_limit" value={{ price_limit }}>
             <select name="sort" onChange="form.submit();">
               {% if sort == 'rating' %}
                 <option value="rating" selected>&darr; Rating</option>
@@ -87,6 +89,7 @@
             <input type="hidden" name="tutor_type" value={{ tutor_type }}>
             <input type="hidden" name="sort" value={{ sort }}>
             <input type="hidden" name="keywords" value="{{ keywords }}">
+          <input type="hidden" name="price_limit" value={{ price_limit }}>
             {% if only_show_available == True %}
               <input type="checkbox" name="only_show_available" value="True" onchange="form.submit()" checked> Hide Unavailable Tutor
             {% else %}
@@ -102,6 +105,7 @@
             <input type="hidden" name="sort" value={{ sort }}>
             <input type="hidden" name="keywords" value="{{ keywords }}">
             <input type="hidden" name="only_show_available" value={{ only_show_available }}>
+          <input type="hidden" name="price_limit" value={{ price_limit }}>
             <select name="tutor_type" onChange="form.submit();">
               {% if tutor_type == 'CT' %}
                 <option value="CT" selected>Contracted</option>
@@ -125,16 +129,17 @@
         <form action="" method="get" id="priceFilter">
           <div class="col-md-4 col-md-offset-2">
             <label for="minPrice">Min Price:</label>
-            <input type="text" id="minPrice" name="minPrice" style="border:0; color:#f6931f; background-color:rgba(0, 0, 0, 0.06); font-weight:bold;">
+            <input type="text" id="minPrice" name="minPrice" readonly style="border:0; color:#f6931f; background-color:rgba(0, 0, 0, 0.06); font-weight:bold;">
           </div>
           <div class="col-md-4 col-md-offset-1">
             <label for="maxPrice">Max Price:</label>
-            <input type="text" id="maxPrice" name="maxPrice" style="border:0; color:#f6931f; background-color:rgba(0, 0, 0, 0.06); font-weight:bold;">
+            <input type="text" id="maxPrice" name="maxPrice" readonly style="border:0; color:#f6931f; background-color:rgba(0, 0, 0, 0.06); font-weight:bold;">
           </div>
           <input type="hidden" name="keywords" value="{{ keywords }}">
           <input type="hidden" name="sort" value={{ sort }}>
           <input type="hidden" name="tutor_type" value={{ tutor_type }}>
           <input type="hidden" name="only_show_available" value={{ only_show_available }}>
+          <input type="hidden" name="price_limit" value={{ price_limit }}>
           <div id="slider-range" class="col-md-8 col-md-offset-2"></div>
           <div class="col-md-2"> </div>
         </form>

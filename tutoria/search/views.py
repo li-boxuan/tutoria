@@ -24,8 +24,8 @@ class ResultView(ListView):
     sort_method = 'rating'  # Sort by rating by default
     keywords = ''
     minPrice = 0  # Integer. Minimum hourly rate.
-    price_limit = 1000
-    maxPrice = price_limit/2  # Integer. Maximum hourly rate.
+    price_limit = list(Tutor.objects.all().aggregate(Max('hourly_rate')).values())[0]
+    maxPrice = price_limit  # Integer. Maximum hourly rate.
     tutor_type = 'ALL'
     only_show_available = False  # Only show tutor with available session in the coming 7 days?
 
@@ -44,6 +44,8 @@ class ResultView(ListView):
             self.tutor_type = self.request.GET['tutor_type']
         if 'only_show_available' in self.request.GET:
             self.only_show_available = eval(self.request.GET['only_show_available'])
+        if 'price_limit' in self.request.GET:
+            self.price_limit = self.request.GET['price_limit']
 
         all_tutors = Tutor.objects.filter(visible=True)  # Obtain visible tutors
         filtered_tutors = []
@@ -93,8 +95,6 @@ class ResultView(ListView):
         context['minPrice'] = self.minPrice
         context['tutor_type'] = self.tutor_type
         context['only_show_available'] = self.only_show_available
-        self.price_limit = list(Tutor.objects.all().aggregate(Max('hourly_rate')).values())[0]
-        self.maxPrice = self.price_limit/2
         context['price_limit'] = self.price_limit
         context['maxPrice'] = self.maxPrice
         return context
