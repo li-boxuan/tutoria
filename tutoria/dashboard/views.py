@@ -43,7 +43,11 @@ class MytransactionsView(generic.ListView):
                context['user_type'] = 'Tutor' 
 #usr = get_object_or_404(Student, user=user)
            records = usr.bookingrecord_set.all()
-           context['records'] = records
+           context['records'] = []
+           for r in records:
+               one_month_before_now = timezone.now() - timedelta(days=30)
+               if r.entry_date > one_month_before_now:
+                   context['records'].append(r)
            transactions = []
            for rec in context['records']:
                transactions.append(rec.transaction)
