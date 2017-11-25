@@ -130,7 +130,7 @@ def confirm_booking(request, tutor_id):
             return HttpResponse("You cannot book a session within 24 hours before start_time!")
 
         # Ignore commission for now because it might be saved by coupon
-        if (student.wallet_balance - tutor.hourly_rate) < 0:
+        if (student.wallet_balance - tutor.hourly_rate * 1.05) < 0:
             # TODO: beautify
             return HttpResponse("Your balance is " +
                                 str(student.wallet_balance) +
