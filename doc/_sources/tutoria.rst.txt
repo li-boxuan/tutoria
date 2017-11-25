@@ -1,0 +1,46 @@
+tutoria package
+===============
+
+Submodules
+----------
+
+tutoria\.settings module
+------------------------
+
+.. automodule:: tutoria.settings
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+tutoria\.urls module
+--------------------
+
+.. automodule:: tutoria.urls
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+tutoria\.views module
+---------------------
+
+.. automodule:: tutoria.views
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+tutoria\.wsgi module
+--------------------
+
+.. automodule:: tutoria.wsgi
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: tutoria
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -1,0 +1,61 @@
+messenger package
+=================
+
+Subpackages
+-----------
+
+.. toctree::
+
+    messenger.migrations
+
+Submodules
+----------
+
+messenger\.admin module
+-----------------------
+
+.. automodule:: messenger.admin
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+messenger\.apps module
+----------------------
+
+.. automodule:: messenger.apps
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+messenger\.models module
+------------------------
+
+.. automodule:: messenger.models
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+messenger\.tests module
+-----------------------
+
+.. automodule:: messenger.tests
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+messenger\.views module
+-----------------------
+
+.. automodule:: messenger.views
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: messenger
+    :members:
+    :undoc-members:
+    :show-inheritance:

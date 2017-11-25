@@ -1,0 +1,22 @@
+wallet\.migrations package
+==========================
+
+Submodules
+----------
+
+wallet\.migrations\.0001\_initial module
+----------------------------------------
+
+.. automodule:: wallet.migrations.0001_initial
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: wallet.migrations
+    :members:
+    :undoc-members:
+    :show-inheritance:

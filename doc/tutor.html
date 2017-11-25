@@ -1,0 +1,247 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>tutor package &#8212; Tutoria 1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="tutor-package">
+<h1>tutor package<a class="headerlink" href="#tutor-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-tutor.forms">
+<span id="tutor-forms-module"></span><h2>tutor.forms module<a class="headerlink" href="#module-tutor.forms" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="tutor.forms.ReviewForm">
+<em class="property">class </em><code class="descclassname">tutor.forms.</code><code class="descname">ReviewForm</code><span class="sig-paren">(</span><em>data=None</em>, <em>files=None</em>, <em>auto_id='id_%s'</em>, <em>prefix=None</em>, <em>initial=None</em>, <em>error_class=&lt;class 'django.forms.utils.ErrorList'&gt;</em>, <em>label_suffix=None</em>, <em>empty_permitted=False</em>, <em>instance=None</em>, <em>use_required_attribute=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tutor/forms.html#ReviewForm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tutor.forms.ReviewForm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.forms.models.ModelForm</span></code></p>
+<dl class="class">
+<dt id="tutor.forms.ReviewForm.Meta">
+<em class="property">class </em><code class="descname">Meta</code><a class="reference internal" href="_modules/tutor/forms.html#ReviewForm.Meta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tutor.forms.ReviewForm.Meta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="tutor.forms.ReviewForm.Meta.exclude">
+<code class="descname">exclude</code><em class="property"> = ['student', 'tutor', 'date']</em><a class="headerlink" href="#tutor.forms.ReviewForm.Meta.exclude" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="tutor.forms.ReviewForm.Meta.model">
+<code class="descname">model</code><a class="headerlink" href="#tutor.forms.ReviewForm.Meta.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">Review</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tutor.forms.ReviewForm.base_fields">
+<code class="descname">base_fields</code><em class="property"> = OrderedDict([('content', &lt;django.forms.fields.CharField object&gt;), ('rating', &lt;django.forms.fields.TypedChoiceField object&gt;), ('anonymous', &lt;django.forms.fields.BooleanField object&gt;)])</em><a class="headerlink" href="#tutor.forms.ReviewForm.base_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="tutor.forms.ReviewForm.declared_fields">
+<code class="descname">declared_fields</code><em class="property"> = OrderedDict()</em><a class="headerlink" href="#tutor.forms.ReviewForm.declared_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="tutor.forms.ReviewForm.media">
+<code class="descname">media</code><a class="headerlink" href="#tutor.forms.ReviewForm.media" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-tutor.models">
+<span id="tutor-models-module"></span><h2>tutor.models module<a class="headerlink" href="#module-tutor.models" title="Permalink to this headline">¶</a></h2>
+<p>Models for Application Tutor.</p>
+</div>
+<div class="section" id="module-tutor.urls">
+<span id="tutor-urls-module"></span><h2>tutor.urls module<a class="headerlink" href="#module-tutor.urls" title="Permalink to this headline">¶</a></h2>
+<p>URL Mapping.</p>
+</div>
+<div class="section" id="module-tutor.views">
+<span id="tutor-views-module"></span><h2>tutor.views module<a class="headerlink" href="#module-tutor.views" title="Permalink to this headline">¶</a></h2>
+<p>Views for the Tutor App.</p>
+<dl class="class">
+<dt id="tutor.views.DetailView">
+<em class="property">class </em><code class="descclassname">tutor.views.</code><code class="descname">DetailView</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tutor/views.html#DetailView"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tutor.views.DetailView" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.views.generic.detail.DetailView</span></code></p>
+<p>A class for the detailed view of tutor profile.</p>
+<dl class="attribute">
+<dt id="tutor.views.DetailView.context_object_name">
+<code class="descname">context_object_name</code><em class="property"> = 'tutor'</em><a class="headerlink" href="#tutor.views.DetailView.context_object_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="tutor.views.DetailView.get_context_data">
+<code class="descname">get_context_data</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tutor/views.html#DetailView.get_context_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tutor.views.DetailView.get_context_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get context data.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tutor.views.DetailView.model">
+<code class="descname">model</code><a class="headerlink" href="#tutor.views.DetailView.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">Tutor</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tutor.views.DetailView.template_name">
+<code class="descname">template_name</code><em class="property"> = 'detail.html'</em><a class="headerlink" href="#tutor.views.DetailView.template_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="tutor.views.ReviewView">
+<em class="property">class </em><code class="descclassname">tutor.views.</code><code class="descname">ReviewView</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tutor/views.html#ReviewView"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tutor.views.ReviewView" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.contrib.auth.mixins.LoginRequiredMixin</span></code>, <code class="xref py py-class docutils literal"><span class="pre">django.views.generic.edit.FormView</span></code></p>
+<dl class="method">
+<dt id="tutor.views.ReviewView.can_review">
+<code class="descname">can_review</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tutor/views.html#ReviewView.can_review"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tutor.views.ReviewView.can_review" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="tutor.views.ReviewView.dispatch">
+<code class="descname">dispatch</code><span class="sig-paren">(</span><em>request</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tutor/views.html#ReviewView.dispatch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tutor.views.ReviewView.dispatch" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="tutor.views.ReviewView.form_class">
+<code class="descname">form_class</code><a class="headerlink" href="#tutor.views.ReviewView.form_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">ReviewForm</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="tutor.views.ReviewView.form_valid">
+<code class="descname">form_valid</code><span class="sig-paren">(</span><em>form</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tutor/views.html#ReviewView.form_valid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tutor.views.ReviewView.form_valid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="tutor.views.ReviewView.get_context_data">
+<code class="descname">get_context_data</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tutor/views.html#ReviewView.get_context_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tutor.views.ReviewView.get_context_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="tutor.views.ReviewView.login_url">
+<code class="descname">login_url</code><em class="property"> = '/auth/login/'</em><a class="headerlink" href="#tutor.views.ReviewView.login_url" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="tutor.views.ReviewView.redirect_field_name">
+<code class="descname">redirect_field_name</code><em class="property"> = 'redirect_to'</em><a class="headerlink" href="#tutor.views.ReviewView.redirect_field_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="tutor.views.ReviewView.template_name">
+<code class="descname">template_name</code><em class="property"> = 'review.html'</em><a class="headerlink" href="#tutor.views.ReviewView.template_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="tutor.views.confirm_booking">
+<code class="descclassname">tutor.views.</code><code class="descname">confirm_booking</code><span class="sig-paren">(</span><em>request</em>, <em>tutor_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tutor/views.html#confirm_booking"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tutor.views.confirm_booking" title="Permalink to this definition">¶</a></dt>
+<dd><p>Confirm booking a new session.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="tutor.views.save_booking">
+<code class="descclassname">tutor.views.</code><code class="descname">save_booking</code><span class="sig-paren">(</span><em>request</em>, <em>tutor_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tutor/views.html#save_booking"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#tutor.views.save_booking" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save booking record and redirect to the dashboard.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-tutor">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-tutor" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Tutoria</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Hola Inc..
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/tutor.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

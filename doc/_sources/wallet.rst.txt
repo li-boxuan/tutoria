@@ -1,0 +1,31 @@
+wallet package
+==============
+Submodules
+----------
+
+
+wallet\.models module
+---------------------
+
+.. automodule:: wallet.models
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+wallet\.views module
+--------------------
+
+.. automodule:: wallet.views
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: wallet
+    :members:
+    :undoc-members:
+    :show-inheritance:

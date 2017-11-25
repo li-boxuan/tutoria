@@ -1,0 +1,29 @@
+timetable package
+=================
+Submodules
+----------
+timetable\.models module
+------------------------
+
+.. automodule:: timetable.models
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+timetable\.views module
+-----------------------
+
+.. automodule:: timetable.views
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: timetable
+    :members:
+    :undoc-members:
+    :show-inheritance:

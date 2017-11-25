@@ -1,0 +1,456 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>populate_db &#8212; Tutoria 1 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for populate_db</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">populate_db.py.</span>
+
+<span class="sd">For populating demo database</span>
+<span class="sd">data.</span>
+
+<span class="sd">Created on Oct. 20, 2017</span>
+<span class="sd">by Jiayao</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">from</span> <span class="nn">scheduler.models</span> <span class="k">import</span> <span class="n">Session</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="p">(</span><span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">date</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">django.utils.timezone</span> <span class="k">as</span> <span class="nn">tz</span>
+<span class="kn">from</span> <span class="nn">uuid</span> <span class="k">import</span> <span class="n">uuid4</span>
+<span class="kn">from</span> <span class="nn">review.models</span> <span class="k">import</span> <span class="n">Review</span>
+<span class="kn">from</span> <span class="nn">account.models</span> <span class="k">import</span> <span class="n">Student</span><span class="p">,</span> <span class="n">Tutor</span>
+
+
+<div class="viewcode-block" id="add_review"><a class="viewcode-back" href="../populate_db.html#populate_db.add_review">[docs]</a><span class="k">def</span> <span class="nf">add_review</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="n">rating</span><span class="p">,</span> <span class="n">student</span><span class="p">,</span> <span class="n">tutor</span><span class="p">,</span> <span class="n">anonymous</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Add a review.&quot;&quot;&quot;</span>
+    <span class="n">review</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">Review</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get_or_create</span><span class="p">(</span>
+        <span class="n">content</span><span class="o">=</span><span class="n">content</span><span class="p">,</span> <span class="n">rating</span><span class="o">=</span><span class="n">rating</span><span class="p">,</span> <span class="n">student</span><span class="o">=</span><span class="n">student</span><span class="p">,</span> <span class="n">tutor</span><span class="o">=</span><span class="n">tutor</span><span class="p">,</span>
+        <span class="n">anonymous</span><span class="o">=</span><span class="n">anonymous</span><span class="p">)</span>
+    <span class="n">review</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">review</span></div>
+
+
+<div class="viewcode-block" id="add_coupon"><a class="viewcode-back" href="../populate_db.html#populate_db.add_coupon">[docs]</a><span class="k">def</span> <span class="nf">add_coupon</span><span class="p">(</span><span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">,</span> <span class="n">coupon_code</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Add a new coupon.&quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">django.utils</span> <span class="k">import</span> <span class="n">timezone</span>
+    <span class="kn">from</span> <span class="nn">wallet.models</span> <span class="k">import</span> <span class="n">Coupon</span>
+    <span class="n">coupon</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">Coupon</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get_or_create</span><span class="p">(</span>
+        <span class="n">start_date</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">make_aware</span><span class="p">(</span><span class="n">start_date</span><span class="p">,</span>
+                                       <span class="n">timezone</span><span class="o">.</span><span class="n">get_current_timezone</span><span class="p">()),</span>
+        <span class="n">end_date</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">make_aware</span><span class="p">(</span><span class="n">end_date</span><span class="p">,</span>
+                                     <span class="n">timezone</span><span class="o">.</span><span class="n">get_current_timezone</span><span class="p">()),</span>
+        <span class="n">code</span><span class="o">=</span><span class="n">coupon_code</span><span class="p">)</span>
+    <span class="n">coupon</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">coupon</span></div>
+
+
+<span class="n">OFFICE_HOURS</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;begin&#39;</span><span class="p">:</span> <span class="n">time</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">00</span><span class="p">),</span>
+                <span class="s1">&#39;end&#39;</span><span class="p">:</span> <span class="n">time</span><span class="p">(</span><span class="mi">19</span><span class="p">,</span> <span class="mi">00</span><span class="p">)}</span>
+<span class="n">OFFICE_HOUR_STEP</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;CT&#39;</span><span class="p">:</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mf">0.5</span><span class="p">),</span>
+                    <span class="s1">&#39;PT&#39;</span><span class="p">:</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)}</span>
+
+
+<div class="viewcode-block" id="add_student"><a class="viewcode-back" href="../populate_db.html#populate_db.add_student">[docs]</a><span class="k">def</span> <span class="nf">add_student</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="n">email</span><span class="p">,</span> <span class="n">first_name</span><span class="p">,</span> <span class="n">last_name</span><span class="p">,</span> <span class="n">wallet_balance</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">phone</span><span class="o">=</span><span class="mi">99999999</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">account.models</span> <span class="k">import</span> <span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">Student</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">wallet_balance</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">wallet_balance</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span> <span class="o">*</span> <span class="mi">10</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">User</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create_user</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="n">email</span><span class="p">,</span>
+                                        <span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">,</span>
+                                        <span class="n">first_name</span><span class="o">=</span><span class="n">first_name</span><span class="p">,</span>
+                                        <span class="n">last_name</span><span class="o">=</span><span class="n">last_name</span><span class="p">,</span>
+									    <span class="n">phone</span><span class="o">=</span><span class="n">phone</span><span class="p">)</span>
+        <span class="n">user</span><span class="o">.</span><span class="n">wallet_balance</span> <span class="o">=</span> <span class="n">wallet_balance</span>
+
+    <span class="n">student</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">Student</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get_or_create</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">)</span>
+    <span class="n">user</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="n">student</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">student</span></div>
+
+
+<div class="viewcode-block" id="add_tutor"><a class="viewcode-back" href="../populate_db.html#populate_db.add_tutor">[docs]</a><span class="k">def</span> <span class="nf">add_tutor</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="n">email</span><span class="p">,</span> <span class="n">first_name</span><span class="p">,</span> <span class="n">last_name</span><span class="p">,</span>
+              <span class="n">tutor_type</span><span class="o">=</span><span class="s1">&#39;CT&#39;</span><span class="p">,</span>
+              <span class="n">hourly_rate</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">phone</span><span class="o">=</span><span class="s1">&#39;99999999&#39;</span><span class="p">,</span>
+              <span class="n">bio</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+              <span class="n">courses</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+              <span class="n">tags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+              <span class="n">wallet_balance</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">avatar</span><span class="o">=</span><span class="s1">&#39;default_avatar.png&#39;</span><span class="p">,</span>
+              <span class="n">sessions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">university</span><span class="o">=</span><span class="s1">&#39;HKU&#39;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">tags</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">tags</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Software Engineering&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">courses</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">courses</span> <span class="o">=</span> <span class="p">[[</span><span class="s1">&#39;COMP3297&#39;</span><span class="p">,</span> <span class="s1">&#39;Software Engineering&#39;</span><span class="p">]]</span>
+    <span class="kn">from</span> <span class="nn">account.models</span> <span class="k">import</span> <span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">Tutor</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">wallet_balance</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">wallet_balance</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span> <span class="o">*</span> <span class="mi">10</span>
+    <span class="k">if</span> <span class="n">tutor_type</span> <span class="o">==</span> <span class="s1">&#39;CT&#39;</span><span class="p">:</span>
+        <span class="n">hourly_rate</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">elif</span> <span class="n">hourly_rate</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">hourly_rate</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span> <span class="o">*</span> <span class="mi">10</span>
+
+    <span class="c1"># tutor = Tutor.objects.create_user(username, email, password, first_name=first_name, last_name=last_name)</span>
+
+    <span class="c1"># user, _ = User.objects.get_or_create(username=username, email=email,</span>
+    <span class="c1"># 								  password=password,</span>
+    <span class="c1">#                                      first_name=first_name,</span>
+    <span class="c1">#                                      last_name=last_name)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">User</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create_user</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="n">email</span><span class="p">,</span>
+                                        <span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">,</span>
+                                        <span class="n">first_name</span><span class="o">=</span><span class="n">first_name</span><span class="p">,</span>
+                                        <span class="n">last_name</span><span class="o">=</span><span class="n">last_name</span><span class="p">,</span>
+									    <span class="n">phone</span><span class="o">=</span><span class="n">phone</span><span class="p">)</span>
+
+    <span class="n">tutor</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">Tutor</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get_or_create</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">)</span>
+    <span class="n">tutor</span><span class="o">.</span><span class="n">tutor_type</span> <span class="o">=</span> <span class="n">tutor_type</span>
+    <span class="n">tutor</span><span class="o">.</span><span class="n">wallet_balance</span> <span class="o">=</span> <span class="n">wallet_balance</span>
+    <span class="n">tutor</span><span class="o">.</span><span class="n">avatar</span> <span class="o">=</span> <span class="n">avatar</span>
+    <span class="n">tutor</span><span class="o">.</span><span class="n">university</span> <span class="o">=</span> <span class="n">university</span>
+    <span class="n">tutor</span><span class="o">.</span><span class="n">hourly_rate</span> <span class="o">=</span> <span class="n">hourly_rate</span>
+    <span class="n">tutor</span><span class="o">.</span><span class="n">bio</span> <span class="o">=</span> <span class="n">bio</span>
+    <span class="n">tutor</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">tags</span><span class="p">:</span>
+        <span class="n">tutor</span><span class="o">.</span><span class="n">tags</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">add_tag</span><span class="p">(</span><span class="n">tag</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">course</span> <span class="ow">in</span> <span class="n">courses</span><span class="p">:</span>
+        <span class="n">tutor</span><span class="o">.</span><span class="n">courses</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">add_course</span><span class="p">(</span><span class="n">course</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">course</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+
+    <span class="k">if</span> <span class="n">sessions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">session</span> <span class="ow">in</span> <span class="n">sessions</span><span class="p">:</span>
+            <span class="n">session</span><span class="o">.</span><span class="n">tutor</span> <span class="o">=</span> <span class="n">tutor</span>
+            <span class="n">session</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="n">user</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="n">tutor</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">tutor</span></div>
+
+
+<div class="viewcode-block" id="add_tag"><a class="viewcode-back" href="../populate_db.html#populate_db.add_tag">[docs]</a><span class="k">def</span> <span class="nf">add_tag</span><span class="p">(</span><span class="n">tag</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">account.models</span> <span class="k">import</span> <span class="n">SubjectTag</span>
+    <span class="n">t</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">SubjectTag</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get_or_create</span><span class="p">(</span><span class="n">tag</span><span class="o">=</span><span class="n">tag</span><span class="p">)</span>
+    <span class="n">t</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">t</span></div>
+
+
+<div class="viewcode-block" id="add_course"><a class="viewcode-back" href="../populate_db.html#populate_db.add_course">[docs]</a><span class="k">def</span> <span class="nf">add_course</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">account.models</span> <span class="k">import</span> <span class="n">Course</span>
+    <span class="n">c</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">Course</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get_or_create</span><span class="p">(</span><span class="n">course_name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">course_code</span><span class="o">=</span><span class="n">code</span><span class="p">)</span>
+    <span class="n">c</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">c</span></div>
+
+
+<div class="viewcode-block" id="populate_tutor"><a class="viewcode-back" href="../populate_db.html#populate_db.populate_tutor">[docs]</a><span class="k">def</span> <span class="nf">populate_tutor</span><span class="p">():</span>
+    <span class="n">tutors</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">tutors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">add_tutor</span><span class="p">(</span>
+        <span class="s1">&#39;georgem&#39;</span><span class="p">,</span> <span class="s1">&#39;georgem&#39;</span><span class="p">,</span> <span class="s1">&#39;georgem@cs.hku.hk&#39;</span><span class="p">,</span> <span class="s1">&#39;George&#39;</span><span class="p">,</span> <span class="s1">&#39;Mitcheson&#39;</span><span class="p">,</span> <span class="s1">&#39;PT&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;28597068&#39;</span><span class="p">,</span>
+        <span class="sa">r</span><span class="s1">&#39;Before joining HKU, George accumulated many years of experience in large-scale software engineering and in R&amp;D for real-time systems. He has headed or contributed to development of a wide range of systems spanning fields such as scientific computation, telecommunications, database management systems, control systems and autonomous robotics. This work was carried out principally in Europe and the USA. Between the two he taught for several years at the University of Puerto Rico.&#39;</span><span class="p">,</span>
+        <span class="p">[[</span><span class="s1">&#39;COMP3297&#39;</span><span class="p">,</span> <span class="s1">&#39;Software Engineering&#39;</span><span class="p">],</span>
+         <span class="p">[</span><span class="s1">&#39;COMP3403&#39;</span><span class="p">,</span> <span class="s1">&#39;Software Implmentation, Testing and Maintainence&#39;</span><span class="p">]],</span>
+        <span class="p">[</span><span class="s1">&#39;Software Engineering&#39;</span><span class="p">,</span> <span class="s1">&#39;Evolutionary Computing&#39;</span><span class="p">],</span>
+        <span class="n">avatar</span><span class="o">=</span><span class="s1">&#39;georgem.png&#39;</span>
+    <span class="p">))</span>
+
+    <span class="n">tutors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">add_tutor</span><span class="p">(</span>
+        <span class="s1">&#39;clwang&#39;</span><span class="p">,</span> <span class="s1">&#39;choli&#39;</span><span class="p">,</span> <span class="s1">&#39;clwang@cs.hku.hk&#39;</span><span class="p">,</span> <span class="s1">&#39;Cho-Li&#39;</span><span class="p">,</span> <span class="s1">&#39;Wang&#39;</span><span class="p">,</span> <span class="s1">&#39;CT&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;28578458&#39;</span><span class="p">,</span>
+        <span class="sa">r</span><span class="s2">&quot;Professor Cho-Li Wang received his B.S. degree in Computer Science and Information Engineering from National Taiwan University in 1985. He obtained his M.S. and Ph.D. degrees in Computer Engineering from University of Southern California in 1990 and 1995 respectively. He is currently a professor at the Department of Computer Science. Professor Wang&#39;s research interests include parallel architecture, software systems for Cluster and Grid computing, and virtualization techniques for Cloud computing. Recently, he starts working on software transaction memory for multicore/GPU clusters and multi-kernel operating systems for future single-chip manycore processor. Professor Wang has published more than 130 papers in various peer reviewed journals and conference proceedings. He is/was on the editorial boards of several international journals, including IEEE Transactions on Computers (TC), Multiagent and Grid Systems (MGS), Journal of Information Science and Engineering (JISE), International Journal of Pervasive Computing and Communications (JPCC), ICST Transactions on Scalable Information Systems (SIS). He was the program chair for Cluster’03, CCGrid&#39;09, InfoScale’09, and ICPADS’09, ISPA’11, FCST’11, FutureTech’12, and Cluster2012; and the General Chair for IPDPS2012. He has also served as program committee members for numerous international conferences, including IPDPS, CCGrid, Cloud, CloudCom, Grid, HiPC, ICPP, and ICPADS. Professor Wang is the primary investigator of China 863 project &#39;Hong Kong University Grid Point&#39; (2006-2011). The HKU Grid point consists of 3004 CPU cores (31.45 Teraflops), which offers parallel computing services for the China National Grid (CNGrid) and is used as a testbed for Cloud-related systems development. He has been invited to give keynote and plenary talk related to Distributed JVM design and Cloud Computing at various international conferences.&quot;</span><span class="p">,</span>
+        <span class="p">[[</span><span class="s1">&#39;COMP3230&#39;</span><span class="p">,</span> <span class="s1">&#39;Operating Systems&#39;</span><span class="p">]],</span>
+        <span class="p">[</span><span class="s1">&#39;Cloud Computing&#39;</span><span class="p">],</span>
+        <span class="n">avatar</span><span class="o">=</span><span class="s1">&#39;clwang.png&#39;</span>
+    <span class="p">))</span>
+
+    <span class="n">tutors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">add_tutor</span><span class="p">(</span>
+        <span class="s1">&#39;kitty&#39;</span><span class="p">,</span> <span class="s1">&#39;kitty&#39;</span><span class="p">,</span> <span class="s1">&#39;alpha_zero@deepmind.com&#39;</span><span class="p">,</span> <span class="s1">&#39;Kitty&#39;</span><span class="p">,</span> <span class="s1">&#39;K&#39;</span><span class="p">,</span> <span class="s1">&#39;PT&#39;</span><span class="p">,</span>
+        <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;00000000&#39;</span><span class="p">,</span>
+        <span class="sa">r</span><span class="s1">&#39;I learn by meself so well. No human beats me.&#39;</span><span class="p">,</span>
+        <span class="p">[[</span><span class="s1">&#39;COMP3314&#39;</span><span class="p">,</span> <span class="s1">&#39;Machine Learning&#39;</span><span class="p">]],</span>
+        <span class="p">[</span><span class="s1">&#39;Go&#39;</span><span class="p">,</span> <span class="s1">&#39;Deep Learning&#39;</span><span class="p">]</span>
+
+    <span class="p">))</span>
+
+    <span class="n">tutors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">add_tutor</span><span class="p">(</span>
+        <span class="s1">&#39;kpwat&#39;</span><span class="p">,</span> <span class="s1">&#39;kpwat&#39;</span><span class="p">,</span> <span class="s1">&#39;watkp@hku.hk&#39;</span><span class="p">,</span> <span class="s1">&#39;Kam Pui&#39;</span><span class="p">,</span> <span class="s1">&#39;Wat&#39;</span><span class="p">,</span> <span class="s1">&#39;PT&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;39171989&#39;</span><span class="p">,</span>
+        <span class="sa">r</span><span class="s1">&#39;Dr. Wat receives a first class honour from BSc(Ac).&#39;</span><span class="p">,</span>
+        <span class="p">[[</span><span class="s1">&#39;COMP2601&#39;</span><span class="p">,</span> <span class="s1">&#39;Probability &amp; Statistics I&#39;</span><span class="p">]],</span>
+        <span class="p">[</span><span class="s1">&#39;Risk Management&#39;</span><span class="p">,</span> <span class="s1">&#39;Statistics&#39;</span><span class="p">],</span>
+        <span class="n">avatar</span><span class="o">=</span><span class="s1">&#39;watkp.png&#39;</span>
+    <span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">tutors</span></div>
+
+
+<div class="viewcode-block" id="populate_session"><a class="viewcode-back" href="../populate_db.html#populate_db.populate_session">[docs]</a><span class="k">def</span> <span class="nf">populate_session</span><span class="p">(</span><span class="n">tutors</span><span class="p">):</span>
+    <span class="n">demo_date</span> <span class="o">=</span> <span class="n">date</span><span class="p">(</span><span class="mi">2017</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">25</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">tutors</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">tutor</span> <span class="ow">in</span> <span class="n">tutors</span><span class="p">:</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">demo_date</span><span class="p">,</span> <span class="n">OFFICE_HOURS</span><span class="p">[</span><span class="s1">&#39;begin&#39;</span><span class="p">])</span>
+            <span class="k">while</span> <span class="n">d</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="n">OFFICE_HOURS</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]:</span>
+                <span class="n">dn</span> <span class="o">=</span> <span class="n">d</span> <span class="o">+</span> <span class="n">OFFICE_HOUR_STEP</span><span class="p">[</span><span class="n">tutor</span><span class="o">.</span><span class="n">tutor_type</span><span class="p">]</span>
+                <span class="n">s</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">Session</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get_or_create</span><span class="p">(</span>
+                    <span class="n">start_time</span><span class="o">=</span><span class="n">tz</span><span class="o">.</span><span class="n">make_aware</span><span class="p">(</span><span class="n">d</span><span class="p">),</span>
+                    <span class="n">end_time</span><span class="o">=</span><span class="n">tz</span><span class="o">.</span><span class="n">make_aware</span><span class="p">(</span><span class="n">dn</span><span class="p">),</span>
+                    <span class="n">tutor</span><span class="o">=</span><span class="n">tutor</span><span class="p">,</span>
+                    <span class="n">status</span><span class="o">=</span><span class="n">Session</span><span class="o">.</span><span class="n">BOOKABLE</span><span class="p">)</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="n">dn</span>
+
+    <span class="n">geo</span> <span class="o">=</span> <span class="n">tutors</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">kitty</span> <span class="o">=</span> <span class="n">tutors</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">s</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">Session</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get_or_create</span><span class="p">(</span>
+        <span class="n">start_time</span><span class="o">=</span><span class="n">tz</span><span class="o">.</span><span class="n">make_aware</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span>
+            <span class="n">date</span><span class="p">(</span><span class="mi">2017</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">27</span><span class="p">),</span> <span class="n">time</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">00</span><span class="p">))),</span>
+        <span class="n">end_time</span><span class="o">=</span><span class="n">tz</span><span class="o">.</span><span class="n">make_aware</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span>
+            <span class="n">date</span><span class="p">(</span><span class="mi">2017</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">27</span><span class="p">),</span> <span class="n">time</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">00</span><span class="p">))),</span>
+        <span class="n">tutor</span><span class="o">=</span><span class="n">kitty</span><span class="p">,</span>
+        <span class="n">status</span><span class="o">=</span><span class="n">Session</span><span class="o">.</span><span class="n">BOOKABLE</span><span class="p">)</span>
+
+    <span class="n">s</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="n">s</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">Session</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get_or_create</span><span class="p">(</span>
+        <span class="n">start_time</span><span class="o">=</span><span class="n">tz</span><span class="o">.</span><span class="n">make_aware</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span>
+            <span class="n">date</span><span class="p">(</span><span class="mi">2017</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">time</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">00</span><span class="p">))),</span>
+        <span class="n">end_time</span><span class="o">=</span><span class="n">tz</span><span class="o">.</span><span class="n">make_aware</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span>
+            <span class="n">date</span><span class="p">(</span><span class="mi">2017</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">time</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">00</span><span class="p">))),</span>
+        <span class="n">tutor</span><span class="o">=</span><span class="n">kitty</span><span class="p">,</span>
+        <span class="n">status</span><span class="o">=</span><span class="n">Session</span><span class="o">.</span><span class="n">BOOKABLE</span><span class="p">)</span>
+    <span class="n">s</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="n">s</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">Session</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get_or_create</span><span class="p">(</span>
+        <span class="n">start_time</span><span class="o">=</span><span class="n">tz</span><span class="o">.</span><span class="n">make_aware</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span>
+            <span class="n">date</span><span class="p">(</span><span class="mi">2017</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">time</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">00</span><span class="p">))),</span>
+        <span class="n">end_time</span><span class="o">=</span><span class="n">tz</span><span class="o">.</span><span class="n">make_aware</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span>
+            <span class="n">date</span><span class="p">(</span><span class="mi">2017</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">time</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">00</span><span class="p">))),</span>
+        <span class="n">tutor</span><span class="o">=</span><span class="n">kitty</span><span class="p">,</span>
+        <span class="n">status</span><span class="o">=</span><span class="n">Session</span><span class="o">.</span><span class="n">BOOKABLE</span><span class="p">)</span>
+
+    <span class="n">s</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="n">s</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">Session</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get_or_create</span><span class="p">(</span>
+        <span class="n">start_time</span><span class="o">=</span><span class="n">tz</span><span class="o">.</span><span class="n">make_aware</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span>
+            <span class="n">date</span><span class="p">(</span><span class="mi">2017</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">time</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">00</span><span class="p">))),</span>
+        <span class="n">end_time</span><span class="o">=</span><span class="n">tz</span><span class="o">.</span><span class="n">make_aware</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span>
+            <span class="n">date</span><span class="p">(</span><span class="mi">2017</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">time</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">00</span><span class="p">))),</span>
+        <span class="n">tutor</span><span class="o">=</span><span class="n">kitty</span><span class="p">,</span>
+        <span class="n">status</span><span class="o">=</span><span class="n">Session</span><span class="o">.</span><span class="n">BOOKABLE</span><span class="p">)</span>
+    <span class="n">s</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+    <span class="n">s</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">Session</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get_or_create</span><span class="p">(</span>
+        <span class="n">start_time</span><span class="o">=</span><span class="n">tz</span><span class="o">.</span><span class="n">make_aware</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span>
+            <span class="n">date</span><span class="p">(</span><span class="mi">2017</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">time</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">00</span><span class="p">))),</span>
+        <span class="n">end_time</span><span class="o">=</span><span class="n">tz</span><span class="o">.</span><span class="n">make_aware</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span>
+            <span class="n">date</span><span class="p">(</span><span class="mi">2017</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">time</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">00</span><span class="p">))),</span>
+        <span class="n">tutor</span><span class="o">=</span><span class="n">geo</span><span class="p">,</span>
+        <span class="n">status</span><span class="o">=</span><span class="n">Session</span><span class="o">.</span><span class="n">BOOKABLE</span><span class="p">)</span>
+
+    <span class="n">s</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="n">s</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">Session</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get_or_create</span><span class="p">(</span>
+        <span class="n">start_time</span><span class="o">=</span><span class="n">tz</span><span class="o">.</span><span class="n">make_aware</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span>
+            <span class="n">date</span><span class="p">(</span><span class="mi">2017</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">time</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">00</span><span class="p">))),</span>
+        <span class="n">end_time</span><span class="o">=</span><span class="n">tz</span><span class="o">.</span><span class="n">make_aware</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span>
+            <span class="n">date</span><span class="p">(</span><span class="mi">2017</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">time</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">00</span><span class="p">))),</span>
+        <span class="n">tutor</span><span class="o">=</span><span class="n">geo</span><span class="p">,</span>
+        <span class="n">status</span><span class="o">=</span><span class="n">Session</span><span class="o">.</span><span class="n">BOOKABLE</span><span class="p">)</span>
+    <span class="n">s</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="populate_student"><a class="viewcode-back" href="../populate_db.html#populate_db.populate_student">[docs]</a><span class="k">def</span> <span class="nf">populate_student</span><span class="p">():</span>
+    <span class="n">students</span> <span class="o">=</span> <span class="p">[</span><span class="n">add_student</span><span class="p">(</span><span class="s1">&#39;kpwat&#39;</span><span class="p">,</span> <span class="s1">&#39;kpwat&#39;</span><span class="p">,</span> <span class="s1">&#39;watkp@hku.hk&#39;</span><span class="p">,</span> <span class="s1">&#39;Kam Pui&#39;</span><span class="p">,</span> <span class="s1">&#39;Wat&#39;</span><span class="p">),</span>
+                <span class="n">add_student</span><span class="p">(</span><span class="s1">&#39;ckchui&#39;</span><span class="p">,</span> <span class="s1">&#39;ckchui&#39;</span><span class="p">,</span> <span class="s1">&#39;ckchui@cs.hku.hk&#39;</span><span class="p">,</span> <span class="s1">&#39;Chun-Kit&#39;</span><span class="p">,</span> <span class="s1">&#39;Chui&#39;</span><span class="p">,</span> <span class="n">wallet_balance</span><span class="o">=</span><span class="mi">500</span><span class="p">),</span>
+                <span class="n">add_student</span><span class="p">(</span><span class="s1">&#39;atam&#39;</span><span class="p">,</span> <span class="s1">&#39;atam&#39;</span><span class="p">,</span> <span class="s1">&#39;atam@cs.hku.hk&#39;</span><span class="p">,</span> <span class="s1">&#39;Anthony&#39;</span><span class="p">,</span> <span class="s1">&#39;Tam&#39;</span><span class="p">,</span> <span class="n">wallet_balance</span><span class="o">=</span><span class="mi">1000</span><span class="p">),</span>
+                <span class="n">add_student</span><span class="p">(</span><span class="s1">&#39;jrchow&#39;</span><span class="p">,</span> <span class="s1">&#39;jrchow&#39;</span><span class="p">,</span> <span class="s1">&#39;jrchow@hku.hk&#39;</span><span class="p">,</span> <span class="s1">&#39;Jingran&#39;</span><span class="p">,</span> <span class="s1">&#39;Zhou&#39;</span><span class="p">,</span> <span class="n">wallet_balance</span><span class="o">=</span><span class="mi">3000</span><span class="p">)]</span>
+
+    <span class="k">return</span> <span class="n">students</span></div>
+
+
+<div class="viewcode-block" id="populate_booking_record"><a class="viewcode-back" href="../populate_db.html#populate_db.populate_booking_record">[docs]</a><span class="k">def</span> <span class="nf">populate_booking_record</span><span class="p">():</span>
+    <span class="k">return</span></div>
+    <span class="c1"># from scheduler.models import (Session, BookingRecord)</span>
+    <span class="c1"># from account.models import (User, Student, Tutor)</span>
+    <span class="c1"># from wallet.models import Transaction</span>
+    <span class="c1"># # let it err rather than create improper users</span>
+    <span class="c1"># user = User.objects.get(username=&#39;ckchui&#39;)</span>
+    <span class="c1"># s = Student.objects.get(user=user)</span>
+    <span class="c1"># user = User.objects.get(username=&#39;georgem&#39;)</span>
+    <span class="c1">#</span>
+    <span class="c1"># DEMO_DATE = date(2017, 11, 1)</span>
+    <span class="c1"># DEMO_TIME = time(9, 30)</span>
+    <span class="c1"># d = datetime.combine(DEMO_DATE, DEMO_TIME)</span>
+    <span class="c1"># dn = d + OFFICE_HOUR_STEP[&#39;CT&#39;]</span>
+    <span class="c1"># tran, _ = Transaction.objects.get_or_create(</span>
+    <span class="c1">#     issuer=s, receiver=t, amount=100, created_at=tz.make_aware(d), commission=5.0)</span>
+    <span class="c1"># sess = t.session_set.all()[0]</span>
+    <span class="c1"># sess.status = Session.BOOKED</span>
+    <span class="c1"># sess.save()</span>
+    <span class="c1"># # use populated session</span>
+    <span class="c1"># # sess, _ = Session.objects.get_or_create(start_time=tz.make_aware(d), end_time=tz.make_aware(dn),tutor=t,status=Session.BOOKABLE)</span>
+    <span class="c1"># b, _ = BookingRecord.objects.get_or_create(</span>
+    <span class="c1">#     student=s, tutor=t, session=sess, entry_date=tz.make_aware(d), transaction=tran, status=BookingRecord.INCOMING)</span>
+
+
+<div class="viewcode-block" id="populate_review"><a class="viewcode-back" href="../populate_db.html#populate_db.populate_review">[docs]</a><span class="k">def</span> <span class="nf">populate_review</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Populate some reviews into our database.&quot;&quot;&quot;</span>
+    <span class="n">review_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">student_list</span> <span class="o">=</span> <span class="n">Student</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="n">tutor_list</span> <span class="o">=</span> <span class="n">Tutor</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="n">review_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">add_review</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s2">&quot;Best tutor XD&quot;</span><span class="p">,</span>
+                                  <span class="n">rating</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">student</span><span class="o">=</span><span class="n">student_list</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                  <span class="n">tutor</span><span class="o">=</span><span class="n">tutor_list</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">anonymous</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+    <span class="n">review_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">add_review</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s2">&quot;Nice tutor!&quot;</span><span class="p">,</span>
+                                  <span class="n">rating</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">student</span><span class="o">=</span><span class="n">student_list</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                                  <span class="n">tutor</span><span class="o">=</span><span class="n">tutor_list</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">anonymous</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+
+    <span class="n">review_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">add_review</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s2">&quot;Just a tutor...&quot;</span><span class="p">,</span>
+                                  <span class="n">rating</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">student</span><span class="o">=</span><span class="n">student_list</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                                  <span class="n">tutor</span><span class="o">=</span><span class="n">tutor_list</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">anonymous</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+    <span class="n">review_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">add_review</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s2">&quot;Bad tutor &gt;_&lt;&quot;</span><span class="p">,</span>
+                                  <span class="n">rating</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">student</span><span class="o">=</span><span class="n">student_list</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+                                  <span class="n">tutor</span><span class="o">=</span><span class="n">tutor_list</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">anonymous</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">review_list</span></div>
+
+
+<div class="viewcode-block" id="populate_coupon"><a class="viewcode-back" href="../populate_db.html#populate_db.populate_coupon">[docs]</a><span class="k">def</span> <span class="nf">populate_coupon</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Populate coupons into the database.&quot;&quot;&quot;</span>
+    <span class="n">coupon_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">add_coupon</span><span class="p">(</span><span class="n">datetime</span><span class="p">(</span><span class="mi">1997</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2097</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span>
+                              <span class="n">uuid4</span><span class="p">()),</span>
+                   <span class="n">add_coupon</span><span class="p">(</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2025</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2035</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span>
+                              <span class="n">uuid4</span><span class="p">()),</span>
+                   <span class="n">add_coupon</span><span class="p">(</span><span class="n">datetime</span><span class="p">(</span><span class="mi">1960</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">1997</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span>
+                              <span class="n">uuid4</span><span class="p">())]</span>
+    <span class="k">return</span> <span class="n">coupon_list</span></div>
+
+
+<div class="viewcode-block" id="populate_staff"><a class="viewcode-back" href="../populate_db.html#populate_db.populate_staff">[docs]</a><span class="k">def</span> <span class="nf">populate_staff</span><span class="p">():</span>
+    <span class="c1"># create superuser</span>
+    <span class="kn">from</span> <span class="nn">django.contrib.auth.models</span> <span class="k">import</span> <span class="n">User</span> <span class="k">as</span> <span class="n">Admin</span>
+    <span class="kn">from</span> <span class="nn">account.models</span> <span class="k">import</span> <span class="n">User</span>
+    <span class="kn">from</span> <span class="nn">django.contrib.auth.models</span> <span class="k">import</span> <span class="n">Permission</span>
+    <span class="n">Admin</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create_user</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s1">&#39;admin&#39;</span><span class="p">,</span>
+                              <span class="n">password</span><span class="o">=</span><span class="s1">&#39;admin&#39;</span><span class="p">,</span>
+                              <span class="n">first_name</span><span class="o">=</span><span class="s1">&#39;Admin&#39;</span><span class="p">,</span>
+                              <span class="n">is_staff</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                              <span class="n">is_superuser</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create_user</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s1">&#39;mytutors&#39;</span><span class="p">,</span>
+                           <span class="n">password</span><span class="o">=</span><span class="s1">&#39;mytutors&#39;</span><span class="p">,</span>
+                           <span class="n">first_name</span><span class="o">=</span><span class="s1">&#39;MyTutors&#39;</span><span class="p">,</span>
+                            <span class="n">is_staff</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">ca</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create_user</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s1">&#39;course_admin&#39;</span><span class="p">,</span>
+							<span class="n">password</span><span class="o">=</span><span class="s1">&#39;course_admin&#39;</span><span class="p">,</span>
+							<span class="n">first_name</span><span class="o">=</span><span class="s1">&#39;Course Admin&#39;</span><span class="p">,</span>
+							<span class="n">is_staff</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">ca</span><span class="o">.</span><span class="n">user_permissions</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Permission</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Can add course&#39;</span><span class="p">))</span>
+    <span class="n">ca</span><span class="o">.</span><span class="n">user_permissions</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Permission</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Can change course&#39;</span><span class="p">))</span>
+    <span class="n">ca</span><span class="o">.</span><span class="n">user_permissions</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Permission</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Can delete course&#39;</span><span class="p">))</span>
+    <span class="n">ca</span><span class="o">.</span><span class="n">user_permissions</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Permission</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Can add subject tag&#39;</span><span class="p">))</span>
+    <span class="n">ca</span><span class="o">.</span><span class="n">user_permissions</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Permission</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Can change subject tag&#39;</span><span class="p">))</span>
+    <span class="n">ca</span><span class="o">.</span><span class="n">user_permissions</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Permission</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Can delete subject tag&#39;</span><span class="p">))</span>
+    <span class="n">ca</span><span class="o">.</span><span class="n">user_permissions</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Permission</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Can add coupon&#39;</span><span class="p">))</span>
+    <span class="n">ca</span><span class="o">.</span><span class="n">user_permissions</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Permission</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Can change coupon&#39;</span><span class="p">))</span>
+    <span class="n">ca</span><span class="o">.</span><span class="n">user_permissions</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Permission</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Can delete coupon&#39;</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="populate"><a class="viewcode-back" href="../populate_db.html#populate_db.populate">[docs]</a><span class="k">def</span> <span class="nf">populate</span><span class="p">():</span>
+    <span class="n">populate_staff</span><span class="p">()</span>
+    <span class="n">tutors</span> <span class="o">=</span> <span class="n">populate_tutor</span><span class="p">()</span>
+    <span class="n">students</span> <span class="o">=</span> <span class="n">populate_student</span><span class="p">()</span>
+    <span class="n">populate_session</span><span class="p">(</span><span class="n">tutors</span><span class="p">)</span>
+    <span class="n">populate_booking_record</span><span class="p">()</span>
+    <span class="n">coupons</span> <span class="o">=</span> <span class="n">populate_coupon</span><span class="p">()</span>
+    <span class="n">populate_review</span><span class="p">()</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">tutors</span><span class="p">,</span> <span class="n">students</span><span class="p">]</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">populate</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">Tutoria</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Hola Inc..
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

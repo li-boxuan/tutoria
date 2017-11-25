@@ -1,0 +1,229 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>dashboard package &#8212; Tutoria 1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="dashboard-package">
+<h1>dashboard package<a class="headerlink" href="#dashboard-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-dashboard.models">
+<span id="dashboard-models-module"></span><h2>dashboard.models module<a class="headerlink" href="#module-dashboard.models" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-dashboard.urls">
+<span id="dashboard-urls-module"></span><h2>dashboard.urls module<a class="headerlink" href="#module-dashboard.urls" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-dashboard.views">
+<span id="dashboard-views-module"></span><h2>dashboard.views module<a class="headerlink" href="#module-dashboard.views" title="Permalink to this headline">¶</a></h2>
+<p>Dashborad views.</p>
+<dl class="class">
+<dt id="dashboard.views.MyWalletView">
+<em class="property">class </em><code class="descclassname">dashboard.views.</code><code class="descname">MyWalletView</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dashboard/views.html#MyWalletView"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dashboard.views.MyWalletView" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.views.generic.base.TemplateView</span></code></p>
+<dl class="method">
+<dt id="dashboard.views.MyWalletView.get_context_data">
+<code class="descname">get_context_data</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dashboard/views.html#MyWalletView.get_context_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dashboard.views.MyWalletView.get_context_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dashboard.views.MyWalletView.post">
+<code class="descname">post</code><span class="sig-paren">(</span><em>req</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dashboard/views.html#MyWalletView.post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dashboard.views.MyWalletView.post" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dashboard.views.MyWalletView.template_name">
+<code class="descname">template_name</code><em class="property"> = 'my_wallet.html'</em><a class="headerlink" href="#dashboard.views.MyWalletView.template_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dashboard.views.MybookingsView">
+<em class="property">class </em><code class="descclassname">dashboard.views.</code><code class="descname">MybookingsView</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dashboard/views.html#MybookingsView"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dashboard.views.MybookingsView" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.views.generic.list.ListView</span></code></p>
+<dl class="attribute">
+<dt id="dashboard.views.MybookingsView.context_object_name">
+<code class="descname">context_object_name</code><em class="property"> = 'my_booking_records'</em><a class="headerlink" href="#dashboard.views.MybookingsView.context_object_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dashboard.views.MybookingsView.get_context_data">
+<code class="descname">get_context_data</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dashboard/views.html#MybookingsView.get_context_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dashboard.views.MybookingsView.get_context_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dashboard.views.MybookingsView.model">
+<code class="descname">model</code><a class="headerlink" href="#dashboard.views.MybookingsView.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">BookingRecord</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dashboard.views.MybookingsView.post">
+<code class="descname">post</code><span class="sig-paren">(</span><em>request</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dashboard/views.html#MybookingsView.post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dashboard.views.MybookingsView.post" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dashboard.views.MybookingsView.template_name">
+<code class="descname">template_name</code><em class="property"> = 'my_bookings.html'</em><a class="headerlink" href="#dashboard.views.MybookingsView.template_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dashboard.views.MytimetableView">
+<em class="property">class </em><code class="descclassname">dashboard.views.</code><code class="descname">MytimetableView</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dashboard/views.html#MytimetableView"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dashboard.views.MytimetableView" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.views.generic.list.ListView</span></code></p>
+<dl class="attribute">
+<dt id="dashboard.views.MytimetableView.context_object_name">
+<code class="descname">context_object_name</code><em class="property"> = 'my_timetable'</em><a class="headerlink" href="#dashboard.views.MytimetableView.context_object_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dashboard.views.MytimetableView.get_context_data">
+<code class="descname">get_context_data</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dashboard/views.html#MytimetableView.get_context_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dashboard.views.MytimetableView.get_context_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get context data.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dashboard.views.MytimetableView.model">
+<code class="descname">model</code><a class="headerlink" href="#dashboard.views.MytimetableView.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">BookingRecord</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dashboard.views.MytimetableView.post">
+<code class="descname">post</code><span class="sig-paren">(</span><em>request</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dashboard/views.html#MytimetableView.post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dashboard.views.MytimetableView.post" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dashboard.views.MytimetableView.template_name">
+<code class="descname">template_name</code><em class="property"> = 'my_timetable.html'</em><a class="headerlink" href="#dashboard.views.MytimetableView.template_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dashboard.views.MytransactionsView">
+<em class="property">class </em><code class="descclassname">dashboard.views.</code><code class="descname">MytransactionsView</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dashboard/views.html#MytransactionsView"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dashboard.views.MytransactionsView" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">django.views.generic.list.ListView</span></code></p>
+<dl class="attribute">
+<dt id="dashboard.views.MytransactionsView.context_object_name">
+<code class="descname">context_object_name</code><em class="property"> = 'my_transaction_records'</em><a class="headerlink" href="#dashboard.views.MytransactionsView.context_object_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dashboard.views.MytransactionsView.get_context_data">
+<code class="descname">get_context_data</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dashboard/views.html#MytransactionsView.get_context_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dashboard.views.MytransactionsView.get_context_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dashboard.views.MytransactionsView.model">
+<code class="descname">model</code><a class="headerlink" href="#dashboard.views.MytransactionsView.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">Transaction</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dashboard.views.MytransactionsView.template_name">
+<code class="descname">template_name</code><em class="property"> = 'my_transactions.html'</em><a class="headerlink" href="#dashboard.views.MytransactionsView.template_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-dashboard">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dashboard" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Tutoria</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Hola Inc..
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/dashboard.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

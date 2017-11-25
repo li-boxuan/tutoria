@@ -1,0 +1,339 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>authentication.views &#8212; Tutoria 1 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for authentication.views</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">authentication/views.py</span>
+
+<span class="sd">Created on Oct. 23, 2017</span>
+<span class="sd">by Jiayao</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="p">(</span><span class="n">absolute_import</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">django.shortcuts</span> <span class="k">import</span> <span class="n">get_object_or_404</span><span class="p">,</span> <span class="n">render</span>
+<span class="kn">from</span> <span class="nn">django.http</span> <span class="k">import</span> <span class="n">HttpResponse</span><span class="p">,</span> <span class="n">HttpResponseRedirect</span>
+<span class="kn">from</span> <span class="nn">django.urls</span> <span class="k">import</span> <span class="n">reverse</span><span class="p">,</span> <span class="n">reverse_lazy</span>
+<span class="kn">from</span> <span class="nn">django.views</span> <span class="k">import</span> <span class="n">generic</span>
+<span class="kn">from</span> <span class="nn">django.contrib.auth</span> <span class="k">import</span> <span class="p">(</span><span class="n">authenticate</span><span class="p">,</span> <span class="n">login</span><span class="p">,</span> <span class="n">logout</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">django.contrib.auth.decorators</span> <span class="k">import</span> <span class="n">login_required</span>
+<span class="kn">from</span> <span class="nn">account.models</span> <span class="k">import</span> <span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">Tutor</span><span class="p">,</span> <span class="n">Student</span><span class="p">,</span> <span class="n">SubjectTag</span><span class="p">,</span>
+                           <span class="n">Course</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.forms</span> <span class="k">import</span> <span class="p">(</span><span class="n">UserForm</span><span class="p">,</span> <span class="n">TutorForm</span><span class="p">,</span> <span class="n">UpdateUserForm</span><span class="p">,</span> <span class="n">UpdateTutorForm</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SINGUP_STATUS"><a class="viewcode-back" href="../../authentication.html#authentication.views.SINGUP_STATUS">[docs]</a><span class="k">class</span> <span class="nc">SINGUP_STATUS</span><span class="p">:</span>
+    <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">SUCCESS</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">EXISTED</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">FAILED</span> <span class="o">=</span> <span class="mi">3</span></div>
+
+<div class="viewcode-block" id="ProfileView"><a class="viewcode-back" href="../../authentication.html#authentication.views.ProfileView">[docs]</a><span class="k">class</span> <span class="nc">ProfileView</span><span class="p">(</span><span class="n">generic</span><span class="o">.</span><span class="n">TemplateView</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;Models the profile view.&quot;&quot;&quot;</span>
+	<span class="n">model</span> <span class="o">=</span> <span class="n">User</span>
+	<span class="n">template_name</span> <span class="o">=</span> <span class="s1">&#39;profile.html&#39;</span>
+	<span class="n">login_required</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="ProfileView.get_context_data"><a class="viewcode-back" href="../../authentication.html#authentication.views.ProfileView.get_context_data">[docs]</a>	<span class="k">def</span> <span class="nf">get_context_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+		<span class="n">context</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">ProfileView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+		<span class="n">context</span><span class="p">[</span><span class="s1">&#39;user_form&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+		<span class="n">context</span><span class="p">[</span><span class="s1">&#39;tutor_form&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+		<span class="n">context</span><span class="p">[</span><span class="s1">&#39;tutor_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+		<span class="n">context</span><span class="p">[</span><span class="s1">&#39;tutor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+		<span class="k">return</span> <span class="n">context</span></div>
+
+<div class="viewcode-block" id="ProfileView.get"><a class="viewcode-back" href="../../authentication.html#authentication.views.ProfileView.get">[docs]</a>	<span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">req</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+		<span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+		<span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">req</span><span class="o">.</span><span class="n">session</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">])</span>
+		<span class="n">context</span><span class="p">[</span><span class="s1">&#39;user_form&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">UpdateUserForm</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;user_form&#39;</span><span class="p">,</span> <span class="n">instance</span><span class="o">=</span><span class="n">user</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">tutor</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="n">context</span><span class="p">[</span><span class="s1">&#39;tutor_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Private&#39;</span> <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">tutor</span><span class="o">.</span><span class="n">tutor_type</span> <span class="o">==</span> <span class="n">Tutor</span><span class="o">.</span><span class="n">PRIVATE_TUTOR</span> <span class="k">else</span> <span class="s1">&#39;Contracted&#39;</span>
+			<span class="n">context</span><span class="p">[</span><span class="s1">&#39;tutor_form&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">UpdateTutorForm</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;tutor_form&#39;</span><span class="p">,</span> <span class="n">instance</span><span class="o">=</span><span class="n">user</span><span class="o">.</span><span class="n">tutor</span><span class="p">)</span>
+			<span class="n">context</span><span class="p">[</span><span class="s1">&#39;tutor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">tutor</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">render_to_response</span><span class="p">(</span><span class="n">context</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ProfileView.post"><a class="viewcode-back" href="../../authentication.html#authentication.views.ProfileView.post">[docs]</a>	<span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">req</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+		<span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+		<span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">req</span><span class="o">.</span><span class="n">session</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">])</span>
+		<span class="n">user_form</span> <span class="o">=</span> <span class="n">UpdateUserForm</span><span class="p">(</span><span class="n">req</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;user_form&#39;</span><span class="p">,</span> <span class="n">instance</span><span class="o">=</span><span class="n">user</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">user_form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+			<span class="n">user_form</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="s1">&#39;message.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;message_title&#39;</span><span class="p">:</span> <span class="s1">&#39;Profile Update Failure&#39;</span><span class="p">,</span>
+                                            <span class="s1">&#39;message_content&#39;</span><span class="p">:</span> <span class="s1">&#39;Please enter valid information.&#39;</span><span class="p">})</span>
+
+		<span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">tutor</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="n">tutor_form</span> <span class="o">=</span> <span class="n">UpdateTutorForm</span><span class="p">(</span><span class="n">req</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;tutor_form&#39;</span><span class="p">,</span> <span class="n">instance</span><span class="o">=</span><span class="n">user</span><span class="o">.</span><span class="n">tutor</span><span class="p">)</span>
+			<span class="c1"># print(tutor_form)</span>
+			<span class="k">if</span> <span class="n">tutor_form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+				<span class="n">tutor_form</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="nb">print</span><span class="p">(</span><span class="n">tutor_form</span><span class="o">.</span><span class="n">errors</span><span class="p">)</span>
+				<span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="s1">&#39;message.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;message_title&#39;</span><span class="p">:</span> <span class="s1">&#39;Profile Update Failure&#39;</span><span class="p">,</span>
+                                            <span class="s1">&#39;message_content&#39;</span><span class="p">:</span> <span class="s1">&#39;Please enter valid information.&#39;</span><span class="p">})</span>
+		<span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="s1">&#39;message.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;message_title&#39;</span><span class="p">:</span> <span class="s1">&#39;Profile&#39;</span><span class="p">,</span>
+                                            <span class="s1">&#39;message_content&#39;</span><span class="p">:</span> <span class="s1">&#39;Update Successful.&#39;</span><span class="p">})</span></div></div>
+
+<div class="viewcode-block" id="IndexView"><a class="viewcode-back" href="../../authentication.html#authentication.views.IndexView">[docs]</a><span class="k">class</span> <span class="nc">IndexView</span><span class="p">(</span><span class="n">generic</span><span class="o">.</span><span class="n">TemplateView</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Models the index view.&quot;&quot;&quot;</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s1">&#39;signup.html&#39;</span>
+
+<div class="viewcode-block" id="IndexView.get_context_data"><a class="viewcode-back" href="../../authentication.html#authentication.views.IndexView.get_context_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_context_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">IndexView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">context</span><span class="p">[</span><span class="s1">&#39;choice&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">context</span><span class="p">[</span><span class="s1">&#39;user_form&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">context</span><span class="p">[</span><span class="s1">&#39;tutor_form&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">context</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">SINGUP_STATUS</span><span class="o">.</span><span class="n">NONE</span>
+        <span class="n">context</span><span class="p">[</span><span class="s1">&#39;SIGNUP_STATUS&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">SINGUP_STATUS</span>
+        <span class="k">return</span> <span class="n">context</span></div></div>
+
+<div class="viewcode-block" id="LoginView"><a class="viewcode-back" href="../../authentication.html#authentication.views.LoginView">[docs]</a><span class="k">class</span> <span class="nc">LoginView</span><span class="p">(</span><span class="n">generic</span><span class="o">.</span><span class="n">TemplateView</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Models the login view.&quot;&quot;&quot;</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s1">&#39;login.html&#39;</span>
+
+
+<div class="viewcode-block" id="LoginView.get_context_data"><a class="viewcode-back" href="../../authentication.html#authentication.views.LoginView.get_context_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_context_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">LoginView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">context</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">context</span></div>
+
+<div class="viewcode-block" id="LoginView.post"><a class="viewcode-back" href="../../authentication.html#authentication.views.LoginView.post">[docs]</a>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">req</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">authenticate</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">req</span><span class="o">.</span><span class="n">POST</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">],</span>
+                           <span class="n">password</span><span class="o">=</span><span class="n">req</span><span class="o">.</span><span class="n">POST</span><span class="p">[</span><span class="s1">&#39;password&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">user</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">login</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="n">user</span><span class="p">)</span>
+            <span class="n">req</span><span class="o">.</span><span class="n">session</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="n">POST</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">is_staff</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="n">reverse</span><span class="p">(</span><span class="s1">&#39;admin:index&#39;</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="n">reverse</span><span class="p">(</span><span class="s1">&#39;homepage&#39;</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_name</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">})</span></div></div>
+
+<div class="viewcode-block" id="logout_view"><a class="viewcode-back" href="../../authentication.html#authentication.views.logout_view">[docs]</a><span class="nd">@login_required</span>
+<span class="k">def</span> <span class="nf">logout_view</span><span class="p">(</span><span class="n">req</span><span class="p">):</span>
+    <span class="n">logout</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+    <span class="n">req</span><span class="o">.</span><span class="n">session</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="n">reverse</span><span class="p">(</span><span class="s1">&#39;homepage&#39;</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="StudentFormView"><a class="viewcode-back" href="../../authentication.html#authentication.views.StudentFormView">[docs]</a><span class="k">class</span> <span class="nc">StudentFormView</span><span class="p">(</span><span class="n">generic</span><span class="o">.</span><span class="n">edit</span><span class="o">.</span><span class="n">CreateView</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Models the sign-up form.&quot;&quot;&quot;</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s1">&#39;signup.html&#39;</span>
+    <span class="n">form_class</span> <span class="o">=</span> <span class="n">UserForm</span></div>
+
+<div class="viewcode-block" id="TutorFormView"><a class="viewcode-back" href="../../authentication.html#authentication.views.TutorFormView">[docs]</a><span class="k">class</span> <span class="nc">TutorFormView</span><span class="p">(</span><span class="n">generic</span><span class="o">.</span><span class="n">edit</span><span class="o">.</span><span class="n">CreateView</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Models the sign-up form.&quot;&quot;&quot;</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s1">&#39;signup.html&#39;</span>
+    <span class="n">form_class</span> <span class="o">=</span> <span class="n">TutorForm</span></div>
+
+
+<div class="viewcode-block" id="StudentView"><a class="viewcode-back" href="../../authentication.html#authentication.views.StudentView">[docs]</a><span class="k">class</span> <span class="nc">StudentView</span><span class="p">(</span><span class="n">IndexView</span><span class="p">):</span>
+
+<div class="viewcode-block" id="StudentView.get"><a class="viewcode-back" href="../../authentication.html#authentication.views.StudentView.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">req</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">context</span><span class="p">[</span><span class="s1">&#39;choice&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">context</span><span class="p">[</span><span class="s1">&#39;user_form&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">UserForm</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;user_form&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">render_to_response</span><span class="p">(</span><span class="n">context</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="StudentView.post"><a class="viewcode-back" href="../../authentication.html#authentication.views.StudentView.post">[docs]</a>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">req</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="n">UserForm</span><span class="p">(</span><span class="n">req</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;user_form&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="n">username</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">]</span>
+            <span class="n">password</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s1">&#39;password&#39;</span><span class="p">]</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">)</span>
+                <span class="n">context</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">SINGUP_STATUS</span><span class="o">.</span><span class="n">EXISTED</span>
+            <span class="k">except</span> <span class="n">User</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
+                <span class="n">user</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+                <span class="n">user</span><span class="o">.</span><span class="n">set_password</span><span class="p">(</span><span class="n">password</span><span class="p">)</span>
+                <span class="n">user</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+                <span class="n">student</span> <span class="o">=</span> <span class="n">Student</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">)</span>
+                <span class="n">context</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">SINGUP_STATUS</span><span class="o">.</span><span class="n">SUCCESS</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">context</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">SINGUP_STATUS</span><span class="o">.</span><span class="n">FAILED</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">render_to_response</span><span class="p">(</span><span class="n">context</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="TutorView"><a class="viewcode-back" href="../../authentication.html#authentication.views.TutorView">[docs]</a><span class="k">class</span> <span class="nc">TutorView</span><span class="p">(</span><span class="n">IndexView</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TutorView.get"><a class="viewcode-back" href="../../authentication.html#authentication.views.TutorView.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">req</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">context</span><span class="p">[</span><span class="s1">&#39;choice&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">context</span><span class="p">[</span><span class="s1">&#39;user_form&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">UserForm</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;user_form&#39;</span><span class="p">)</span>
+        <span class="n">context</span><span class="p">[</span><span class="s1">&#39;tutor_form&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">TutorForm</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;tutor_form&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">render_to_response</span><span class="p">(</span><span class="n">context</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TutorView.post"><a class="viewcode-back" href="../../authentication.html#authentication.views.TutorView.post">[docs]</a>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">req</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">()</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="n">UserForm</span><span class="p">(</span><span class="n">req</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;user_form&#39;</span><span class="p">)</span>
+        <span class="n">tutor_form</span> <span class="o">=</span> <span class="n">TutorForm</span><span class="p">(</span><span class="n">req</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;tutor_form&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">()</span> <span class="ow">and</span> <span class="n">tutor_form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="n">username</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">]</span>
+            <span class="n">password</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s1">&#39;password&#39;</span><span class="p">]</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">)</span>
+                <span class="n">context</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">SINGUP_STATUS</span><span class="o">.</span><span class="n">EXISTED</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">render_to_response</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">User</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
+                <span class="n">user</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+                <span class="n">user</span><span class="o">.</span><span class="n">set_password</span><span class="p">(</span><span class="n">password</span><span class="p">)</span>
+                <span class="n">user</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+                <span class="n">tutor_form</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s1">&#39;user&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">user</span>
+                <span class="n">tutor</span> <span class="o">=</span> <span class="n">tutor_form</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">commit</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">tutor</span><span class="o">.</span><span class="n">user</span> <span class="o">=</span> <span class="n">user</span>
+                <span class="n">tutor</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+                <span class="n">context</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">SINGUP_STATUS</span><span class="o">.</span><span class="n">SUCCESS</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">render_to_response</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">context</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">SINGUP_STATUS</span><span class="o">.</span><span class="n">FAILED</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">render_to_response</span><span class="p">(</span><span class="n">context</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="BothView"><a class="viewcode-back" href="../../authentication.html#authentication.views.BothView">[docs]</a><span class="k">class</span> <span class="nc">BothView</span><span class="p">(</span><span class="n">IndexView</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Models the sign-up form.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="BothView.get"><a class="viewcode-back" href="../../authentication.html#authentication.views.BothView.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">req</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">context</span><span class="p">[</span><span class="s1">&#39;choice&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">context</span><span class="p">[</span><span class="s1">&#39;user_form&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">UserForm</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;user_form&#39;</span><span class="p">)</span>
+        <span class="n">context</span><span class="p">[</span><span class="s1">&#39;tutor_form&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">TutorForm</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;tutor_form&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">render_to_response</span><span class="p">(</span><span class="n">context</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BothView.post"><a class="viewcode-back" href="../../authentication.html#authentication.views.BothView.post">[docs]</a>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">req</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">()</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="n">UserForm</span><span class="p">(</span><span class="n">req</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;user_form&#39;</span><span class="p">)</span>
+        <span class="n">tutor_form</span> <span class="o">=</span> <span class="n">TutorForm</span><span class="p">(</span><span class="n">req</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;tutor_form&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">()</span> <span class="ow">and</span> <span class="n">tutor_form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="n">username</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">]</span>
+            <span class="n">password</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s1">&#39;password&#39;</span><span class="p">]</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">)</span>
+                <span class="n">context</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">SINGUP_STATUS</span><span class="o">.</span><span class="n">EXISTED</span>
+            <span class="k">except</span> <span class="n">User</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
+                <span class="n">user</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+                <span class="n">user</span><span class="o">.</span><span class="n">set_password</span><span class="p">(</span><span class="n">password</span><span class="p">)</span>
+                <span class="n">user</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+                <span class="n">tutor_form</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s1">&#39;user&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">user</span>
+                <span class="n">tutor</span> <span class="o">=</span> <span class="n">tutor_form</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">commit</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">tutor</span><span class="o">.</span><span class="n">user</span> <span class="o">=</span> <span class="n">user</span>
+                <span class="n">tutor</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+                <span class="n">student</span> <span class="o">=</span> <span class="n">Student</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">)</span>
+                <span class="n">context</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">SINGUP_STATUS</span><span class="o">.</span><span class="n">SUCCESS</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">context</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">SINGUP_STATUS</span><span class="o">.</span><span class="n">FAILED</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">render_to_response</span><span class="p">(</span><span class="n">context</span><span class="p">)</span></div></div>
+
+<span class="n">PASSWORD_EMAIL_SENDER</span> <span class="o">=</span> <span class="s1">&#39;noreply@hola-inc.top&#39;</span>
+
+<span class="n">PASSWORD_RESET_TOKEN_REGEX</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;^reset/(?P&lt;uidb64&gt;[0-9A-Za-z_\-]+)/(?P&lt;token&gt;[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$&#39;</span>
+
+<span class="n">PASSWORD_RESET_DONE_MSG</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    We&#39;ve emailed you instructions for setting your password, if an account exists with the email you entered.</span>
+<span class="s2">    You should receive them shortly.</span>
+
+<span class="s2">    If you don&#39;t receive an email, please make sure you&#39;ve entered the address you registered with,&quot;</span>
+<span class="s2">    and check your spam folder.</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">PASSWORD_RESET_EX_MSG</span> <span class="o">=</span><span class="sa">r</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    The password reset link was invalid, possibly because it has already been used.</span>
+<span class="s2">    Please request a new password reset.</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">PASSWORD_RESET_COMPLETE</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">Your password has been set.</span>
+<span class="s2">You may go ahead and login now.</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">Tutoria</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Hola Inc..
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
