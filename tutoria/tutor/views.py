@@ -168,9 +168,7 @@ def save_booking(request, tutor_id):
         session.tutor = tutor
         session.status = session.BOOKED
         session.save()
-
         now = datetime.now()
-        # TODO: django add timezone to naive datetime  - Jiayao
         # Create a new transaction and save it.
         transaction = Transaction(issuer=student, receiver=tutor,
                                   amount=tutor.hourly_rate,
