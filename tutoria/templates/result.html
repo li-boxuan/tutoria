@@ -228,7 +228,13 @@
                             {% endfor %}
                           </ul>
                         </td>
-                        <td style="text-align: center; vertical-align: middle;">{{tutor.avgRating}}/5</td>
+                        <td style="text-align: center; vertical-align: middle;">
+                          {% if tutor.num_review < 3 %}
+                            Not Enough Review
+                          {% else %}
+                            {{tutor.avgRating}}/5
+                          {% endif %}
+                        </td>
                       </tr>
                     {% endif %}
                   {% empty %}
