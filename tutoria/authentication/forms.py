@@ -24,7 +24,7 @@ class UpdateTutorForm(forms.ModelForm):
 	"""Models the form for Tutor profile update."""
 	class Meta:
 		model = Tutor
-		fields = ('bio', 'hourly_rate', 'tags', 'courses', 'visible')
+		fields = ('bio', 'hourly_rate', 'tags', 'courses', 'visible', 'tutor_type')
 
 	hourly_rate = forms.IntegerField(
 		widget=forms.widgets.TextInput(attrs={'type': 'number',
@@ -39,6 +39,7 @@ class UpdateTutorForm(forms.ModelForm):
 		self.fields['courses'].label = 'Tag courses you can tutor (hold Command or Control key for multiples selection):'
 		self.fields['visible'].label = 'Make me visible to prospective students.'
 		instance = getattr(self, 'instance', None)
+		self.fields['tutor_type'].widget.attrs['disabled'] = 'disabled'
 		if instance is not None and instance.tutor_type == 'CT':
 			self.fields.pop('hourly_rate')
 
