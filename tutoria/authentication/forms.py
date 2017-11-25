@@ -46,7 +46,7 @@ class UpdateTutorForm(forms.ModelForm):
 
 	def __init__(self, *args, **kwargs):
 		super(UpdateTutorForm, self).__init__(*args, **kwargs)
-		self.fields['tags'].label = 'Tag subjects you can tutor (hold Command or Control for multiple selection):'
+		#self.fields['tags'].label = 'Tag subjects you can tutor (hold Command or Control for multiple selection):'
 		self.fields['courses'].label = 'Tag courses you can tutor (hold Command or Control key for multiples selection):'
 		self.fields['visible'].label = 'Make me visible to prospective students.'
 		instance = getattr(self, 'instance', None)
