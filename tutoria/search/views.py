@@ -46,8 +46,11 @@ class ResultView(ListView):
 
         all_tutors = Tutor.objects.filter(visible=True)  # Obtain visible tutors
         filtered_tutors = []
-        # Filter according to keywords
-        for tutor in all_tutors:
+        if len(self.keywords) == 0:
+            filtered_tutors = all_tutors
+        else:
+            # Filter according to keywords
+            for tutor in all_tutors:
                 # Search query in full name
                 tutor_info = tutor.full_name
                 # Search query in courses
@@ -85,7 +88,7 @@ class ResultView(ListView):
             context['keywords'] = self.request.GET['keywords']
         else:
             context['keywords'] = self.keywords
-        print('keywords ===> ' + context['keywords'])
+        # print('keywords ==> ' + context['keywords'])
         context['sort'] = self.sort_method
         context['minPrice'] = self.minPrice
         context['maxPrice'] = self.maxPrice
