@@ -28,6 +28,10 @@ class MytransactionsView(generic.ListView):
     def get_context_data(self, **kwargs):
         context = super(MytransactionsView, self).get_context_data(**kwargs)
         #print datetime.now()
+        if self.request.user.is_authenticated == False:
+           context['records'] = None
+           context['not_logged_in'] = 'true'
+           return context
         if self.request.session['username'] is None:
            context['records'] = None
            return context
@@ -64,7 +68,11 @@ class MybookingsView(generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super(MybookingsView, self).get_context_data(**kwargs)
-
+        
+        if self.request.user.is_authenticated == False:
+            context['records'] = None
+            context['not_logged_in'] = 'true'
+            return context
         if self.request.session['username'] is None:
             context['records'] = None
             return context
@@ -307,6 +315,9 @@ class MyWalletView(generic.TemplateView):
         
     def get_context_data(self, **kwargs):
         context = super(MyWalletView, self).get_context_data(**kwargs)
+        if self.request.user.is_authenticated == False:
+           context['not_logged_in'] = 'true'
+           return context
         if self.request.session['username'] is None:
            return context
         else:
