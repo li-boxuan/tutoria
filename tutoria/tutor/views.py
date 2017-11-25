@@ -109,11 +109,10 @@ class DetailView(generic.DetailView):
 
 @login_required(login_url='/auth/login/')
 def confirm_booking(request, tutor_id):
-    # TODO: if not a student, display error message and return
     """Confirm booking a new session."""
     if request.method == 'POST':
         user = User.objects.get(username=request.session['username'])
-        if user.student is None:
+        if user.student is None:  # if not a student, display error message and return
             return HttpResponse("You are not a student!")
         student = Student.objects.get(user=user)
         tutor = Tutor.objects.get(pk=tutor_id)
@@ -164,18 +163,16 @@ def save_booking(request, tutor_id):
         session_id = request.POST.get('session_id', '')
         tutor = Tutor.objects.get(pk=tutor_id)
         session = Session.objects.get(pk=session_id)
-        # TODO: mark session as selected
-        if not session.status == session.BOOKABLE:
-            # TODO: handle exception
-            # return
-            pass
+        # # TODO: mark session as selected
+        # if not session.status == session.BOOKABLE:
+        #     # TODO: handle exception
+        #     # return
+        #     pass
         # added following lines for testing.  - Jiayao
         session.tutor = tutor
         session.status = session.BOOKED
         session.save()
-
         now = datetime.now()
-        # TODO: django add timezone to naive datetime  - Jiayao
         # Create a new transaction and save it.
         transaction = Transaction(issuer=student, receiver=tutor,
                                   amount=tutor.hourly_rate,
@@ -208,9 +205,9 @@ def save_booking(request, tutor_id):
 # -----------------------------------------------------------------------------
 
 class ReviewView(LoginRequiredMixin, FormView):
-    template_name = 'review.html'  # TODO: build template.
+    template_name = 'review.html'
     form_class = ReviewForm
-    success_url = '/thanks/'  # TODO
+    # success_url = '/thanks/'
 
     login_url = '/auth/login/'
     redirect_field_name = 'redirect_to'
@@ -238,4 +235,4 @@ class ReviewView(LoginRequiredMixin, FormView):
         tutor_id = self.kwargs['tutor_id']
         review.tutor = Tutor.objects.get(pk=tutor_id)
         review.save()
-        return HttpResponse("Review submitted! Thank you.")  # TODO
+        return HttpResponse("Review submitted! Thank you.")
