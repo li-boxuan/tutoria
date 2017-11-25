@@ -133,6 +133,9 @@ class MytimetableView(generic.ListView):
         context = super(MytimetableView, self).get_context_data(**kwargs)
         isStudent = False
         isTutor = False
+        if self.request.user.is_authenticated == False:
+            context['timetable'] = None
+            return context
 
         if self.request.session['username'] is None:
             context['timetable'] = None
