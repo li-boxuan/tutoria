@@ -120,9 +120,13 @@ def confirm_booking(request, tutor_id):
         new_session = Session.objects.get(
             pk=request.POST.get('session_id', ''))
         
+        if (tutor.username == student.username):
+            # TODO: beautify
+            return HttpResponse("You can't book your own session.")
+
         now = datetime.now()
         time_diff = new_session.start_time - timezone.make_aware(now)
-        print("time_diff = ", time_diff)
+        #print("time_diff = ", time_diff)
         if (time_diff <= timedelta(days=1)):
             return HttpResponse("You cannot book a session within 24 hours before start_time!")
 
@@ -132,9 +136,7 @@ def confirm_booking(request, tutor_id):
             return HttpResponse("Your balance is " +
                                 str(student.wallet_balance) +
                                 ". You don't have enough money.")
-        if (tutor.username == student.username):
-            # TODO: beautify
-            return HttpResponse("You can't book your session.")
+
         # Check if student has already booked a session on that day.
         hist_booking_list = student.bookingrecord_set.all()
         for hist_booking in hist_booking_list:
