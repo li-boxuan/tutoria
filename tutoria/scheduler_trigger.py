@@ -58,7 +58,7 @@ def end_all_sessions(time):
 
                     # tutor receives tuition fee
                     receiver.user.wallet_balance += amount
-                    receiver.save()
+                    receiver.user.save()
                     
                     # send email to tutor about balance change
                     content = "Please check on Tutoria, your session " + str(session.id)
