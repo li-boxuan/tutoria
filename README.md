@@ -18,9 +18,9 @@ Tutoria is proudly powered by [Django](https://www.djangoproject.com/)<sup>®</s
 
 ## News
 
-- [Fixed] Balance checking with commisssions.
+- [Fixed] Balance checking with commissions.
 
-- [Fixed] Newly created Tutors with *no* reviews have a default rating of 0 instead of 5, and the rating is hidden until at least 3 reviews are submitted.
+- [Fixed] Newly created Tutors with *no* reviews have a default rating of 0 instead of 5, and the rating is hidden until at least 3 reviews are submitted
 
 ## Features
 
