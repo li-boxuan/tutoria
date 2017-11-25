@@ -55,7 +55,7 @@
       </div>
       <div class="col-md-6 col-md-offset-1">
         <h3>Rating</h3>
-        <h5> {{ tutor.avgRating }} </h5>
+        <h5>{{ tutor.avgRating }}/5</h5>
         <h3>Phone Number</h3>
         {% if phone_visible == True %}
           <h5 style="color: dodgerblue;"><u>{{ tutor.phone }}</u></h5>
@@ -78,7 +78,7 @@
   <div class="row">
     <div class="col-md-10 col-md-offset-1">
       <h3>Timetable</h3>
-      LEGEND:&nbsp;
+      Pattern:&nbsp;
       <button type="button" class="bg-primary" onclick="return confirm('Booked means this session is booked by someone')">Booked</button>&nbsp;
       <button type="button" class="bg-success" onclick="return confirm('Click on bookable slot to book it')">Bookable</button>&nbsp;
       <button type="button" class="bg-info" onclick="return confirm('Closed means this session is not open')">Closed</button>&nbsp;

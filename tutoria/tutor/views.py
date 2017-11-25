@@ -109,21 +109,24 @@ class DetailView(generic.DetailView):
 
 @login_required(login_url='/auth/login/')
 def confirm_booking(request, tutor_id):
-    # TODO: if not a student, display error message and return
     """Confirm booking a new session."""
     if request.method == 'POST':
         user = User.objects.get(username=request.session['username'])
-        if user.student is None:
+        if user.student is None:  # if not a student, display error message and return
             return HttpResponse("You are not a student!")
         student = Student.objects.get(user=user)
         tutor = Tutor.objects.get(pk=tutor_id)
         new_session = Session.objects.get(
             pk=request.POST.get('session_id', ''))
         
+        if (tutor.username == student.username):
+            # TODO: beautify
+            return HttpResponse("You can't book your own session.")
+
         now = datetime.now()
         time_diff = new_session.start_time - timezone.make_aware(now)
-        print("time_diff = ", time_diff)
-        if (time_diff <= timedelta(days=1)):
+        #print("time_diff = ", time_diff)
+        if time_diff <= timedelta(days=1):
             return HttpResponse("You cannot book a session within 24 hours before start_time!")
 
         # Ignore commission for now because it might be saved by coupon
@@ -132,7 +135,8 @@ def confirm_booking(request, tutor_id):
             return HttpResponse("Your balance is " +
                                 str(student.wallet_balance) +
                                 ". You don't have enough money.")
-        if (tutor.username == student.username):
+
+        if tutor.username == student.username:
             # TODO: beautify
             return HttpResponse("You can't book your session.")
         # Check if student has already booked a session on that day.
@@ -159,18 +163,16 @@ def save_booking(request, tutor_id):
         session_id = request.POST.get('session_id', '')
         tutor = Tutor.objects.get(pk=tutor_id)
         session = Session.objects.get(pk=session_id)
-        # TODO: mark session as selected
-        if not session.status == session.BOOKABLE:
-            # TODO: handle exception
-            # return
-            pass
+        # # TODO: mark session as selected
+        # if not session.status == session.BOOKABLE:
+        #     # TODO: handle exception
+        #     # return
+        #     pass
         # added following lines for testing.  - Jiayao
         session.tutor = tutor
         session.status = session.BOOKED
         session.save()
-
         now = datetime.now()
-        # TODO: django add timezone to naive datetime  - Jiayao
         # Create a new transaction and save it.
         transaction = Transaction(issuer=student, receiver=tutor,
                                   amount=tutor.hourly_rate,
@@ -203,9 +205,9 @@ def save_booking(request, tutor_id):
 # -----------------------------------------------------------------------------
 
 class ReviewView(LoginRequiredMixin, FormView):
-    template_name = 'review.html'  # TODO: build template.
+    template_name = 'review.html'
     form_class = ReviewForm
-    success_url = '/thanks/'  # TODO
+    # success_url = '/thanks/'
 
     login_url = '/auth/login/'
     redirect_field_name = 'redirect_to'
@@ -233,4 +235,4 @@ class ReviewView(LoginRequiredMixin, FormView):
         tutor_id = self.kwargs['tutor_id']
         review.tutor = Tutor.objects.get(pk=tutor_id)
         review.save()
-        return HttpResponse("Review submitted! Thank you.")  # TODO
+        return HttpResponse("Review submitted! Thank you.")

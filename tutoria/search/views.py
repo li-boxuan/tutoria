@@ -29,7 +29,6 @@ class ResultView(ListView):
 
     def get_queryset(self):
         """Determine the list of tutors to be displayed."""
-        # TODO: add support for multiple keywords
         print(self.request.GET)
         if 'keywords' in self.request.GET:
             self.keywords = self.request.GET['keywords']
@@ -71,7 +70,6 @@ class ResultView(ListView):
         # Filter according to tutor type
         if self.tutor_type != 'ALL':
             filtered_tutors = [t for t in filtered_tutors if t.tutor_type == self.tutor_type]
-        # TODO: check if tutor has any available session in the next 7 days
         if self.only_show_available:
             filtered_tutors = [t for t in filtered_tutors if tutor_available(t)]
         # Sort tutors
