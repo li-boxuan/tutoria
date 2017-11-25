@@ -1,0 +1,7 @@
+scheduler\_trigger module
+=========================
+
+.. automodule:: scheduler_trigger
+    :members:
+    :undoc-members:
+    :show-inheritance:

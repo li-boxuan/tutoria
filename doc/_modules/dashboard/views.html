@@ -1,0 +1,442 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>dashboard.views &#8212; Tutoria 1 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for dashboard.views</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Dashborad views.&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">django.shortcuts</span> <span class="k">import</span> <span class="n">get_object_or_404</span><span class="p">,</span> <span class="n">render</span><span class="p">,</span> <span class="n">redirect</span>
+<span class="kn">from</span> <span class="nn">django.http</span> <span class="k">import</span> <span class="n">HttpResponse</span><span class="p">,</span> <span class="n">HttpResponseRedirect</span>
+<span class="kn">from</span> <span class="nn">django.urls</span> <span class="k">import</span> <span class="n">reverse</span>
+<span class="kn">from</span> <span class="nn">django.views</span> <span class="k">import</span> <span class="n">generic</span>
+
+<span class="kn">from</span> <span class="nn">wallet.models</span> <span class="k">import</span> <span class="n">Transaction</span>
+<span class="kn">from</span> <span class="nn">scheduler.models</span> <span class="k">import</span> <span class="n">BookingRecord</span><span class="p">,</span> <span class="n">Session</span>
+<span class="kn">from</span> <span class="nn">account.models</span> <span class="k">import</span> <span class="n">User</span><span class="p">,</span> <span class="n">Student</span><span class="p">,</span> <span class="n">Tutor</span>
+<span class="kn">from</span> <span class="nn">django.contrib.auth.decorators</span> <span class="k">import</span> <span class="n">login_required</span>
+
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">time</span>
+<span class="kn">from</span> <span class="nn">django.utils</span> <span class="k">import</span> <span class="n">timezone</span>
+<span class="kn">from</span> <span class="nn">django.core.mail</span> <span class="k">import</span> <span class="n">send_mail</span>
+
+<span class="c1"># def MybookingsView(request):</span>
+<span class="c1">#    #model = scheduler</span>
+<span class="c1">#    record = student.BookingRecord_set.all</span>
+<span class="c1">#    #template_name = &#39;my_bookings.html&#39;</span>
+<span class="c1">#    #context_object_name = &#39;mybookings&#39;</span>
+<span class="c1">#    return render(request, &#39;my_bookings.html&#39;, {&#39;record&#39;: record})</span>
+
+<div class="viewcode-block" id="MytransactionsView"><a class="viewcode-back" href="../../dashboard.html#dashboard.views.MytransactionsView">[docs]</a><span class="k">class</span> <span class="nc">MytransactionsView</span><span class="p">(</span><span class="n">generic</span><span class="o">.</span><span class="n">ListView</span><span class="p">):</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Transaction</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s1">&#39;my_transactions.html&#39;</span>
+    <span class="n">context_object_name</span> <span class="o">=</span> <span class="s1">&#39;my_transaction_records&#39;</span>
+
+<div class="viewcode-block" id="MytransactionsView.get_context_data"><a class="viewcode-back" href="../../dashboard.html#dashboard.views.MytransactionsView.get_context_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_context_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">MytransactionsView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c1">#print datetime.now()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+           <span class="n">context</span><span class="p">[</span><span class="s1">&#39;records&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+           <span class="n">context</span><span class="p">[</span><span class="s1">&#39;not_logged_in&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;true&#39;</span>
+           <span class="k">return</span> <span class="n">context</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">session</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+           <span class="n">context</span><span class="p">[</span><span class="s1">&#39;records&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+           <span class="k">return</span> <span class="n">context</span>
+        <span class="k">else</span><span class="p">:</span>
+           <span class="n">context</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">session</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">]</span>
+           <span class="n">usrn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">session</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">]</span>
+           <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">usrn</span><span class="p">)</span>
+           <span class="k">try</span><span class="p">:</span>
+               <span class="n">usr</span> <span class="o">=</span> <span class="n">Student</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">)</span>
+               <span class="n">context</span><span class="p">[</span><span class="s1">&#39;user_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Student&#39;</span> 
+           <span class="k">except</span> <span class="n">Student</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
+               <span class="n">usr</span> <span class="o">=</span> <span class="n">Tutor</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">)</span>
+               <span class="n">context</span><span class="p">[</span><span class="s1">&#39;user_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Tutor&#39;</span> 
+<span class="c1">#usr = get_object_or_404(Student, user=user)</span>
+           <span class="n">records</span> <span class="o">=</span> <span class="n">usr</span><span class="o">.</span><span class="n">bookingrecord_set</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+           <span class="n">context</span><span class="p">[</span><span class="s1">&#39;records&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+           <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">records</span><span class="p">:</span>
+               <span class="n">one_month_before_now</span> <span class="o">=</span> <span class="n">timezone</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+               <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">entry_date</span> <span class="o">&gt;</span> <span class="n">one_month_before_now</span><span class="p">:</span>
+                   <span class="n">context</span><span class="p">[</span><span class="s1">&#39;records&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+           <span class="n">transactions</span> <span class="o">=</span> <span class="p">[]</span>
+           <span class="k">for</span> <span class="n">rec</span> <span class="ow">in</span> <span class="n">context</span><span class="p">[</span><span class="s1">&#39;records&#39;</span><span class="p">]:</span>
+               <span class="n">transactions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rec</span><span class="o">.</span><span class="n">transaction</span><span class="p">)</span>
+           <span class="n">context</span><span class="p">[</span><span class="s1">&#39;transactions&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">transactions</span>
+           <span class="n">context</span><span class="p">[</span><span class="s1">&#39;zipped&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">records</span><span class="p">,</span><span class="n">transactions</span><span class="p">)</span>
+           <span class="n">context</span><span class="p">[</span><span class="s1">&#39;balance&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">usr</span><span class="o">.</span><span class="n">wallet_balance</span>
+           <span class="k">return</span> <span class="n">context</span></div></div>
+
+
+<div class="viewcode-block" id="MybookingsView"><a class="viewcode-back" href="../../dashboard.html#dashboard.views.MybookingsView">[docs]</a><span class="k">class</span> <span class="nc">MybookingsView</span><span class="p">(</span><span class="n">generic</span><span class="o">.</span><span class="n">ListView</span><span class="p">):</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">BookingRecord</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s1">&#39;my_bookings.html&#39;</span>
+    <span class="n">context_object_name</span> <span class="o">=</span> <span class="s1">&#39;my_booking_records&#39;</span>
+
+<div class="viewcode-block" id="MybookingsView.get_context_data"><a class="viewcode-back" href="../../dashboard.html#dashboard.views.MybookingsView.get_context_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_context_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">MybookingsView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="n">context</span><span class="p">[</span><span class="s1">&#39;records&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">context</span><span class="p">[</span><span class="s1">&#39;not_logged_in&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;true&#39;</span>
+            <span class="k">return</span> <span class="n">context</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">session</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">context</span><span class="p">[</span><span class="s1">&#39;records&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">return</span> <span class="n">context</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">usrn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">session</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">]</span>
+            <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">usrn</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">stu</span> <span class="o">=</span> <span class="n">Student</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">)</span>
+                <span class="n">context</span><span class="p">[</span><span class="s1">&#39;is_student&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;true&#39;</span>
+            <span class="k">except</span> <span class="n">Student</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
+                <span class="n">context</span><span class="p">[</span><span class="s1">&#39;is_student&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;false&#39;</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">tut</span> <span class="o">=</span> <span class="n">Tutor</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">)</span>
+                <span class="n">context</span><span class="p">[</span><span class="s1">&#39;is_tutor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;true&#39;</span>
+            <span class="k">except</span> <span class="n">Tutor</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
+                <span class="n">context</span><span class="p">[</span><span class="s1">&#39;is_tutor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;false&#39;</span>
+            <span class="k">if</span> <span class="s1">&#39;id&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">:</span>
+                <span class="n">context</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;selected&#39;</span>
+                <span class="n">context</span><span class="p">[</span><span class="s1">&#39;record&#39;</span><span class="p">]</span> <span class="o">=</span><span class="n">BookingRecord</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">context</span><span class="p">[</span><span class="s1">&#39;is_student&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;true&#39;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">context</span><span class="p">[</span><span class="s1">&#39;record&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">student</span> <span class="o">==</span> <span class="n">stu</span><span class="p">:</span>
+                        <span class="n">context</span><span class="p">[</span><span class="s1">&#39;selected_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;as_stu&#39;</span>
+                <span class="k">if</span> <span class="n">context</span><span class="p">[</span><span class="s1">&#39;is_tutor&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;true&#39;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">context</span><span class="p">[</span><span class="s1">&#39;record&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tutor</span> <span class="o">==</span> <span class="n">tut</span><span class="p">:</span>
+                        <span class="n">context</span><span class="p">[</span><span class="s1">&#39;selected_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;as_tut&#39;</span>
+                <span class="k">return</span> <span class="n">context</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">context</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;not_selected&#39;</span>
+                <span class="k">if</span> <span class="n">context</span><span class="p">[</span><span class="s1">&#39;is_tutor&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;true&#39;</span><span class="p">:</span>
+                    <span class="n">context</span><span class="p">[</span><span class="s1">&#39;records_as_tut&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tut</span><span class="o">.</span><span class="n">bookingrecord_set</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">context</span><span class="p">[</span><span class="s1">&#39;is_student&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;true&#39;</span><span class="p">:</span>
+                    <span class="n">context</span><span class="p">[</span><span class="s1">&#39;records_as_stu&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stu</span><span class="o">.</span><span class="n">bookingrecord_set</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+                <span class="k">return</span> <span class="n">context</span></div>
+
+<div class="viewcode-block" id="MybookingsView.post"><a class="viewcode-back" href="../../dashboard.html#dashboard.views.MybookingsView.post">[docs]</a>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+        <span class="n">bkRecord_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;booking_id&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">bkrc</span> <span class="o">=</span> <span class="n">BookingRecord</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">bkRecord_id</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+        <span class="n">sess</span> <span class="o">=</span> <span class="n">Session</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">bookingrecord</span><span class="o">=</span><span class="n">bkrc</span><span class="p">)</span>
+        <span class="n">one_day_from_now</span> <span class="o">=</span> <span class="n">timezone</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">24</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">one_day_from_now</span> <span class="o">&lt;</span> <span class="n">sess</span><span class="o">.</span><span class="n">start_time</span><span class="p">:</span>
+            <span class="n">sess</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">Session</span><span class="o">.</span><span class="n">BOOKABLE</span>
+            <span class="n">sess</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>  <span class="c1"># save is needed for functioning  - Jiayao</span>
+            <span class="n">refund</span> <span class="o">=</span> <span class="n">bkrc</span><span class="o">.</span><span class="n">transaction</span><span class="o">.</span><span class="n">amount</span> <span class="o">+</span> <span class="n">bkrc</span><span class="o">.</span><span class="n">transaction</span><span class="o">.</span><span class="n">commission</span>
+            <span class="n">usrn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">session</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">]</span>
+            <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">usrn</span><span class="p">)</span>
+            <span class="n">usr</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">Student</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">)</span>
+            <span class="n">usr</span><span class="o">.</span><span class="n">wallet_balance</span> <span class="o">+=</span> <span class="n">refund</span>
+            <span class="n">usr</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+            <span class="n">bkrc</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">BookingRecord</span><span class="o">.</span><span class="n">CANCELED</span>
+            <span class="n">bkrc</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+            <span class="n">tut</span> <span class="o">=</span> <span class="n">bkrc</span><span class="o">.</span><span class="n">tutor</span>
+            <span class="n">send_mail</span><span class="p">(</span><span class="s1">&#39;Session Canceled&#39;</span><span class="p">,</span> <span class="s1">&#39;Please check on Tutoria, your session with &#39;</span><span class="o">+</span> <span class="n">bkrc</span><span class="o">.</span><span class="n">tutor</span><span class="o">.</span><span class="n">first_name</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="n">bkrc</span><span class="o">.</span><span class="n">tutor</span><span class="o">.</span><span class="n">last_name</span> <span class="o">+</span>  <span class="s1">&#39; from &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">sess</span><span class="o">.</span><span class="n">start_time</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; to &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">sess</span><span class="o">.</span><span class="n">end_time</span><span class="p">)</span> <span class="o">+</span>  <span class="s1">&#39; has been canceled.&#39;</span><span class="p">,</span> <span class="s1">&#39;nonereplay@hola-inc.top&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">usr</span><span class="o">.</span><span class="n">email</span><span class="p">],</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="n">send_mail</span><span class="p">(</span><span class="s1">&#39;Session Canceled&#39;</span><span class="p">,</span> <span class="s1">&#39;Please check on Tutoria, your session with &#39;</span><span class="o">+</span> <span class="n">bkrc</span><span class="o">.</span><span class="n">student</span><span class="o">.</span><span class="n">first_name</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="n">bkrc</span><span class="o">.</span><span class="n">student</span><span class="o">.</span><span class="n">last_name</span> <span class="o">+</span>  <span class="s1">&#39; from &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">sess</span><span class="o">.</span><span class="n">start_time</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; to &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">sess</span><span class="o">.</span><span class="n">end_time</span><span class="p">)</span> <span class="o">+</span>  <span class="s1">&#39; has been canceled.&#39;</span><span class="p">,</span> <span class="s1">&#39;nonereplay@hola-inc.top&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">tut</span><span class="o">.</span><span class="n">email</span><span class="p">],</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;dashboard/mybookings/&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">HttpResponse</span><span class="p">(</span><span class="s2">&quot;This session is within 24 hours and can&#39;t be canceled!&quot;</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="MytimetableView"><a class="viewcode-back" href="../../dashboard.html#dashboard.views.MytimetableView">[docs]</a><span class="k">class</span> <span class="nc">MytimetableView</span><span class="p">(</span><span class="n">generic</span><span class="o">.</span><span class="n">ListView</span><span class="p">):</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">BookingRecord</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s1">&#39;my_timetable.html&#39;</span>
+    <span class="n">context_object_name</span> <span class="o">=</span> <span class="s1">&#39;my_timetable&#39;</span>
+
+<div class="viewcode-block" id="MytimetableView.get_context_data"><a class="viewcode-back" href="../../dashboard.html#dashboard.views.MytimetableView.get_context_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_context_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get context data.&quot;&quot;&quot;</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">MytimetableView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">isStudent</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">isTutor</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="n">context</span><span class="p">[</span><span class="s1">&#39;timetable&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">return</span> <span class="n">context</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">session</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">context</span><span class="p">[</span><span class="s1">&#39;timetable&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">return</span> <span class="n">context</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">usrn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">session</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">]</span>
+            <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">usrn</span><span class="p">)</span>
+        
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">usr</span> <span class="o">=</span> <span class="n">Tutor</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">)</span>
+            <span class="n">isTutor</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">except</span> <span class="n">Tutor</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="n">context</span><span class="p">[</span><span class="s1">&#39;is_tutor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">isTutor</span>
+        <span class="k">if</span> <span class="n">isTutor</span><span class="p">:</span>
+            <span class="n">context</span><span class="p">[</span><span class="s1">&#39;tutor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">usr</span>
+            <span class="c1"># generate a 1D array which stores the timetable</span>
+            <span class="c1"># there are 14 days</span>
+            <span class="c1"># private tutor has 24 timeslots per day while contracted tutor has 48</span>
+            <span class="n">is_contracted_tutor</span> <span class="o">=</span> <span class="n">usr</span><span class="o">.</span><span class="n">tutor_type</span> <span class="o">==</span> <span class="s1">&#39;CT&#39;</span>
+            <span class="n">slots_per_day</span> <span class="o">=</span> <span class="mi">48</span> <span class="k">if</span> <span class="n">is_contracted_tutor</span> <span class="k">else</span> <span class="mi">24</span>
+            <span class="n">days_to_display</span> <span class="o">=</span> <span class="mi">14</span>
+            <span class="n">timetable</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="c1"># retrieve date of today</span>
+            <span class="n">today</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span>
+            <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">is_contracted_tutor</span><span class="p">:</span>
+                <span class="n">now_index</span> <span class="o">=</span> <span class="n">now</span><span class="o">.</span><span class="n">hour</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">now</span><span class="o">.</span><span class="n">minute</span> <span class="o">//</span> <span class="mi">30</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">now_index</span> <span class="o">=</span> <span class="n">now</span><span class="o">.</span><span class="n">hour</span>
+
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">days_to_display</span> <span class="o">*</span> <span class="n">slots_per_day</span><span class="p">):</span>
+                <span class="c1"># add all timeslots that are not in database as CLOSED session</span>
+                <span class="c1"># TODO this part might be dirty, we should create all sessions in advance</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="n">today</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span> <span class="o">=</span> <span class="n">i</span> <span class="o">//</span> <span class="n">slots_per_day</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">is_contracted_tutor</span><span class="p">:</span>
+                    <span class="n">hour</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span> <span class="o">%</span> <span class="n">slots_per_day</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+                    <span class="n">minute</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">30</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">hour</span> <span class="o">=</span> <span class="n">i</span> <span class="o">%</span> <span class="n">slots_per_day</span>
+                    <span class="n">minute</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">time</span><span class="p">(</span><span class="n">hour</span><span class="p">,</span> <span class="n">minute</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">is_contracted_tutor</span><span class="p">:</span>
+                    <span class="n">end_time</span> <span class="o">=</span> <span class="n">start_time</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span> <span class="o">=</span> <span class="mi">30</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">end_time</span> <span class="o">=</span> <span class="n">start_time</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">session</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">Session</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get_or_create</span><span class="p">(</span>
+                    <span class="n">start_time</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">make_aware</span><span class="p">(</span><span class="n">start_time</span><span class="p">),</span>
+                    <span class="n">end_time</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">make_aware</span><span class="p">(</span><span class="n">end_time</span><span class="p">),</span>
+                    <span class="n">tutor</span><span class="o">=</span><span class="n">usr</span><span class="p">)</span>
+                <span class="n">elem</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span> <span class="p">:</span> <span class="n">session</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span> <span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">today</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">i</span> <span class="o">//</span> <span class="n">slots_per_day</span><span class="p">)),</span> <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">session</span><span class="o">.</span><span class="n">id</span><span class="p">}</span>
+                <span class="c1">#print(&quot;elem = &quot;, elem)</span>
+                <span class="n">timetable</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span> <span class="c1"># closed</span>
+
+            <span class="c1"># print(&quot;tot: &quot; + str(days_to_display * slots_per_day))</span>
+            <span class="c1"># convert &quot;date&quot; of today to &quot;datetime&quot; of today&#39;s 0 &#39;o clock</span>
+            <span class="c1"># init_time = datetime.combine(today, datetime.min.time())</span>
+            <span class="k">for</span> <span class="n">session</span> <span class="ow">in</span> <span class="n">usr</span><span class="o">.</span><span class="n">session_set</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+                <span class="n">start_time</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">start_time</span>
+                <span class="n">hour_diff</span> <span class="o">=</span> <span class="n">start_time</span><span class="o">.</span><span class="n">hour</span> <span class="o">-</span> <span class="mi">0</span> <span class="c1"># if timetable starts from 0</span>
+                <span class="n">hour_diff</span> <span class="o">+=</span> <span class="mi">8</span> <span class="c1"># timezone issue (todo)</span>
+                <span class="c1">#print(start_time, &quot; hour &quot;, start_time.hour)</span>
+                <span class="n">minute_diff</span> <span class="o">=</span> <span class="n">start_time</span><span class="o">.</span><span class="n">minute</span>
+                <span class="n">date_diff</span> <span class="o">=</span> <span class="p">(</span><span class="n">start_time</span><span class="o">.</span><span class="n">date</span><span class="p">()</span> <span class="o">-</span> <span class="n">today</span><span class="p">)</span><span class="o">.</span><span class="n">days</span>
+                <span class="c1"># filter date within days_to_display</span>
+                <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">date_diff</span> <span class="o">&lt;</span> <span class="n">days_to_display</span><span class="p">:</span>
+                    <span class="n">index</span> <span class="o">=</span> <span class="n">date_diff</span> <span class="o">*</span> <span class="n">slots_per_day</span>
+                    <span class="k">if</span> <span class="n">is_contracted_tutor</span><span class="p">:</span>
+                        <span class="n">index</span> <span class="o">+=</span> <span class="n">hour_diff</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">minute_diff</span> <span class="o">//</span> <span class="mi">30</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">index</span> <span class="o">+=</span> <span class="n">hour_diff</span>
+                    <span class="c1"># print(&quot;date_diff = &quot;, date_diff, &quot;hour_diff = &quot;, hour_diff,</span>
+                    <span class="c1">#        &quot;minute_diff = &quot;, minute_diff, &quot;index = &quot;, index)</span>
+                    <span class="c1">#print(index)</span>
+                    <span class="n">timetable</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">session</span><span class="o">.</span><span class="n">status</span><span class="p">)</span>
+                    <span class="n">timetable</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">id</span>
+                    <span class="c1">#print(&quot;index = &quot;, index, &quot; session id = &quot;, session.id)</span>
+                    <span class="k">if</span> <span class="n">session</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">session</span><span class="o">.</span><span class="n">BOOKED</span><span class="p">:</span>
+                        <span class="c1"># logic is a bit tricky here</span>
+                        <span class="c1"># note we won&#39;t pass session id but booking_record id here</span>
+                        <span class="c1"># because one session can have multiple booking records</span>
+                        <span class="c1"># tutor wants to see the latest record when clicking the slot</span>
+                        <span class="n">records</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">bookingrecord_set</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+                        <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">records</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">record</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">record</span><span class="o">.</span><span class="n">INCOMING</span><span class="p">:</span>
+                                <span class="n">timetable</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">id</span>
+                                <span class="k">break</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">days_to_display</span> <span class="o">*</span> <span class="n">slots_per_day</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">now_index</span><span class="p">:</span>
+                    <span class="n">timetable</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;PASSED&quot;</span>
+
+            <span class="n">context</span><span class="p">[</span><span class="s1">&#39;tutor_timetable&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">timetable</span>
+            <span class="c1">#print(timetable)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">usr</span> <span class="o">=</span> <span class="n">Student</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">)</span>
+            <span class="n">isStudent</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">except</span> <span class="n">Student</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="n">context</span><span class="p">[</span><span class="s1">&#39;is_student&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">isStudent</span>
+        <span class="k">if</span> <span class="n">isStudent</span><span class="p">:</span>
+            <span class="n">context</span><span class="p">[</span><span class="s1">&#39;student&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">usr</span>
+            <span class="c1"># generate a 1D array which stores the timetable</span>
+            <span class="c1"># there are 14 days</span>
+            <span class="n">slots_per_day</span> <span class="o">=</span> <span class="mi">48</span>
+            <span class="n">days_to_display</span> <span class="o">=</span> <span class="mi">7</span>
+            <span class="n">timetable</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="c1"># retrieve date of today</span>
+            <span class="n">today</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span>
+            <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+            <span class="n">now_index</span> <span class="o">=</span> <span class="n">now</span><span class="o">.</span><span class="n">hour</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">now</span><span class="o">.</span><span class="n">minute</span> <span class="o">//</span> <span class="mi">30</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">days_to_display</span> <span class="o">*</span> <span class="n">slots_per_day</span><span class="p">):</span>
+                <span class="n">elem</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span> <span class="p">:</span> <span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span> <span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">today</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">i</span> <span class="o">//</span> <span class="n">slots_per_day</span><span class="p">)),</span> <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">}</span>
+                <span class="n">timetable</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span> <span class="c1"># closed</span>
+
+            <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">usr</span><span class="o">.</span><span class="n">bookingrecord_set</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+                <span class="n">start_time</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">start_time</span>
+                <span class="n">hour_diff</span> <span class="o">=</span> <span class="n">start_time</span><span class="o">.</span><span class="n">hour</span> <span class="o">-</span> <span class="mi">0</span> <span class="c1"># if timetable starts from 0</span>
+                <span class="n">hour_diff</span> <span class="o">+=</span> <span class="mi">8</span> <span class="c1"># timezone issue (todo)</span>
+                <span class="c1">#print(start_time, &quot; hour &quot;, start_time.hour)</span>
+                <span class="n">minute_diff</span> <span class="o">=</span> <span class="n">start_time</span><span class="o">.</span><span class="n">minute</span>
+                <span class="n">date_diff</span> <span class="o">=</span> <span class="p">(</span><span class="n">start_time</span><span class="o">.</span><span class="n">date</span><span class="p">()</span> <span class="o">-</span> <span class="n">today</span><span class="p">)</span><span class="o">.</span><span class="n">days</span>
+                <span class="c1"># filter date within days_to_display</span>
+                <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">date_diff</span> <span class="o">&lt;</span> <span class="n">days_to_display</span><span class="p">:</span>
+                    <span class="n">index</span> <span class="o">=</span> <span class="n">date_diff</span> <span class="o">*</span> <span class="n">slots_per_day</span>
+                    <span class="n">index</span> <span class="o">+=</span> <span class="n">hour_diff</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">minute_diff</span> <span class="o">//</span> <span class="mi">30</span>
+                    <span class="c1"># print(&quot;date_diff = &quot;, date_diff, &quot;hour_diff = &quot;, hour_diff,</span>
+                    <span class="c1">#        &quot;minute_diff = &quot;, minute_diff, &quot;index = &quot;, index)</span>
+                    <span class="c1">#print(index)</span>
+                    <span class="k">if</span> <span class="n">record</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">record</span><span class="o">.</span><span class="n">INCOMING</span> <span class="ow">or</span> <span class="n">record</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">record</span><span class="o">.</span><span class="n">ONGOING</span><span class="p">:</span>
+                        <span class="c1"># TODO what about other states?</span>
+                        <span class="n">timetable</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;A&#39;</span> <span class="c1"># use &#39;A&#39; to represent this record has detail to be referred</span>
+                        <span class="n">timetable</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">id</span>
+                        <span class="k">if</span> <span class="n">record</span><span class="o">.</span><span class="n">tutor</span><span class="o">.</span><span class="n">tutor_type</span> <span class="o">==</span> <span class="n">record</span><span class="o">.</span><span class="n">tutor</span><span class="o">.</span><span class="n">PRIVATE_TUTOR</span><span class="p">:</span>
+                            <span class="n">timetable</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">][</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;A&#39;</span>
+                            <span class="n">timetable</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">][</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">id</span>
+
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">days_to_display</span> <span class="o">*</span> <span class="n">slots_per_day</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">now_index</span><span class="p">:</span>
+                    <span class="n">timetable</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;PASSED&quot;</span>
+            <span class="n">context</span><span class="p">[</span><span class="s1">&#39;student_timetable&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">timetable</span>
+            <span class="c1">#print(timetable)</span>
+
+        <span class="k">return</span> <span class="n">context</span></div>
+
+<div class="viewcode-block" id="MytimetableView.post"><a class="viewcode-back" href="../../dashboard.html#dashboard.views.MytimetableView.post">[docs]</a>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">session_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;session_id&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">session_id</span><span class="p">)</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">start_time</span>
+        <span class="n">now</span> <span class="o">=</span> <span class="n">timezone</span><span class="o">.</span><span class="n">make_aware</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">now</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">start_time</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">HttpResponse</span><span class="p">(</span><span class="s2">&quot;Session within 24 hours before start time is locked!&quot;</span><span class="p">)</span>
+        <span class="c1">#print(&quot;before update, session = &quot;, session, &quot; status = &quot;, session.status)</span>
+        <span class="k">if</span> <span class="n">session</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">session</span><span class="o">.</span><span class="n">CLOSED</span><span class="p">:</span>
+            <span class="n">session</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">BOOKABLE</span>
+        <span class="k">elif</span> <span class="n">session</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">session</span><span class="o">.</span><span class="n">BOOKABLE</span><span class="p">:</span>
+            <span class="n">session</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">CLOSED</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="c1">#print(&quot;after update, session = &quot;, session, &quot; status = &quot;, session.status)</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;/dashboard/mytimetable/&#39;</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="MyWalletView"><a class="viewcode-back" href="../../dashboard.html#dashboard.views.MyWalletView">[docs]</a><span class="k">class</span> <span class="nc">MyWalletView</span><span class="p">(</span><span class="n">generic</span><span class="o">.</span><span class="n">TemplateView</span><span class="p">):</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s1">&#39;my_wallet.html&#39;</span>
+        
+<div class="viewcode-block" id="MyWalletView.get_context_data"><a class="viewcode-back" href="../../dashboard.html#dashboard.views.MyWalletView.get_context_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_context_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">MyWalletView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+           <span class="n">context</span><span class="p">[</span><span class="s1">&#39;not_logged_in&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;true&#39;</span>
+           <span class="k">return</span> <span class="n">context</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">session</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+           <span class="k">return</span> <span class="n">context</span>
+        <span class="k">else</span><span class="p">:</span>
+           <span class="n">context</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+           <span class="n">usrn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">session</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">]</span>
+           <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">usrn</span><span class="p">)</span>
+           <span class="n">context</span><span class="p">[</span><span class="s1">&#39;balance&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">wallet_balance</span>
+           <span class="k">return</span> <span class="n">context</span></div>
+
+<div class="viewcode-block" id="MyWalletView.post"><a class="viewcode-back" href="../../dashboard.html#dashboard.views.MyWalletView.post">[docs]</a>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">req</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">usrn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">session</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">]</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">usrn</span><span class="p">)</span>
+        <span class="n">balance</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">wallet_balance</span>
+        <span class="n">op</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="n">POST</span><span class="p">[</span><span class="s1">&#39;operation&#39;</span><span class="p">]</span>
+        <span class="n">amount</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">req</span><span class="o">.</span><span class="n">POST</span><span class="p">[</span><span class="s1">&#39;amount&#39;</span><span class="p">])</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="s1">&#39;topup&#39;</span><span class="p">:</span>
+            <span class="n">user</span><span class="o">.</span><span class="n">wallet_balance</span> <span class="o">+=</span> <span class="n">amount</span><span class="p">;</span>
+            <span class="n">user</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_name</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;balance&#39;</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">wallet_balance</span><span class="p">})</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">amount</span> <span class="o">&gt;</span> <span class="n">balance</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_name</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;balance&#39;</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">wallet_balance</span><span class="p">})</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">user</span><span class="o">.</span><span class="n">wallet_balance</span> <span class="o">-=</span> <span class="n">amount</span><span class="p">;</span>
+                <span class="n">user</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+                <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_name</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;balance&#39;</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">wallet_balance</span><span class="p">})</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">Tutoria</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Hola Inc..
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,6 +1,7 @@
 # Tutoria
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](LICENSE)
 [![Build Status](https://travis-ci.com/li-boxuan/tutoria.svg?token=9cK4Kmeqpdioyfb1EXxS&branch=master)](https://travis-ci.com/li-boxuan/tutoria)
+[![Read the Doc](https://img.shields.io/badge/documentation-ready-brightgreen.svg)](http://htmlpreview.github.io/?https://github.com/li-boxuan/tutoria/blob/master/doc/index.html)
 [![Chat on Gitter](https://badges.gitter.im/Hola-Inc/Tutoriac.svg)](https://gitter.im/Hola-Inc/Tutoria)
 
 ![Hola the Monkey](./favicon/hola.png)

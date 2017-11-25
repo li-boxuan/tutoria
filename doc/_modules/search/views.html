@@ -1,0 +1,206 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>search.views &#8212; Tutoria 1 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for search.views</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;View for search results.&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">django.views.generic</span> <span class="k">import</span> <span class="n">ListView</span><span class="p">,</span> <span class="n">TemplateView</span>
+<span class="kn">import</span> <span class="nn">re</span>  <span class="c1"># Regular expression for search matching</span>
+<span class="kn">from</span> <span class="nn">django.db.models</span> <span class="k">import</span> <span class="n">Max</span>
+
+<span class="kn">from</span> <span class="nn">account.models</span> <span class="k">import</span> <span class="n">Tutor</span>
+<span class="kn">from</span> <span class="nn">scheduler.models</span> <span class="k">import</span> <span class="n">Session</span>
+
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+
+
+<div class="viewcode-block" id="IndexView"><a class="viewcode-back" href="../../search.html#search.views.IndexView">[docs]</a><span class="k">class</span> <span class="nc">IndexView</span><span class="p">(</span><span class="n">TemplateView</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Render the search page.&quot;&quot;&quot;</span>
+
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s1">&#39;search.html&#39;</span>
+    <span class="n">context_object_name</span> <span class="o">=</span> <span class="s1">&#39;index_context&#39;</span></div>
+
+
+<div class="viewcode-block" id="ResultView"><a class="viewcode-back" href="../../search.html#search.views.ResultView">[docs]</a><span class="k">class</span> <span class="nc">ResultView</span><span class="p">(</span><span class="n">ListView</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;View for search results.&quot;&quot;&quot;</span>
+
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s1">&#39;result.html&#39;</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Tutor</span>
+    <span class="n">sort_method</span> <span class="o">=</span> <span class="s1">&#39;rating&#39;</span>  <span class="c1"># Sort by rating by default</span>
+    <span class="n">keywords</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">minPrice</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># Integer. Minimum hourly rate.</span>
+    <span class="n">price_limit</span> <span class="o">=</span> <span class="mi">1000</span> <span class="c1"># list(Tutor.objects.all().aggregate(Max(&#39;hourly_rate&#39;)).values())[0]</span>
+    <span class="n">maxPrice</span> <span class="o">=</span> <span class="n">price_limit</span>  <span class="c1"># Integer. Maximum hourly rate.</span>
+    <span class="n">tutor_type</span> <span class="o">=</span> <span class="s1">&#39;ALL&#39;</span>
+    <span class="n">only_show_available</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># Only show tutor with available session in the coming 7 days?</span>
+
+<div class="viewcode-block" id="ResultView.get_queryset"><a class="viewcode-back" href="../../search.html#search.views.ResultView.get_queryset">[docs]</a>    <span class="k">def</span> <span class="nf">get_queryset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Determine the list of tutors to be displayed.&quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;keywords&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">keywords</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">[</span><span class="s1">&#39;keywords&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s1">&#39;sort&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sort_method</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">[</span><span class="s1">&#39;sort&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s1">&#39;minPrice&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">minPrice</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;\D&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">[</span><span class="s1">&#39;minPrice&#39;</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="s1">&#39;maxPrice&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">maxPrice</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;\D&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">[</span><span class="s1">&#39;maxPrice&#39;</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="s1">&#39;tutor_type&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tutor_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">[</span><span class="s1">&#39;tutor_type&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s1">&#39;only_show_available&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">only_show_available</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">[</span><span class="s1">&#39;only_show_available&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s1">&#39;price_limit&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">price_limit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">[</span><span class="s1">&#39;price_limit&#39;</span><span class="p">]</span>
+
+        <span class="n">all_tutors</span> <span class="o">=</span> <span class="n">Tutor</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">visible</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># Obtain visible tutors</span>
+        <span class="n">filtered_tutors</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keywords</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">filtered_tutors</span> <span class="o">=</span> <span class="n">all_tutors</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Filter according to keywords</span>
+            <span class="k">for</span> <span class="n">tutor</span> <span class="ow">in</span> <span class="n">all_tutors</span><span class="p">:</span>
+                <span class="c1"># Search query in full name</span>
+                <span class="n">tutor_info</span> <span class="o">=</span> <span class="n">tutor</span><span class="o">.</span><span class="n">full_name</span>
+                <span class="c1"># Search query in courses</span>
+                <span class="k">for</span> <span class="n">course</span> <span class="ow">in</span> <span class="n">tutor</span><span class="o">.</span><span class="n">courses</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+                    <span class="n">tutor_info</span> <span class="o">+=</span> <span class="p">(</span><span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">course</span><span class="p">))</span>
+                <span class="c1"># Search query in tags</span>
+                <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">tutor</span><span class="o">.</span><span class="n">tags</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+                    <span class="n">tutor_info</span> <span class="o">+=</span> <span class="p">(</span><span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">tag</span><span class="p">))</span>
+                <span class="c1"># Search query in university</span>
+                <span class="n">tutor_info</span> <span class="o">+=</span> <span class="p">(</span><span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">tutor</span><span class="o">.</span><span class="n">university</span><span class="p">)</span>
+                <span class="c1"># Regular expression match</span>
+                <span class="k">for</span> <span class="n">keyword</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">keywords</span><span class="o">.</span><span class="n">split</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">keyword</span><span class="p">,</span> <span class="n">tutor_info</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span> <span class="ow">and</span> <span class="n">tutor</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">filtered_tutors</span><span class="p">:</span>
+                        <span class="n">filtered_tutors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tutor</span><span class="p">)</span>
+        <span class="c1"># Filter according to hourly rate range.</span>
+        <span class="n">filtered_tutors</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">filtered_tutors</span> <span class="k">if</span>
+                           <span class="bp">self</span><span class="o">.</span><span class="n">minPrice</span> <span class="o">&lt;=</span> <span class="n">t</span><span class="o">.</span><span class="n">hourly_rate</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxPrice</span><span class="p">]</span>
+        <span class="c1"># Filter according to tutor type</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tutor_type</span> <span class="o">!=</span> <span class="s1">&#39;ALL&#39;</span><span class="p">:</span>
+            <span class="n">filtered_tutors</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">filtered_tutors</span> <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">tutor_type</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">tutor_type</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">only_show_available</span><span class="p">:</span>
+            <span class="n">filtered_tutors</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">filtered_tutors</span> <span class="k">if</span> <span class="n">tutor_available</span><span class="p">(</span><span class="n">t</span><span class="p">)]</span>
+        <span class="c1"># Sort tutors</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_method</span> <span class="o">==</span> <span class="s1">&#39;hourly_rate_inc&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">filtered_tutors</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">hourly_rate</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_method</span> <span class="o">==</span> <span class="s1">&#39;hourly_rate_dec&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">filtered_tutors</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">hourly_rate</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">filtered_tutors</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">avgRating</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ResultView.get_context_data"><a class="viewcode-back" href="../../search.html#search.views.ResultView.get_context_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_context_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Obtain search query keywords from GET request.&quot;&quot;&quot;</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">ResultView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;keywords&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">:</span>
+            <span class="n">context</span><span class="p">[</span><span class="s1">&#39;keywords&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">[</span><span class="s1">&#39;keywords&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">context</span><span class="p">[</span><span class="s1">&#39;keywords&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">keywords</span>
+        <span class="c1"># print(&#39;keywords ==&gt; &#39; + context[&#39;keywords&#39;])</span>
+        <span class="n">context</span><span class="p">[</span><span class="s1">&#39;sort&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_method</span>
+        <span class="n">context</span><span class="p">[</span><span class="s1">&#39;minPrice&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">minPrice</span>
+        <span class="n">context</span><span class="p">[</span><span class="s1">&#39;tutor_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tutor_type</span>
+        <span class="n">context</span><span class="p">[</span><span class="s1">&#39;only_show_available&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">only_show_available</span>
+        <span class="n">context</span><span class="p">[</span><span class="s1">&#39;price_limit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">price_limit</span>
+        <span class="n">context</span><span class="p">[</span><span class="s1">&#39;maxPrice&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxPrice</span>
+        <span class="k">return</span> <span class="n">context</span></div></div>
+
+
+<div class="viewcode-block" id="tutor_available"><a class="viewcode-back" href="../../search.html#search.views.tutor_available">[docs]</a><span class="k">def</span> <span class="nf">tutor_available</span><span class="p">(</span><span class="n">tutor</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Test if tutor has any available session in the coming 7 days.&quot;&quot;&quot;</span>
+    <span class="n">today_min</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">(),</span> <span class="n">datetime</span><span class="o">.</span><span class="n">min</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+    <span class="n">future_max</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="mi">7</span><span class="p">),</span> <span class="n">datetime</span><span class="o">.</span><span class="n">max</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+    <span class="n">available_sessions</span> <span class="o">=</span> <span class="n">Session</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">tutor</span><span class="o">=</span><span class="n">tutor</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="n">start_time__gte</span><span class="o">=</span><span class="n">today_min</span><span class="p">,</span>
+                                                <span class="n">end_time__lte</span><span class="o">=</span><span class="n">future_max</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">available_sessions</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">Tutoria</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Hola Inc..
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

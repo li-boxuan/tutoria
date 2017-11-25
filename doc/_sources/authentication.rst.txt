@@ -1,0 +1,46 @@
+authentication package
+======================
+
+Submodules
+----------
+
+authentication\.forms module
+----------------------------
+
+.. automodule:: authentication.forms
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+authentication\.models module
+-----------------------------
+
+.. automodule:: authentication.models
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+authentication\.urls module
+---------------------------
+
+.. automodule:: authentication.urls
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+authentication\.views module
+----------------------------
+
+.. automodule:: authentication.views
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: authentication
+    :members:
+    :undoc-members:
+    :show-inheritance:

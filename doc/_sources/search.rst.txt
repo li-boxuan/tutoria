@@ -1,0 +1,40 @@
+search package
+==============
+Submodules
+----------
+
+
+
+search\.models module
+---------------------
+
+.. automodule:: search.models
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+search\.urls module
+-------------------
+
+.. automodule:: search.urls
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+search\.views module
+--------------------
+
+.. automodule:: search.views
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: search
+    :members:
+    :undoc-members:
+    :show-inheritance:

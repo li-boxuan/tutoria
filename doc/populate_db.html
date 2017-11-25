@@ -1,0 +1,179 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>populate_db module &#8212; Tutoria 1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-populate_db">
+<span id="populate-db-module"></span><h1>populate_db module<a class="headerlink" href="#module-populate_db" title="Permalink to this headline">¶</a></h1>
+<p>populate_db.py.</p>
+<p>For populating demo database
+data.</p>
+<p>Created on Oct. 20, 2017
+by Jiayao</p>
+<dl class="function">
+<dt id="populate_db.add_coupon">
+<code class="descclassname">populate_db.</code><code class="descname">add_coupon</code><span class="sig-paren">(</span><em>start_date</em>, <em>end_date</em>, <em>coupon_code</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/populate_db.html#add_coupon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#populate_db.add_coupon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a new coupon.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="populate_db.add_course">
+<code class="descclassname">populate_db.</code><code class="descname">add_course</code><span class="sig-paren">(</span><em>code</em>, <em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/populate_db.html#add_course"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#populate_db.add_course" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="populate_db.add_review">
+<code class="descclassname">populate_db.</code><code class="descname">add_review</code><span class="sig-paren">(</span><em>content</em>, <em>rating</em>, <em>student</em>, <em>tutor</em>, <em>anonymous</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/populate_db.html#add_review"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#populate_db.add_review" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a review.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="populate_db.add_student">
+<code class="descclassname">populate_db.</code><code class="descname">add_student</code><span class="sig-paren">(</span><em>username</em>, <em>password</em>, <em>email</em>, <em>first_name</em>, <em>last_name</em>, <em>wallet_balance=-1</em>, <em>phone=99999999</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/populate_db.html#add_student"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#populate_db.add_student" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="populate_db.add_tag">
+<code class="descclassname">populate_db.</code><code class="descname">add_tag</code><span class="sig-paren">(</span><em>tag</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/populate_db.html#add_tag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#populate_db.add_tag" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="populate_db.add_tutor">
+<code class="descclassname">populate_db.</code><code class="descname">add_tutor</code><span class="sig-paren">(</span><em>username</em>, <em>password</em>, <em>email</em>, <em>first_name</em>, <em>last_name</em>, <em>tutor_type='CT'</em>, <em>hourly_rate=0</em>, <em>phone='99999999'</em>, <em>bio=''</em>, <em>courses=None</em>, <em>tags=None</em>, <em>wallet_balance=-1</em>, <em>avatar='default_avatar.png'</em>, <em>sessions=None</em>, <em>university='HKU'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/populate_db.html#add_tutor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#populate_db.add_tutor" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="populate_db.populate">
+<code class="descclassname">populate_db.</code><code class="descname">populate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/populate_db.html#populate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#populate_db.populate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="populate_db.populate_booking_record">
+<code class="descclassname">populate_db.</code><code class="descname">populate_booking_record</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/populate_db.html#populate_booking_record"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#populate_db.populate_booking_record" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="populate_db.populate_coupon">
+<code class="descclassname">populate_db.</code><code class="descname">populate_coupon</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/populate_db.html#populate_coupon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#populate_db.populate_coupon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Populate coupons into the database.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="populate_db.populate_review">
+<code class="descclassname">populate_db.</code><code class="descname">populate_review</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/populate_db.html#populate_review"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#populate_db.populate_review" title="Permalink to this definition">¶</a></dt>
+<dd><p>Populate some reviews into our database.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="populate_db.populate_session">
+<code class="descclassname">populate_db.</code><code class="descname">populate_session</code><span class="sig-paren">(</span><em>tutors</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/populate_db.html#populate_session"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#populate_db.populate_session" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="populate_db.populate_staff">
+<code class="descclassname">populate_db.</code><code class="descname">populate_staff</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/populate_db.html#populate_staff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#populate_db.populate_staff" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="populate_db.populate_student">
+<code class="descclassname">populate_db.</code><code class="descname">populate_student</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/populate_db.html#populate_student"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#populate_db.populate_student" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="populate_db.populate_tutor">
+<code class="descclassname">populate_db.</code><code class="descname">populate_tutor</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/populate_db.html#populate_tutor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#populate_db.populate_tutor" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Tutoria</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Hola Inc..
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/populate_db.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
