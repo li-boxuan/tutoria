@@ -1,0 +1,29 @@
+review package
+==============
+Submodules
+----------
+
+review\.models module
+---------------------
+
+.. automodule:: review.models
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+review\.views module
+--------------------
+
+.. automodule:: review.views
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: review
+    :members:
+    :undoc-members:
+    :show-inheritance:

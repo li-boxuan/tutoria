@@ -1,6 +1,7 @@
 # Tutoria
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](LICENSE)
 [![Build Status](https://travis-ci.com/li-boxuan/tutoria.svg?token=9cK4Kmeqpdioyfb1EXxS&branch=master)](https://travis-ci.com/li-boxuan/tutoria)
+[![Read the Doc](https://img.shields.io/badge/documentation-ready-brightgreen.svg)](http://htmlpreview.github.io/?https://github.com/li-boxuan/tutoria/blob/master/doc/index.html)
 [![Chat on Gitter](https://badges.gitter.im/Hola-Inc/Tutoriac.svg)](https://gitter.im/Hola-Inc/Tutoria)
 
 ![Hola the Monkey](./favicon/hola.png)
@@ -37,6 +38,24 @@ via `localhost`:
 
     python manage.py runserver
 
+Note that begin_all_sessions & end_all_sessions are implemented in the scheduler_trigger.py.
+You need to begin/end all sessions using scheduler_trigger via Django shell:
+
+    python manage.py shell
+    from scheduler_trigger import *
+    help() # see usage description
+
+In the django shell, you can start all session at a specific time making use of scheduler_trigger:
+
+    run(True, "Nov 25 2017, 9:00p.m.") # start all sessions
+
+or end all session:
+
+    run(False, "Nov 25 2017, 9:00p.m.") # end all sessions
+
+For your convenience, you can let the scheduler do begin/end all sessions in turn within a time range:
+
+    run_range("Nov 25 2017, 8:00a.m.", "Nov 26 2017, 9:00p.m.") # start & end all sessions in turn
 
 ## Development
 

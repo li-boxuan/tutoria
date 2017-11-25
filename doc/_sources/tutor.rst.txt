@@ -1,0 +1,48 @@
+tutor package
+=============
+
+
+Submodules
+----------
+
+tutor\.forms module
+-------------------
+
+.. automodule:: tutor.forms
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+tutor\.models module
+--------------------
+
+.. automodule:: tutor.models
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+tutor\.urls module
+------------------
+
+.. automodule:: tutor.urls
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+tutor\.views module
+-------------------
+
+.. automodule:: tutor.views
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: tutor
+    :members:
+    :undoc-members:
+    :show-inheritance:
