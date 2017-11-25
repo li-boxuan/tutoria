@@ -32,6 +32,7 @@ class ProfileView(generic.TemplateView):
 		context['user_form'] = None
 		context['tutor_form'] = None
 		context['tutor_type'] = None
+		context['tutor'] = None
 		return context
 
 	def get(self, req, *args, **kwargs):
@@ -41,6 +42,7 @@ class ProfileView(generic.TemplateView):
 		if user.tutor is not None:
 			context['tutor_type'] = 'Private' if user.tutor.tutor_type == Tutor.PRIVATE_TUTOR else 'Contracted'
 			context['tutor_form'] = UpdateTutorForm(prefix='tutor_form', instance=user.tutor)
+			context['tutor'] = user.tutor
 		return self.render_to_response(context)
 
 	def post(self, req, *args, **kwargs):

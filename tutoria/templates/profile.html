@@ -21,6 +21,13 @@
 													{% endif %}
                           {% if tutor_type is not None %}
 													<h5>My tutor type: {{ tutor_type }}</h5>
+													{% if tutor is not None %}
+        <h3>Tags</h3>
+        {% for tag in tutor.tags.all %}
+          <h5> {{ tag.tag }} &nbsp; </h5>
+        {% endfor %}
+					
+													{% endif %}
                             {{tutor_form.as_p}}
                           {% endif %}
                         </table>
