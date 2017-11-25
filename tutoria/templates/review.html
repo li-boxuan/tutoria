@@ -1,10 +1,42 @@
 {% extends "base.html" %}
 {% load staticfiles %}
-{% block title %}Review Your Tutor{% endblock %}
+{% block title %}Review Your Tutor{% endblock %}r
 
 {% block content %}
-  <form action="" method="post">{% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Submit Review" />
-  </form>
+  <div class="container">
+    <div class="col-md-6 col-md-offset-3" style="text-align: center;">
+      <h1>Review {{ tutor.full_name }}</h1>
+      <div class="col-md-6 col-md-offset-3">
+        <img class="img-rounded" width=70% src="{{ tutor.avatar.url }}">
+      </div>
+      <form action="" method="post" id="review">{% csrf_token %}
+        {{ form.non_field_errors }}
+        <div class="col-md-6 col-md-offset-3">
+          {{ form.rating.errors }}
+          <label for="id_rating"><h4>Rating</h4></label>
+          <br>
+          {{ form.rating }}
+          <br>
+        </div>
+        <div class="col-md-6 col-md-offset-3">
+          {{ form.content.errors }}
+          <br>
+          <label for="id_content"><h4>Comments</h4></label>
+          {{ form.content }}
+        </div>
+        <div class="col-md-6 col-md-offset-3">
+          {{ form.anonymous.errors }}
+          <br>
+          <label for="id_anonymous"><h4>Anonymous</h4></label>
+          {{ form.anonymous }}
+        </div>
+        <div class="col-md-6 col-md-offset-3">
+          <br>
+          <p><button type="submit" class="btn btn-primary" form="review" value="Submit" style="margin: auto;">Submit</button></p>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
 {% endblock %}

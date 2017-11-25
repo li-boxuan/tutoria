@@ -40,6 +40,12 @@
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 {% if user.is_authenticated %}
+									{% if user.is_superuser %}
+                    <li><a href="{% url 'auth:logout' %}">Logout</a></li>
+									{% elif user.is_staff %}
+                    <li><a href="{% url 'dashboard:mywallet' %}">My Wallet</a></li>
+                    <li><a href="{% url 'auth:logout' %}">Logout</a></li>
+									{% else %}
                     <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Dashboard<span class="caret"></span></a>
                      <ul class="dropdown-menu">
                        <li><a href="{% url 'dashboard:mybookings' %}">My Bookings</a></li>
@@ -48,19 +54,10 @@
                        <li><a href="{% url 'dashboard:mywallet' %}">My Wallet</a></li>
                      </ul>
                     </li>
-<!--
-										{% if user.tutor is not None %}
-                     <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Profile<span class="caret"></span></a>
-                      <ul class="dropdown-menu">
-                       <li><a href="{% url 'auth:profile' %}">My User Profile</a></li>
-                       <li><a href="{% url 'auth:tutor_profile' %}">My Tutoring Profile</a></li>
-                       </ul>
-                    </li>
-										{% else %}
-										{% endif %}
--->
+
                     <li><a href="{% url 'auth:profile' %}">Profile</a></li>
                     <li><a href="{% url 'auth:logout' %}">Logout</a></li>
+									{% endif %}
                 {% else %}
                     <li><a href="{% url 'auth:signup' %}">Sign Up</a></li>
                     <li><a href="{% url 'auth:login' %}">Login</a></li>

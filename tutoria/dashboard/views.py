@@ -159,6 +159,12 @@ class MytimetableView(generic.ListView):
             timetable = []
             # retrieve date of today
             today = date.today()
+            now = datetime.now()
+            if is_contracted_tutor:
+                now_index = now.hour * 2 + now.minute // 30
+            else:
+                now_index = now.hour
+
             for i in range(days_to_display * slots_per_day):
                 # add all timeslots that are not in database as CLOSED session
                 # TODO this part might be dirty, we should create all sessions in advance
@@ -213,6 +219,9 @@ class MytimetableView(generic.ListView):
                             if record.status == record.INCOMING:
                                 timetable[index]['id'] = record.id
                                 break
+            for i in range(days_to_display * slots_per_day):
+                if i <= now_index:
+                    timetable[i]['status'] = "PASSED"
 
             context['tutor_timetable'] = timetable
             #print(timetable)
@@ -233,6 +242,8 @@ class MytimetableView(generic.ListView):
             timetable = []
             # retrieve date of today
             today = date.today()
+            now = datetime.now()
+            now_index = now.hour * 2 + now.minute // 30
             for i in range(days_to_display * slots_per_day):
                 elem = {'status' : 'X', 'date' : str(today + timedelta(days=i / slots_per_day)), 'id': ''}
                 timetable.append(elem) # closed
@@ -255,10 +266,13 @@ class MytimetableView(generic.ListView):
                         # TODO what about other states?
                         timetable[index]['status'] = 'A' # use 'A' to represent this record has detail to be referred
                         timetable[index]['id'] = record.id
-                    if record.tutor.tutor_type == record.tutor.PRIVATE_TUTOR:
-                        timetable[index + 1]['status'] = 'A'
-                        timetable[index + 1]['id'] = record.id
-            
+                        if record.tutor.tutor_type == record.tutor.PRIVATE_TUTOR:
+                            timetable[index + 1]['status'] = 'A'
+                            timetable[index + 1]['id'] = record.id
+
+            for i in range(days_to_display * slots_per_day):
+                if i <= now_index:
+                    timetable[i]['status'] = "PASSED"
             context['student_timetable'] = timetable
             #print(timetable)
 

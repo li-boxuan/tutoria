@@ -75,6 +75,7 @@
       <button type="button" class="bg-primary" onclick="return confirm('Booked means this session is booked by someone')">Booked</button>&nbsp;
       <button type="button" class="bg-success" onclick="return confirm('Click on bookable slot to book it')">Bookable</button>&nbsp;
       <button type="button" class="bg-info" onclick="return confirm('Closed means this session is not open')">Closed</button>&nbsp;
+      <button type="button" class="bg-danger" onclick="return confirm('Passed slot means the specific time slot has passed')">Passed</button>
       <table class="" border="1" cellpadding="0">
         <tbody>
         <tr>
@@ -114,6 +115,9 @@
           </td>
         {% elif grid.status == 'X' %}
           <td colspan="1" class="bg-info">&nbsp;
+          </td>
+        {% elif grid.status == 'PASSED' %}
+          <td colspan="1" class="bg-danger">&nbsp;
           </td>
         {% endif %}
         {% if tutor.tutor_type == 'PT' and forloop.counter|divisibleby:24 or tutor.tutor_type == 'CT' and forloop.counter|divisibleby:48 %}

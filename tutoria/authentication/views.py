@@ -25,6 +25,7 @@ class ProfileView(generic.TemplateView):
 	"""Models the profile view."""
 	model = User
 	template_name = 'profile.html'
+	login_required = True
 
 	def get_context_data(self, **kwargs):
 		context = super(ProfileView, self).get_context_data(**kwargs)
@@ -90,7 +91,7 @@ class LoginView(generic.TemplateView):
         if user is not None:
             login(req, user)
             req.session['username'] = req.POST['username']
-            if user.is_staff:
+            if user.is_superuser:
                 return HttpResponseRedirect(reverse('admin:index'))
             return HttpResponseRedirect(reverse('homepage'))
         else:

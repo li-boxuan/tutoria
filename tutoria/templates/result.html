@@ -30,7 +30,7 @@
 
 
 {% block content %}
-{#  TODO: unify div widths of search box and results. #}
+  {#  TODO: unify div widths of search box and results. #}
   <div class="container">
     <div class="row">
       <div class="col-md-8 col-md-offset-2 well">
@@ -114,6 +114,7 @@
   </div>
 
   {% if object_list %}
+    {#  TODO: add university #}
 
     <div class="container">
     <div class="row">
@@ -146,44 +147,44 @@
                 </thead>
                 <tbody>
                 {% for tutor in object_list %}
-								{% if tutor.visible %}
-                  <tr>
-                    <td>
-                      <a href="{% url 'tutor:detail' tutor.id %}">
-                        <img class="img-rounded" width=128px src="{{ tutor.avatar.url }}">
-                      </a><br>
-                      <div style="text-align: center;">
-                        <a href="{% url 'tutor:detail' tutor.id %}">{{ tutor.first_name }}
-                          {{tutor.last_name }}</a>
-                      </div>
-                    </td>
-                    <td>
-                      {% if tutor.tutor_type == 'CT' %}
-                        Contracted Tutor
-                      {% else %}
-                        Private Tutor
-                      {% endif %}
-                    </td>
+                  {% if tutor.visible %}
+                    <tr>
+                      <td>
+                        <a href="{% url 'tutor:detail' tutor.id %}">
+                          <img class="img-rounded" width=128px src="{{ tutor.avatar.url }}">
+                        </a><br>
+                        <div style="text-align: center;">
+                          <a href="{% url 'tutor:detail' tutor.id %}">{{ tutor.first_name }}
+                            {{tutor.last_name }}</a>
+                        </div>
+                      </td>
+                      <td>
+                        {% if tutor.tutor_type == 'CT' %}
+                          Contracted Tutor
+                        {% else %}
+                          Private Tutor
+                        {% endif %}
+                      </td>
 
-                    <td> <ul>
-                      {% for course in tutor.courses.all %}
-                        <li> {{course.course_code}} {{course.course_name }}<br>
-                      {% endfor %}
-                    </ul>
-                    </td>
-                    <td>{{ tutor.hourly_rate }}</td>
-                    <td>
-                      <ul>
-                        {% for tag in tutor.tags.all %}
-                          <li> {{ tag.tag }} <br>
+                      <td> <ul>
+                        {% for course in tutor.courses.all %}
+                          <li> {{course.course_code}} {{course.course_name }}<br>
                         {% endfor %}
                       </ul>
-                    </td>
-                    <td>
-                    <td>{{tutor.avgRating}}</td>
-                    </td>
-                  </tr>
-								{% endif %}
+                      </td>
+                      <td>{{ tutor.hourly_rate }}</td>
+                      <td>
+                        <ul>
+                          {% for tag in tutor.tags.all %}
+                            <li> {{ tag.tag }} <br>
+                          {% endfor %}
+                        </ul>
+                      </td>
+                      <td>
+                      <td>{{tutor.avgRating}}</td>
+                      </td>
+                    </tr>
+                  {% endif %}
                 {% empty %}
                   <tr>
                     <td>No tutor available for your query =(</td>

@@ -2,10 +2,10 @@
 from __future__ import print_function
 from django.shortcuts import (render, redirect)
 from django.http import HttpResponse
-from django.urls import reverse_lazy
 
 from account.models import Tutor, Student, User
 from scheduler.models import Session, BookingRecord
+from review.models import Review
 from django.contrib.auth.decorators import login_required
 from datetime import datetime, date, timedelta, time
 from django.utils import timezone
@@ -36,6 +36,13 @@ class DetailView(generic.DetailView):
         timetable = []
         # retrieve date of today
         today = date.today()
+        
+        now = datetime.now()
+        if is_contracted_tutor:
+            now_index = now.hour * 2 + now.minute // 30
+        else:
+            now_index = now.hour
+
         for i in range(days_to_display * slots_per_day):
             elem = {'status': 'X', 'date': str(today + timedelta(days=i / slots_per_day)), 'id': ''}
             # print(elem)
@@ -64,6 +71,10 @@ class DetailView(generic.DetailView):
                 #print(index)
                 timetable[index]['status'] = str(session.status)
                 timetable[index]['id'] = session.id
+        
+        for i in range(days_to_display * slots_per_day):
+            if i <= now_index:
+                timetable[i]['status'] = "PASSED"
         context['timetable'] = timetable
         # print(timetable)
         context['phone_visible'] = False
@@ -190,10 +201,27 @@ class ReviewView(LoginRequiredMixin, FormView):
     login_url = '/auth/login/'
     redirect_field_name = 'redirect_to'
 
+    def can_review(self):
+        student = User.objects.get(username=self.request.session['username']).student
+        tutor = Tutor.objects.get(pk=self.kwargs['tutor_id'])
+        finished_booking_list = BookingRecord.objects.filter(tutor=tutor, student=student, status=FINISHED)
+        review_list = Review.objects.filter(tutor=tutor, student=student)
+        return len(finished_booking_list) > len(review_list)
+
+    def dispatch(self, request, *args, **kwargs):
+        if self.can_review():
+            return super(ReviewView, self).dispatch(request, *args, **kwargs)
+        return redirect('/')
+
+    def get_context_data(self, **kwargs):
+        context = super(ReviewView, self).get_context_data(**kwargs)
+        context['tutor'] = Tutor.objects.get(pk=self.kwargs['tutor_id'])
+        return context
+
     def form_valid(self, form):
         review = form.save(commit=False)
         review.student = User.objects.get(username=self.request.session['username']).student
         tutor_id = self.kwargs['tutor_id']
         review.tutor = Tutor.objects.get(pk=tutor_id)
         review.save()
-        return HttpResponse("Submitted!") # TODO
+        return HttpResponse("Review submitted! Thank you.")  # TODO

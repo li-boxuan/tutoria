@@ -7,7 +7,8 @@
                 LEGEND:&nbsp; 
                 <button type="button" class="bg-primary" onclick="return confirm('Click on booked slot to see detail')">Booked</button>&nbsp;
                 <button type="button" class="bg-success" onclick="return confirm('Click on bookable slot to close')">Bookable</button>&nbsp;
-                <button type="button" class="bg-info" onclick="return confirm('Click on closed slot to open')">Closed</button>
+                <button type="button" class="bg-info" onclick="return confirm('Click on closed slot to open')">Closed</button>&nbsp;
+                <button type="button" class="bg-danger" onclick="return confirm('Passed slot means the specific time slot has passed')">Passed</button>
                 <br />
                 <table class="" border="1" cellpadding="0">
                     <tbody>
@@ -62,6 +63,10 @@
                                 </form>
                             </td>
 
+                        {% elif grid.status == 'PASSED' %}
+                            <td colspan="1" class="bg-danger">&nbsp;
+                            </td>
+
                         {% endif %}
                         {% if tutor.tutor_type == 'PT' and forloop.counter|divisibleby:24 or tutor.tutor_type == 'CT' and forloop.counter|divisibleby:48 %}
                         </tr>
@@ -79,7 +84,8 @@
                 <h3>Student Timetable</h3>
                 LEGEND:&nbsp; 
                 <button type="button" class="bg-success" onclick="return confirm('Click on booked slot to see detail')">Booked</button>&nbsp;
-                <button type="button" class="bg-info" onclick="return confirm('Free slot means you have no booking at that time')">Free</button>
+                <button type="button" class="bg-info" onclick="return confirm('Free slot means you have no booking at that time')">Free</button>&nbsp;
+                <button type="button" class="bg-danger" onclick="return confirm('Passed slot means the specific time slot has passed')">Passed</button>
                 <table class="" border="1" cellpadding="0">
                     <tbody>
                         <tr>
@@ -108,6 +114,9 @@
                                     <input type="hidden" name="id" value="{{ grid.id }}">&nbsp;
                                 </div>
                                 </form>
+                            </td>
+                        {% elif grid.status == 'PASSED' %}
+                            <td colspan="1" class="bg-danger">&nbsp;
                             </td>
                         {% else %}
                             <td colspan="1" class="bg-info">
