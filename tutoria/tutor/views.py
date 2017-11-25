@@ -117,6 +117,13 @@ def confirm_booking(request, tutor_id):
         tutor = Tutor.objects.get(pk=tutor_id)
         new_session = Session.objects.get(
             pk=request.POST.get('session_id', ''))
+        
+        now = datetime.now()
+        time_diff = new_session.start_time - timezone.make_aware(now)
+        print("time_diff = ", time_diff)
+        if (time_diff <= timedelta(days=1)):
+            return HttpResponse("You cannot book a session within 24 hours before start_time!")
+
         # Ignore commission for now because it might be saved by coupon
         if (student.wallet_balance - tutor.hourly_rate) < 0:
             # TODO: beautify
