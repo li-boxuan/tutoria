@@ -113,6 +113,8 @@ def confirm_booking(request, tutor_id):
     """Confirm booking a new session."""
     if request.method == 'POST':
         user = User.objects.get(username=request.session['username'])
+        if user.student is None:
+            return HttpResponse("You are not a student!")
         student = Student.objects.get(user=user)
         tutor = Tutor.objects.get(pk=tutor_id)
         new_session = Session.objects.get(
@@ -153,7 +155,7 @@ def save_booking(request, tutor_id):
     """Save booking record and redirect to the dashboard."""
     if request.method == 'POST':
         user = User.objects.get(username=request.session['username'])
-        student = Student.objects.get(user=user)
+        student = user.student
         session_id = request.POST.get('session_id', '')
         tutor = Tutor.objects.get(pk=tutor_id)
         session = Session.objects.get(pk=session_id)
