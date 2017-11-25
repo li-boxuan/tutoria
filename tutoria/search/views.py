@@ -1,6 +1,7 @@
 """View for search results."""
 from django.views.generic import ListView, TemplateView
 import re  # Regular expression for search matching
+from django.db.models import Max
 
 from account.models import Tutor
 from scheduler.models import Session
@@ -23,7 +24,8 @@ class ResultView(ListView):
     sort_method = 'rating'  # Sort by rating by default
     keywords = ''
     minPrice = 0  # Integer. Minimum hourly rate.
-    maxPrice = 500  # Integer. Maximum hourly rate.
+    price_limit = 1000
+    maxPrice = price_limit/2  # Integer. Maximum hourly rate.
     tutor_type = 'ALL'
     only_show_available = False  # Only show tutor with available session in the coming 7 days?
 
@@ -89,9 +91,12 @@ class ResultView(ListView):
         # print('keywords ==> ' + context['keywords'])
         context['sort'] = self.sort_method
         context['minPrice'] = self.minPrice
-        context['maxPrice'] = self.maxPrice
         context['tutor_type'] = self.tutor_type
         context['only_show_available'] = self.only_show_available
+        self.price_limit = list(Tutor.objects.all().aggregate(Max('hourly_rate')).values())[0]
+        self.maxPrice = self.price_limit/2
+        context['price_limit'] = self.price_limit
+        context['maxPrice'] = self.maxPrice
         return context
 
 

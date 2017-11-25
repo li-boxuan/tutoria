@@ -15,7 +15,7 @@
       $( "#slider-range" ).slider({
         range: true,
         min: 0,
-        max: 1000,
+        max: {{ price_limit }},
         values: [ {{ minPrice }}, {{ maxPrice }} ],
         slide: function( event, ui ) {
           $( "#minPrice" ).val( "$" + ui.values[0]);
