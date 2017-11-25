@@ -31,6 +31,7 @@ class ProfileView(generic.TemplateView):
 		context = super(ProfileView, self).get_context_data(**kwargs)
 		context['user_form'] = None
 		context['tutor_form'] = None
+		context['tutor_type'] = None
 		return context
 
 	def get(self, req, *args, **kwargs):
@@ -38,6 +39,7 @@ class ProfileView(generic.TemplateView):
 		user = User.objects.get(username=req.session['username'])
 		context['user_form'] = UpdateUserForm(prefix='user_form', instance=user)
 		if user.tutor is not None:
+			context['tutor_type'] = 'Private' if user.tutor.tutor_type == Tutor.PRIVATE_TUTOR else 'Contracted'
 			context['tutor_form'] = UpdateTutorForm(prefix='tutor_form', instance=user.tutor)
 		return self.render_to_response(context)
 
@@ -57,6 +59,7 @@ class ProfileView(generic.TemplateView):
 			if tutor_form.is_valid():
 				tutor_form.save()
 			else:
+				print(tutor_form.errors)
 				return render(req, 'message.html', {'message_title': 'Profile Update Failure',
                                             'message_content': 'Please enter valid information.'})
 		return render(req, 'message.html', {'message_title': 'Profile',
