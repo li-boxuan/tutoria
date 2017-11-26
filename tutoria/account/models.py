@@ -103,7 +103,7 @@ class Tutor(models.Model):
         rating_list = []
         for review in review_list:
             rating_list.append(review.rating)
-        return sum(rating_list) / float(len(rating_list))
+        return round(sum(rating_list) / float(len(rating_list)), 2)
 
     @property
     def phone(self):
