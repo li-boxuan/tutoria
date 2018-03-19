@@ -49,7 +49,7 @@ urlpatterns = [
                   'exception_msg': views.PASSWORD_RESET_EX_MSG,
               }, **kwargs
           ), name='password_reset_confirm'),
-    url(r'^reset/done/$', lambda req, **kwargs: auth_views.password_reset_complete(
+    url(r'^reset/done/$', lambda req, **kwargs : auth_views.password_reset_complete(
         req, template_name='message.html',
         extra_context={
             'message_title': 'Reset Password',

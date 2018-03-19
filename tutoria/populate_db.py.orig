@@ -19,7 +19,7 @@ from account.models import Student, Tutor
 
 
 def add_review(content, rating, student, tutor, anonymous):
-    '""Add a review.""'
+    """Add a review."""
     review, _ = Review.objects.get_or_create(
         content=content, rating=rating, student=student, tutor=tutor,
         anonymous=anonymous)
@@ -28,7 +28,7 @@ def add_review(content, rating, student, tutor, anonymous):
 
 
 def add_coupon(start_date, end_date, coupon_code):
-    '""Add a new coupon.""'
+    """Add a new coupon."""
     from django.utils import timezone
     from wallet.models import Coupon
     coupon, _ = Coupon.objects.get_or_create(
@@ -252,10 +252,8 @@ def populate_session(tutors):
 
 def populate_student():
     students = [add_student('kpwat', 'kpwat', 'watkp@hku.hk', 'Kam Pui', 'Wat'),
-                add_student('ckchui', 'ckchui', 'ckchui@cs.hku.hk',
-                            'Chun-Kit', 'Chui', wallet_balance=500),
-                add_student('atam', 'atam', 'atam@cs.hku.hk',
-                            'Anthony', 'Tam', wallet_balance=1000),
+                add_student('ckchui', 'ckchui', 'ckchui@cs.hku.hk', 'Chun-Kit', 'Chui', wallet_balance=500),
+                add_student('atam', 'atam', 'atam@cs.hku.hk', 'Anthony', 'Tam', wallet_balance=1000),
                 add_student('jrchow', 'jrchow', 'jrchow@hku.hk', 'Jingran', 'Zhou', wallet_balance=3000)]
 
     return students
@@ -287,28 +285,28 @@ def populate_booking_record():
 
 
 def populate_review():
-    '""Populate some reviews into our database.""'
+    """Populate some reviews into our database."""
     review_list = []
     student_list = Student.objects.all()
     tutor_list = Tutor.objects.all()
-    review_list.append(add_review(content='Best tutor XD',
+    review_list.append(add_review(content="Best tutor XD",
                                   rating=5, student=student_list[0],
                                   tutor=tutor_list[0], anonymous=False))
-    review_list.append(add_review(content='Nice tutor!',
+    review_list.append(add_review(content="Nice tutor!",
                                   rating=4, student=student_list[1],
                                   tutor=tutor_list[1], anonymous=False))
 
-    review_list.append(add_review(content='Just a tutor...',
+    review_list.append(add_review(content="Just a tutor...",
                                   rating=2, student=student_list[2],
                                   tutor=tutor_list[2], anonymous=False))
-    review_list.append(add_review(content='Bad tutor >_<',
+    review_list.append(add_review(content="Bad tutor >_<",
                                   rating=0, student=student_list[3],
                                   tutor=tutor_list[3], anonymous=True))
     return review_list
 
 
 def populate_coupon():
-    '""Populate coupons into the database.""'
+    """Populate coupons into the database."""
     coupon_list = [add_coupon(datetime(1997, 6, 15), datetime(2097, 6, 15),
                               uuid4()),
                    add_coupon(datetime(2025, 6, 15), datetime(2035, 6, 15),
@@ -329,25 +327,22 @@ def populate_staff():
                               is_staff=True,
                               is_superuser=True)
     User.objects.create_user(username='mytutors',
-                             password='mytutors',
-                             first_name='MyTutors',
-                             is_staff=True)
+                           password='mytutors',
+                           first_name='MyTutors',
+                            is_staff=True)
     ca = User.objects.create_user(username='course_admin',
-                                  password='course_admin',
-                                  first_name='Course Admin',
-                                  is_staff=True)
+                            password='course_admin',
+                            first_name='Course Admin',
+                            is_staff=True)
     ca.user_permissions.add(Permission.objects.get(name='Can add course'))
     ca.user_permissions.add(Permission.objects.get(name='Can change course'))
     ca.user_permissions.add(Permission.objects.get(name='Can delete course'))
     ca.user_permissions.add(Permission.objects.get(name='Can add subject tag'))
-    ca.user_permissions.add(Permission.objects.get(
-        name='Can change subject tag'))
-    ca.user_permissions.add(Permission.objects.get(
-        name='Can delete subject tag'))
+    ca.user_permissions.add(Permission.objects.get(name='Can change subject tag'))
+    ca.user_permissions.add(Permission.objects.get(name='Can delete subject tag'))
     ca.user_permissions.add(Permission.objects.get(name='Can add coupon'))
     ca.user_permissions.add(Permission.objects.get(name='Can change coupon'))
     ca.user_permissions.add(Permission.objects.get(name='Can delete coupon'))
-
 
 def populate():
     populate_staff()

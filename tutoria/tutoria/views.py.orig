@@ -5,11 +5,9 @@ from django.views import generic
 from account.models import Tutor, SubjectTag, Course
 import json
 
-
 class IndexView(generic.TemplateView):
     template_name = 'index.html'
     # context_object_name = 'index_context'
-
 
 def get_keywords(req):
     if req.is_ajax():
@@ -33,3 +31,4 @@ def get_keywords(req):
     else:
         data = 'fail'
     return HttpResponse(data, 'application/json')
+
