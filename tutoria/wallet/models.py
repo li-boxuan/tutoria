@@ -29,4 +29,4 @@ class Coupon(models.Model):
     end_date = models.DateTimeField()
     code = models.UUIDField(primary_key=True,
                             default=uuid.uuid4, editable=False)
-    transaction = models.ForeignKey(Transaction, null=True)
+    transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE, null=True)
