@@ -1,6 +1,6 @@
 # Tutoria
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](LICENSE)
-[![Build Status](https://travis-ci.com/li-boxuan/tutoria.svg?token=9cK4Kmeqpdioyfb1EXxS&branch=master)](https://travis-ci.com/li-boxuan/tutoria)
+[![Build Status](https://travis-ci.org/li-boxuan/tutoria.svg?branch=master)](https://travis-ci.org/li-boxuan/tutoria)
 [![Read the Doc](https://img.shields.io/badge/documentation-ready-brightgreen.svg)](http://htmlpreview.github.io/?https://github.com/li-boxuan/tutoria/blob/master/doc/index.html)
 [![Chat on Gitter](https://badges.gitter.im/Hola-Inc/Tutoriac.svg)](https://gitter.im/Hola-Inc/Tutoria)
 
@@ -116,5 +116,5 @@ for his generous help and advice throughout this project.
     
  ## Disclaimer
  
- This project has been submitted for partial fulfillment for the course *Software Engineering* offered by Unversity of Hong Kong, 2017-18.
+ This project has been submitted for partial fulfillment for the course *Software Engineering* offered by University of Hong Kong, 2017-18.
 
