@@ -11,7 +11,7 @@ from django.urls import reverse
 from django.views import generic
 from django.contrib.auth import (authenticate, login, logout)
 from django.contrib.auth.decorators import login_required
-from account.models import (User, Tutor, Student)
+from account.models import (User, Tutor)
 from .forms import (UserForm, TutorForm, UpdateUserForm, UpdateTutorForm)
 
 
@@ -53,7 +53,7 @@ class ProfileView(generic.TemplateView):
     def post(self, req, *args, **kwargs):
         user = User.objects.get(username=req.session['username'])
         user_form = UpdateUserForm(req.POST,
-            prefix='user_form', instance=user)
+                                   prefix='user_form', instance=user)
         if user_form.is_valid():
             user_form.save()
         else:
@@ -150,7 +150,6 @@ class StudentView(IndexView):
                 user = form.save()
                 user.set_password(password)
                 user.save()
-                student = Student.objects.create(user=user)
                 context['status'] = SINGUP_STATUS.SUCCESS
         else:
             context['status'] = SINGUP_STATUS.FAILED
@@ -218,7 +217,6 @@ class BothView(IndexView):
                 tutor = tutor_form.save(commit=False)
                 tutor.user = user
                 tutor.save()
-                student = Student.objects.create(user=user)
                 context['status'] = SINGUP_STATUS.SUCCESS
         else:
             context['status'] = SINGUP_STATUS.FAILED

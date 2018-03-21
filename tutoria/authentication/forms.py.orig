@@ -8,29 +8,29 @@ Created on Oct. 23, 2017
 by Jiayao
 """
 from django import forms
-from account.models import (User, Tutor, Student, Course, SubjectTag)
-from django.core.urlresolvers import reverse_lazy
-from django.core.validators import RegexValidator
+from account.models import (User, Tutor, SubjectTag)
+WIDGET_STYLE_CLASS = {}  # {'class' : 'form-control' }
 
-WIDGET_STYLE_CLASS = {} #{'class' : 'form-control' }
 
 class UpdateUserForm(forms.ModelForm):
-    """Models the form for User profile update."""
+    '""Models the form for User profile update.""'
     class Meta:
         model = User
         fields = ('first_name', 'last_name', 'phone', 'email')
 
+
 class UpdateTutorForm(forms.ModelForm):
-    """Models the form for Tutor profile update."""
+    '""Models the form for Tutor profile update.""'
     class Meta:
         model = Tutor
         fields = ('bio', 'new_tags', 'courses', 'visible', 'hourly_rate')
 
-    new_tags = forms.CharField(required=False, label='Add new tags:', help_text='Please use comma to saperate tags')
+    new_tags = forms.CharField(
+        required=False, label='Add new tags:', help_text='Please use comma to saperate tags')  # Ignore PycodestyleBear (E501)
 
     hourly_rate = forms.IntegerField(
         widget=forms.widgets.TextInput(attrs={'type': 'number',
-                                        'min': 0, 'step': 10}),
+                                              'min': 0, 'step': 10}),
         label='Hourly rate (multiple of 10)',
     )
 
@@ -46,31 +46,31 @@ class UpdateTutorForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(UpdateTutorForm, self).__init__(*args, **kwargs)
-        #self.fields['tags'].label = 'Tag subjects you can tutor (hold Command or Control for multiple selection):'
-        self.fields['courses'].label = 'Tag courses you can tutor (hold Command or Control key for multiples selection):'
-        self.fields['visible'].label = 'Make me visible to prospective students.'
+        # self.fields['tags'].label = 'Tag subjects you can tutor (hold Command or Control for multiple selection):'  # Ignore PycodestyleBear (E501)
+        self.fields['courses'].label = 'Tag courses you can tutor (hold Command or Control key for multiples selection):'  # Ignore PycodestyleBear (E501)
+        self.fields['visible'].label = 'Make me visible to prospective students.'  # Ignore PycodestyleBear (E501)
         instance = getattr(self, 'instance', None)
         if instance is not None and instance.tutor_type == 'CT':
             self.fields.pop('hourly_rate')
 
 
-
 class UserForm(forms.ModelForm):
-    """Models the form for User registration."""
+    '""Models the form for User registration.""'
     password = forms.CharField(
         label='Password',
         widget=forms.PasswordInput(),
     )
 
-    #phone = forms.CharField(required=True)
-    #phone = forms.RegexField(regex=r'^\+?\d{8,11}$', error_messages={
+    # phone = forms.CharField(required=True)
+    # phone = forms.RegexField(regex=r'^\+?\d{8,11}$', error_messages={
     #    'invalid': ("Phone number must be entered in the format: '+85261231234' or '61231234'."),
-    #    'required': ("Please enter your phone number in either '61231234' or '+85261231234'."),
-    #})
+    #    'required': ("Please enter your phone number in either '61231234' or '+85261231234'."),  # Ignore PycodestyleBear (E501)
+    # })  # Ignore PycodestyleBear (E265)
 
     class Meta:
         model = User
-        fields = ('username', 'password', 'email', 'first_name', 'last_name', 'phone')
+        fields = ('username', 'password', 'email',
+                  'first_name', 'last_name', 'phone')
 
     def __init__(self, *args, **kwargs):
         super(UserForm, self).__init__(*args, **kwargs)
@@ -83,7 +83,7 @@ class UserForm(forms.ModelForm):
 
 
 class TutorForm(forms.ModelForm):
-    """Models the form for Tutor profile."""
+    '""Models the form for Tutor profile.""'
 
     TUTOR_TYPE_CHOICES = (
         ('CT', 'Contracted Tutor'),
@@ -104,7 +104,7 @@ class TutorForm(forms.ModelForm):
 
     hourly_rate = forms.IntegerField(
         widget=forms.widgets.TextInput(attrs={'type': 'number',
-                                        'min': 0, 'step': 10, }),
+                                              'min': 0, 'step': 10, }),
         label='Tell us how much your work worth (per hour, multiple of 10).',
         initial=0
     )

@@ -1,8 +1,6 @@
-from django.shortcuts import get_object_or_404, render
-from django.http import HttpResponse, HttpResponseRedirect
-from django.urls import reverse
+from django.http import HttpResponse
 from django.views import generic
-from account.models import Tutor, SubjectTag, Course
+from account.models import SubjectTag, Course
 import json
 
 

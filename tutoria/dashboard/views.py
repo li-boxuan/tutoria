@@ -1,13 +1,11 @@
 '""Dashborad views.""'
 from django.shortcuts import get_object_or_404, render, redirect
-from django.http import HttpResponse, HttpResponseRedirect
-from django.urls import reverse
+from django.http import HttpResponse
 from django.views import generic
 
 from wallet.models import Transaction
 from scheduler.models import BookingRecord, Session
 from account.models import User, Student, Tutor
-from django.contrib.auth.decorators import login_required
 
 from datetime import datetime, timedelta, date, time
 from django.utils import timezone
@@ -29,7 +27,7 @@ class MytransactionsView(generic.ListView):
     def get_context_data(self, **kwargs):
         context = super(MytransactionsView, self).get_context_data(**kwargs)
         # print datetime.now()
-        if self.request.user.is_authenticated == False:
+        if not self.request.user.is_authenticated:
             context['records'] = None
             context['not_logged_in'] = 'true'
             return context
@@ -46,7 +44,6 @@ class MytransactionsView(generic.ListView):
             except Student.DoesNotExist:
                 usr = Tutor.objects.get(user=user)
                 context['user_type'] = 'Tutor'
-#usr = get_object_or_404(Student, user=user)
             records = usr.bookingrecord_set.all()
             context['records'] = []
             for r in records:
@@ -70,7 +67,7 @@ class MybookingsView(generic.ListView):
     def get_context_data(self, **kwargs):
         context = super(MybookingsView, self).get_context_data(**kwargs)
 
-        if self.request.user.is_authenticated == False:
+        if not self.request.user.is_authenticated:
             context['records'] = None
             context['not_logged_in'] = 'true'
             return context
@@ -127,10 +124,10 @@ class MybookingsView(generic.ListView):
             bkrc.status = BookingRecord.CANCELED
             bkrc.save()
             tut = bkrc.tutor
-            send_mail('Session Canceled', 'Please check on Tutoria, your session with ' + bkrc.tutor.first_name + ' ' + bkrc.tutor.last_name +
-                      ' from ' + str(sess.start_time) + ' to ' + str(sess.end_time) + ' has been canceled.', 'nonereplay@hola-inc.top', [usr.email], False)
-            send_mail('Session Canceled', 'Please check on Tutoria, your session with ' + bkrc.student.first_name + ' ' + bkrc.student.last_name +
-                      ' from ' + str(sess.start_time) + ' to ' + str(sess.end_time) + ' has been canceled.', 'nonereplay@hola-inc.top', [tut.email], False)
+            send_mail('Session Canceled', 'Please check on Tutoria, your session with ' + bkrc.tutor.first_name + ' ' + bkrc.tutor.last_name +  # Ignore PycodestyleBear (E501)
+                      ' from ' + str(sess.start_time) + ' to ' + str(sess.end_time) + ' has been canceled.', 'nonereplay@hola-inc.top', [usr.email], False)  # Ignore PycodestyleBear (E501)
+            send_mail('Session Canceled', 'Please check on Tutoria, your session with ' + bkrc.student.first_name + ' ' + bkrc.student.last_name +  # Ignore PycodestyleBear (E501)
+                      ' from ' + str(sess.start_time) + ' to ' + str(sess.end_time) + ' has been canceled.', 'nonereplay@hola-inc.top', [tut.email], False)  # Ignore PycodestyleBear (E501)
             return redirect('dashboard/mybookings/')
         else:
             return HttpResponse("This session is within 24 hours and can't be canceled!")
@@ -146,7 +143,7 @@ class MytimetableView(generic.ListView):
         context = super(MytimetableView, self).get_context_data(**kwargs)
         isStudent = False
         isTutor = False
-        if self.request.user.is_authenticated == False:
+        if not self.request.user.is_authenticated:
             context['timetable'] = None
             return context
 
@@ -202,7 +199,7 @@ class MytimetableView(generic.ListView):
                     tutor=usr)
                 elem = {'status': session.status, 'date': str(
                     today + timedelta(days=i // slots_per_day)), 'id': session.id}
-                #print("elem = ", elem)
+                # print("elem = ", elem)
                 timetable.append(elem)  # closed
 
             # print("tot: " + str(days_to_display * slots_per_day))
@@ -212,7 +209,7 @@ class MytimetableView(generic.ListView):
                 start_time = session.start_time
                 hour_diff = start_time.hour - 0  # if timetable starts from 0
                 hour_diff += 8  # timezone issue (todo)
-                #print(start_time, " hour ", start_time.hour)
+                # print(start_time, " hour ", start_time.hour)
                 minute_diff = start_time.minute
                 date_diff = (start_time.date() - today).days
                 # filter date within days_to_display
@@ -227,7 +224,7 @@ class MytimetableView(generic.ListView):
                     # print(index)
                     timetable[index]['status'] = str(session.status)
                     timetable[index]['id'] = session.id
-                    #print("index = ", index, " session id = ", session.id)
+                    # print("index = ", index, " session id = ", session.id)
                     if session.status == session.BOOKED:
                         # logic is a bit tricky here
                         # note we won't pass session id but booking_record id here
@@ -272,7 +269,7 @@ class MytimetableView(generic.ListView):
                 start_time = record.session.start_time
                 hour_diff = start_time.hour - 0  # if timetable starts from 0
                 hour_diff += 8  # timezone issue (todo)
-                #print(start_time, " hour ", start_time.hour)
+                # print(start_time, " hour ", start_time.hour)
                 minute_diff = start_time.minute
                 date_diff = (start_time.date() - today).days
                 # filter date within days_to_display
@@ -306,13 +303,13 @@ class MytimetableView(generic.ListView):
         now = timezone.make_aware(datetime.now())
         if (now + timedelta(days=1) > start_time):
             return HttpResponse('Session within 24 hours before start time is locked!')
-        #print("before update, session = ", session, " status = ", session.status)
+        # print("before update, session = ", session, " status = ", session.status)
         if session.status == session.CLOSED:
             session.status = session.BOOKABLE
         elif session.status == session.BOOKABLE:
             session.status = session.CLOSED
         session.save()
-        #print("after update, session = ", session, " status = ", session.status)
+        # print("after update, session = ", session, " status = ", session.status)
         return redirect('/dashboard/mytimetable/')
 
 
@@ -321,7 +318,7 @@ class MyWalletView(generic.TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(MyWalletView, self).get_context_data(**kwargs)
-        if self.request.user.is_authenticated == False:
+        if not self.request.user.is_authenticated:
             context['not_logged_in'] = 'true'
             return context
         if self.request.session['username'] is None:

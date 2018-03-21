@@ -8,10 +8,7 @@ Created on Oct. 23, 2017
 by Jiayao
 """
 from django import forms
-from account.models import (User, Tutor, Student, Course, SubjectTag)
-from django.core.urlresolvers import reverse_lazy
-from django.core.validators import RegexValidator
-
+from account.models import (User, Tutor, SubjectTag)
 WIDGET_STYLE_CLASS = {}  # {'class' : 'form-control' }
 
 
@@ -49,8 +46,7 @@ class UpdateTutorForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(UpdateTutorForm, self).__init__(*args, **kwargs)
-        #self.fields['tags'].label = 'Tag subjects you can tutor (hold Command or Control for multiple selection):'
-        self.fields['courses'].label = 'Tag courses you can tutor (hold Command or Control key for multiples selection):'
+        self.fields['courses'].label = 'Tag courses you can tutor (hold Command or Control key for multiple selection):'
         self.fields['visible'].label = 'Make me visible to prospective students.'
         instance = getattr(self, 'instance', None)
         if instance is not None and instance.tutor_type == 'CT':
@@ -63,12 +59,6 @@ class UserForm(forms.ModelForm):
         label='Password',
         widget=forms.PasswordInput(),
     )
-
-    #phone = forms.CharField(required=True)
-    # phone = forms.RegexField(regex=r'^\+?\d{8,11}$', error_messages={
-    #    'invalid': ("Phone number must be entered in the format: '+85261231234' or '61231234'."),
-    #    'required': ("Please enter your phone number in either '61231234' or '+85261231234'."),
-    #})
 
     class Meta:
         model = User

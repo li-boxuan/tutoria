@@ -8,7 +8,6 @@ data.
 Created on Oct. 20, 2017
 by Jiayao
 """
-import os
 import random
 from scheduler.models import Session
 from datetime import (datetime, timedelta, time, date)
@@ -47,7 +46,7 @@ OFFICE_HOUR_STEP = {'CT': timedelta(hours=0.5),
                     'PT': timedelta(hours=1.0)}
 
 
-def add_student(username, password, email, first_name, last_name, wallet_balance=-1, phone=99999999):
+def add_student(username, password, email, first_name, last_name, wallet_balance=-1, phone=99999999):  # Ignore PycodestyleBear (E501)
     from account.models import (User, Student)
     if wallet_balance < 0:
         wallet_balance = random.randint(1, 300) * 10
@@ -88,7 +87,7 @@ def add_tutor(username, password, email, first_name, last_name,
     elif hourly_rate < 0:
         hourly_rate = random.randint(1, 300) * 10
 
-    # tutor = Tutor.objects.create_user(username, email, password, first_name=first_name, last_name=last_name)
+    # tutor = Tutor.objects.create_user(username, email, password, first_name=first_name, last_name=last_name)  # Ignore PycodestyleBear (E501)
 
     # user, _ = User.objects.get_or_create(username=username, email=email,
     #                                 password=password,
@@ -144,7 +143,9 @@ def add_course(code, name):
 def populate_tutor():
     tutors = []
     tutors.append(add_tutor(
+        # Ignore PycodestyleBear (E501)
         'georgem', 'georgem', 'georgem@cs.hku.hk', 'George', 'Mitcheson', 'PT', 100, '28597068',
+        # Ignore PycodestyleBear (E501)
         r'Before joining HKU, George accumulated many years of experience in large-scale software engineering and in R&D for real-time systems. He has headed or contributed to development of a wide range of systems spanning fields such as scientific computation, telecommunications, database management systems, control systems and autonomous robotics. This work was carried out principally in Europe and the USA. Between the two he taught for several years at the University of Puerto Rico.',
         [['COMP3297', 'Software Engineering'],
          ['COMP3403', 'Software Implmentation, Testing and Maintainence']],
@@ -153,7 +154,8 @@ def populate_tutor():
     ))
 
     tutors.append(add_tutor(
-        'clwang', 'choli', 'clwang@cs.hku.hk', 'Cho-Li', 'Wang', 'CT', 0, '28578458',
+        'clwang', 'choli', 'clwang@cs.hku.hk', 'Cho-Li', 'Wang', 'CT', 0, '28578458',  # Ignore PycodestyleBear (E501)
+        # Ignore PycodestyleBear (E501)
         r"Professor Cho-Li Wang received his B.S. degree in Computer Science and Information Engineering from National Taiwan University in 1985. He obtained his M.S. and Ph.D. degrees in Computer Engineering from University of Southern California in 1990 and 1995 respectively. He is currently a professor at the Department of Computer Science. Professor Wang's research interests include parallel architecture, software systems for Cluster and Grid computing, and virtualization techniques for Cloud computing. Recently, he starts working on software transaction memory for multicore/GPU clusters and multi-kernel operating systems for future single-chip manycore processor. Professor Wang has published more than 130 papers in various peer reviewed journals and conference proceedings. He is/was on the editorial boards of several international journals, including IEEE Transactions on Computers (TC), Multiagent and Grid Systems (MGS), Journal of Information Science and Engineering (JISE), International Journal of Pervasive Computing and Communications (JPCC), ICST Transactions on Scalable Information Systems (SIS). He was the program chair for Cluster’03, CCGrid'09, InfoScale’09, and ICPADS’09, ISPA’11, FCST’11, FutureTech’12, and Cluster2012; and the General Chair for IPDPS2012. He has also served as program committee members for numerous international conferences, including IPDPS, CCGrid, Cloud, CloudCom, Grid, HiPC, ICPP, and ICPADS. Professor Wang is the primary investigator of China 863 project 'Hong Kong University Grid Point' (2006-2011). The HKU Grid point consists of 3004 CPU cores (31.45 Teraflops), which offers parallel computing services for the China National Grid (CNGrid) and is used as a testbed for Cloud-related systems development. He has been invited to give keynote and plenary talk related to Distributed JVM design and Cloud Computing at various international conferences.",
         [['COMP3230', 'Operating Systems']],
         ['Cloud Computing'],
@@ -170,7 +172,7 @@ def populate_tutor():
     ))
 
     tutors.append(add_tutor(
-        'kpwat', 'kpwat', 'watkp@hku.hk', 'Kam Pui', 'Wat', 'PT', 100, '39171989',
+        'kpwat', 'kpwat', 'watkp@hku.hk', 'Kam Pui', 'Wat', 'PT', 100, '39171989',  # Ignore PycodestyleBear (E501)
         r'Dr. Wat receives a first class honour from BSc(Ac).',
         [['COMP2601', 'Probability & Statistics I']],
         ['Risk Management', 'Statistics'],
@@ -256,7 +258,7 @@ def populate_student():
                             'Chun-Kit', 'Chui', wallet_balance=500),
                 add_student('atam', 'atam', 'atam@cs.hku.hk',
                             'Anthony', 'Tam', wallet_balance=1000),
-                add_student('jrchow', 'jrchow', 'jrchow@hku.hk', 'Jingran', 'Zhou', wallet_balance=3000)]
+                add_student('jrchow', 'jrchow', 'jrchow@hku.hk', 'Jingran', 'Zhou', wallet_balance=3000)]  # Ignore PycodestyleBear (E501)
 
     return students
 
@@ -276,14 +278,14 @@ def populate_booking_record():
     # d = datetime.combine(DEMO_DATE, DEMO_TIME)
     # dn = d + OFFICE_HOUR_STEP['CT']
     # tran, _ = Transaction.objects.get_or_create(
-    #     issuer=s, receiver=t, amount=100, created_at=tz.make_aware(d), commission=5.0)
+    #     issuer=s, receiver=t, amount=100, created_at=tz.make_aware(d), commission=5.0)  # Ignore PycodestyleBear (E501)
     # sess = t.session_set.all()[0]
     # sess.status = Session.BOOKED
     # sess.save()
     # # use populated session
-    # # sess, _ = Session.objects.get_or_create(start_time=tz.make_aware(d), end_time=tz.make_aware(dn),tutor=t,status=Session.BOOKABLE)
+    # # sess, _ = Session.objects.get_or_create(start_time=tz.make_aware(d), end_time=tz.make_aware(dn),tutor=t,status=Session.BOOKABLE)  # Ignore PycodestyleBear (E501)
     # b, _ = BookingRecord.objects.get_or_create(
-    #     student=s, tutor=t, session=sess, entry_date=tz.make_aware(d), transaction=tran, status=BookingRecord.INCOMING)
+    #     student=s, tutor=t, session=sess, entry_date=tz.make_aware(d), transaction=tran, status=BookingRecord.INCOMING)  # Ignore PycodestyleBear (E501)
 
 
 def populate_review():
@@ -355,7 +357,6 @@ def populate():
     students = populate_student()
     populate_session(tutors)
     populate_booking_record()
-    coupons = populate_coupon()
     populate_review()
     return [tutors, students]
 

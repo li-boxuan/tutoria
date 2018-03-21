@@ -6,10 +6,8 @@ by Jiayao
 """
 from __future__ import (absolute_import, print_function)
 from django.db import models
-import django.contrib.auth.models as auth_models
-import os
-from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
+import django.contrib.auth.models as auth_models
 
 
 class SubjectTag(models.Model):
@@ -52,7 +50,7 @@ class User(auth_models.User):
     def tutor(self):
         try:
             tutor = getattr(self, 'tutor_profile')
-        except:
+        except:  # Ignore PycodestyleBear (E722)
             tutor = None
         return tutor
 
@@ -60,7 +58,7 @@ class User(auth_models.User):
     def student(self):
         try:
             student = getattr(self, 'student_profile')
-        except:
+        except:  # Ignore PycodestyleBear (E722)
             student = None
         return student
 

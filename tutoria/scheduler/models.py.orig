@@ -9,7 +9,7 @@ from django.db import models
 
 
 class Session(models.Model):
-    """Models the session."""
+    '""Models the session.""'
     BOOKABLE = 'A'
     BOOKED = 'B'
     CLOSED = 'X'
@@ -27,12 +27,12 @@ class Session(models.Model):
                               )
 
     def __str__(self):
-        return "{} -- {}\nTutor: {} ({})".format(self.start_time, self.end_time,
+        return '{} -- {}\nTutor: {} ({})'.format(self.start_time, self.end_time,
                                                  self.tutor, self.status)
 
 
 class BookingRecord(models.Model):
-    """Models booking record."""
+    '""Models booking record.""'
     # TODO: update on_deletion methods to SET()
     INCOMING = 'I'
     CANCELED = 'C'
@@ -44,7 +44,8 @@ class BookingRecord(models.Model):
         (FINISHED, 'Finished'),
         (ONGOING, 'On-going')
     )
-    status = models.CharField(max_length=1, choices=STATUS_CHOICES,default=INCOMING)
+    status = models.CharField(
+        max_length=1, choices=STATUS_CHOICES, default=INCOMING)
     tutor = models.ForeignKey('account.Tutor', on_delete=models.CASCADE)
     student = models.ForeignKey('account.Student', on_delete=models.CASCADE)
     session = models.ForeignKey('scheduler.Session', on_delete=models.CASCADE)
@@ -53,4 +54,4 @@ class BookingRecord(models.Model):
         'wallet.Transaction', on_delete=models.CASCADE)
 
     def __str__(self):
-        return "Tutor: {}\nStudent: {}\n Session\n{}".format(self.tutor, self.student, self.session)
+        return 'Tutor: {}\nStudent: {}\n Session\n{}'.format(self.tutor, self.student, self.session)  # Ignore PycodestyleBear (E501)

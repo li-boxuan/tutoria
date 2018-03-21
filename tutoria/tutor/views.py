@@ -55,9 +55,8 @@ class DetailView(generic.DetailView):
             start_time = session.start_time
             start_time_of_the_day = timezone.make_aware(
                 datetime.combine(start_time.date(), time(0, 0)))
-            #print("start_time hour = ", start_time.hour, " start time of the day = ", start_time_of_the_day.hour)
             hour_diff = (start_time - start_time_of_the_day).seconds // 3600
-            #print("hour diff = ", hour_diff)
+            # print("hour diff = ", hour_diff)
             # print(start_time, " hour ", start_time.hour)
             minute_diff = start_time.minute
             date_diff = (start_time.date() - today).days
@@ -101,7 +100,7 @@ class DetailView(generic.DetailView):
             num_list.append(review.rating)
         context['review_rating_list'] = zip(review_list, rating_list,
                                             compensate_list,
-                                            num_list)  # Create list of tuples (review, rating, compensate)
+                                            num_list)
         return context
 
 
@@ -114,7 +113,7 @@ def confirm_booking(request, tutor_id):
     '""Confirm booking a new session.""'
     if request.method == 'POST':
         user = User.objects.get(username=request.session['username'])
-        if user.student is None:  # if not a student, display error message and return
+        if user.student is None:  # if not a student, display error message and return  # Ignore PycodestyleBear (E501)
             return HttpResponse('You are not a student!')
         student = Student.objects.get(user=user)
         tutor = Tutor.objects.get(pk=tutor_id)
@@ -127,12 +126,13 @@ def confirm_booking(request, tutor_id):
 
         now = datetime.now()
         time_diff = new_session.start_time - timezone.make_aware(now)
-        #print("time_diff = ", time_diff)
+        # print("time_diff = ", time_diff)
         if time_diff <= timedelta(days=1):
+            # Ignore PycodestyleBear (E501)
             return HttpResponse('You cannot book a session within 24 hours before start_time!')
 
         # Ignore commission for now because it might be saved by coupon
-        if (student.wallet_balance - tutor.hourly_rate * 1.05) < 0:
+        if student.wallet_balance - tutor.hourly_rate * 1.05 < 0:
             # TODO: beautify
             return HttpResponse('Your balance is ' +
                                 str(student.wallet_balance) +
@@ -151,7 +151,7 @@ def confirm_booking(request, tutor_id):
         return render(request, 'book.html',
                       {'tutor': tutor,
                        'session': new_session,
-                       'balance': student.wallet_balance - tutor.hourly_rate * 1.05,
+                       'balance': student.wallet_balance - tutor.hourly_rate * 1.05,  # Ignore PycodestyleBear (E501)
                        'commission': tutor.hourly_rate * 0.05,
                        'total': tutor.hourly_rate * 1.05})
 
@@ -191,14 +191,16 @@ def save_booking(request, tutor_id):
         # Deduct fee (including commission) from student's wallet
         student.wallet_balance -= tutor.hourly_rate * 1.05
         # Send emails to both students and tutors.
+        # Ignore PycodestyleBear (E501)
         msgToStudent = 'Your booking with ' + tutor.first_name + ' ' + tutor.last_name + ' from ' + \
-                       str(session.start_time) + ' to ' + \
-                       str(session.end_time) + ' has been confirmed.'
+            str(session.start_time) + ' to ' + \
+            str(session.end_time) + ' has been confirmed.'
         send_mail('Booking Confirmed', msgToStudent,
                   'noreply@hola-inc.top', [student.email], False)
+        # Ignore PycodestyleBear (E501)
         msg_to_tutor = 'Your booking with ' + student.first_name + ' ' + student.last_name + ' from ' + \
-                       str(session.start_time) + ' to ' + \
-                       str(session.end_time) + ' has been confirmed.'
+            str(session.start_time) + ' to ' + \
+            str(session.end_time) + ' has been confirmed.'
         send_mail('Booking Confirmed', msg_to_tutor,
                   'noreply@hola-inc.top', [tutor.email], False)
         return redirect('/dashboard/mybookings/')

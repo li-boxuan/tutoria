@@ -19,7 +19,7 @@ class Transaction(models.Model):
     commission = models.FloatField()
 
     def __str__(self):
-        return '{} -> {} :: ${}'.format(issuer, receiver, amount)
+        return '{} -> {} :: ${}'.format(self.issuer, self.receiver, self.amount)
 
 
 class Coupon(models.Model):

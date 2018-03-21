@@ -6,14 +6,11 @@ by Jiayao
 """
 from __future__ import (absolute_import, print_function)
 from django.db import models
-import django.contrib.auth.models as auth_models
-import os
-from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
-
+import django.contrib.auth.models as auth_models
 
 class SubjectTag(models.Model):
-    """Models subject tags."""
+    '""Models subject tags.""'
     tag = models.CharField(max_length=128)
 
     def __str__(self):
@@ -21,23 +18,23 @@ class SubjectTag(models.Model):
 
 
 class Course(models.Model):
-    """Models courses."""
+    '""Models courses.""'
     course_name = models.CharField(max_length=128)
     course_code = models.CharField(max_length=8)
 
     def __str__(self):
-        return self.course_code + " " + self.course_name
+        return self.course_code + ' ' + self.course_name
 
 
 PHONE_REGEX = r'^\d{8}$'
 
 
 def _phone_number_validator(val):
-    """Validates phone number field."""
+    '""Validates phone number field.""'
     import re
     if not re.match(PHONE_REGEX, val):
         print('phone not valid')
-        raise ValidationError("Phone number must be entered in the format: '12345678'. 8 digits are allowed.",
+        raise ValidationError("Phone number must be entered in the format: '12345678'. 8 digits are allowed.",  # Ignore PycodestyleBear (E501)
                               code='invalid_phone')
     print('phone valid')
 
@@ -45,13 +42,14 @@ def _phone_number_validator(val):
 class User(auth_models.User):
     wallet_balance = models.FloatField(default=0)
     avatar = models.ImageField(default='default_avatar.png')
-    phone = models.CharField(max_length=11, blank=True)  # validators=[_phone_number_validator])
+    # validators=[_phone_number_validator])
+    phone = models.CharField(max_length=11, blank=True)
 
     @property
     def tutor(self):
         try:
             tutor = getattr(self, 'tutor_profile')
-        except:
+        except:  # Ignore PycodestyleBear (E722)
             tutor = None
         return tutor
 
@@ -59,13 +57,13 @@ class User(auth_models.User):
     def student(self):
         try:
             student = getattr(self, 'student_profile')
-        except:
+        except:  # Ignore PycodestyleBear (E722)
             student = None
         return student
 
 
 def _hourly_rate_validator(val):
-    """Validate whether an hourly_rate is a positive multiple of 10."""
+    '""Validate whether an hourly_rate is a positive multiple of 10.""'
     if not (val >= 0 and val % 10 == 0):
         raise ValidationError(
             '%(value) must be a positive multiple of 10',
@@ -75,7 +73,7 @@ def _hourly_rate_validator(val):
 
 
 class Tutor(models.Model):
-    """Models the tutor."""
+    '""Models the tutor.""'
     CONTRACTED_TUTOR = 'CT'
     PRIVATE_TUTOR = 'PT'
     TUTOR_TYPE_CHOICES = (
@@ -88,20 +86,22 @@ class Tutor(models.Model):
         default=CONTRACTED_TUTOR,
     )
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='tutor_profile')
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, related_name='tutor_profile')
     bio = models.TextField(default='')
 
     university = models.CharField(
         max_length=128, default='The University of Hong Kong')
 
-    hourly_rate = models.FloatField(default=0, validators=[_hourly_rate_validator])
+    hourly_rate = models.FloatField(
+        default=0, validators=[_hourly_rate_validator])
     tags = models.ManyToManyField(SubjectTag, default=None)
     courses = models.ManyToManyField(Course, default=None)
     visible = models.BooleanField(default=True)
 
     @property
     def avgRating(self):
-        """Get the average rating of a tutor. Return 0 by default."""
+        '""Get the average rating of a tutor. Return 0 by default.""'
         review_list = self.review_set.all()
         if not review_list.exists():
             return 0
@@ -112,7 +112,7 @@ class Tutor(models.Model):
 
     @property
     def num_review(self):
-        """Get the number of reviews received by a tutor."""
+        '""Get the number of reviews received by a tutor.""'
         return len(self.review_set.all())
 
     @property
@@ -121,7 +121,7 @@ class Tutor(models.Model):
 
     @property
     def full_name(self):
-        return self.user.first_name + " " + self.user.last_name
+        return self.user.first_name + ' ' + self.user.last_name
 
     @property
     def username(self):
@@ -176,11 +176,12 @@ class Tutor(models.Model):
         self.user.save()
 
     def __str__(self):
-        return "{}: {}".format(self.username, self.tutor_type)
+        return '{}: {}'.format(self.username, self.tutor_type)
 
 
 class Student(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='student_profile')
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, related_name='student_profile')
 
     @property
     def phone(self):
@@ -188,7 +189,7 @@ class Student(models.Model):
 
     @property
     def full_name(self):
-        return self.user.first_name + " " + self.user.last_name
+        return self.user.first_name + ' ' + self.user.last_name
 
     @property
     def username(self):

@@ -54,4 +54,5 @@ class BookingRecord(models.Model):
         'wallet.Transaction', on_delete=models.CASCADE)
 
     def __str__(self):
+        # Ignore PycodestyleBear (E501)
         return 'Tutor: {}\nStudent: {}\n Session\n{}'.format(self.tutor, self.student, self.session)

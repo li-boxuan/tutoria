@@ -73,7 +73,7 @@ class ResultView(ListView):
                 tutor_info += (' ' + tutor.university)
                 # Regular expression match
                 for keyword in self.keywords.split():
-                    if re.search(keyword, tutor_info, re.IGNORECASE) and tutor not in filtered_tutors:
+                    if re.search(keyword, tutor_info, re.IGNORECASE) and tutor not in filtered_tutors:  # Ignore PycodestyleBear (E501)
                         filtered_tutors.append(tutor)
         # Filter according to hourly rate range.
         filtered_tutors = [t for t in filtered_tutors if
@@ -86,9 +86,9 @@ class ResultView(ListView):
             filtered_tutors = [t for t in filtered_tutors if tutor_available(t)]
         # Sort tutors
         if self.sort_method == 'hourly_rate_inc':
-            return sorted(filtered_tutors, key=lambda x: x.hourly_rate, reverse=False)
+            return sorted(filtered_tutors, key=lambda x: x.hourly_rate, reverse=False)  # Ignore PycodestyleBear (E501)
         if self.sort_method == 'hourly_rate_dec':
-            return sorted(filtered_tutors, key=lambda x: x.hourly_rate, reverse=True)
+            return sorted(filtered_tutors, key=lambda x: x.hourly_rate, reverse=True)  # Ignore PycodestyleBear (E501)
         return sorted(filtered_tutors, key=lambda x: x.avgRating, reverse=True)
 
     def get_context_data(self, **kwargs):
@@ -113,6 +113,6 @@ def tutor_available(tutor):
     today_min = datetime.combine(datetime.today(), datetime.min.time())
     future_max = datetime.combine(
         datetime.today() + timedelta(7), datetime.max.time())
-    available_sessions = Session.objects.filter(tutor=tutor, status='A', start_time__gte=today_min,
+    available_sessions = Session.objects.filter(tutor=tutor, status='A', start_time__gte=today_min,  # Ignore PycodestyleBear (E501)
                                                 end_time__lte=future_max)
     return available_sessions.count() > 0
