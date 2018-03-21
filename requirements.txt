@@ -1,2 +1,4 @@
 django
+coala
 pillow
+-r bear-requirements.txt

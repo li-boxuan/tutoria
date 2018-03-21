@@ -1,0 +1,25 @@
+[all]
+files = **.py
+ignore = .git/**, **/__pycache__/**, tutoria/*/migrations/**
+max_line_length = 120
+use_spaces = True
+preferred_quotation = '
+
+[all.whitespace]
+use_spaces = True
+bears = SpaceConsistencyBear
+default_actions = *: ApplyPatchAction
+
+[all.python]
+files = **.py
+language = Python
+
+[all.python.default]
+ignore += */models.py
+bears = PEP8Bear, PycodestyleBear, PyFlakesBear, QuotesBear
+default_actions = *: ApplyPatchAction
+
+[all.python.models]
+files = tutoria/*/models.py
+bears = PycodestyleBear, PyFlakesBear, QuotesBear
+max_line_length = 120

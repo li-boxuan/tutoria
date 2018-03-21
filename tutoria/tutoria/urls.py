@@ -29,8 +29,7 @@ urlpatterns = [
     url(r'^tutor/', include('tutor.urls', namespace='tutor'), name='tutor'),
     # app_name: authentication namespace: auth
     url(r'^auth/', include('authentication.urls', namespace='auth'), name='auth'),
-	url(r'^api/keywords/', views.get_keywords, name='get_keywords'),
-    url(r'^dashboard/',include('dashboard.urls', namespace='dashboard'), name='dashboard'),
+    url(r'^api/keywords/', views.get_keywords, name='get_keywords'),
+    url(r'^dashboard/', include('dashboard.urls',
+                                namespace='dashboard'), name='dashboard'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-

@@ -1,13 +1,11 @@
-"""Dashborad views."""
+'""Dashborad views.""'
 from django.shortcuts import get_object_or_404, render, redirect
-from django.http import HttpResponse, HttpResponseRedirect
-from django.urls import reverse
+from django.http import HttpResponse
 from django.views import generic
 
 from wallet.models import Transaction
 from scheduler.models import BookingRecord, Session
 from account.models import User, Student, Tutor
-from django.contrib.auth.decorators import login_required
 
 from datetime import datetime, timedelta, date, time
 from django.utils import timezone
@@ -20,6 +18,7 @@ from django.core.mail import send_mail
 #    #context_object_name = 'mybookings'
 #    return render(request, 'my_bookings.html', {'record': record})
 
+
 class MytransactionsView(generic.ListView):
     model = Transaction
     template_name = 'my_transactions.html'
@@ -27,38 +26,37 @@ class MytransactionsView(generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super(MytransactionsView, self).get_context_data(**kwargs)
-        #print datetime.now()
-        if self.request.user.is_authenticated == False:
-           context['records'] = None
-           context['not_logged_in'] = 'true'
-           return context
+        # print datetime.now()
+        if not self.request.user.is_authenticated:
+            context['records'] = None
+            context['not_logged_in'] = 'true'
+            return context
         if self.request.session['username'] is None:
-           context['records'] = None
-           return context
+            context['records'] = None
+            return context
         else:
-           context['username'] = self.request.session['username']
-           usrn = self.request.session['username']
-           user = User.objects.get(username=usrn)
-           try:
-               usr = Student.objects.get(user=user)
-               context['user_type'] = 'Student' 
-           except Student.DoesNotExist:
-               usr = Tutor.objects.get(user=user)
-               context['user_type'] = 'Tutor' 
-#usr = get_object_or_404(Student, user=user)
-           records = usr.bookingrecord_set.all()
-           context['records'] = []
-           for r in records:
-               one_month_before_now = timezone.now() - timedelta(days=30)
-               if r.entry_date > one_month_before_now:
-                   context['records'].append(r)
-           transactions = []
-           for rec in context['records']:
-               transactions.append(rec.transaction)
-           context['transactions'] = transactions
-           context['zipped'] = zip(records,transactions)
-           context['balance'] = usr.wallet_balance
-           return context
+            context['username'] = self.request.session['username']
+            usrn = self.request.session['username']
+            user = User.objects.get(username=usrn)
+            try:
+                usr = Student.objects.get(user=user)
+                context['user_type'] = 'Student'
+            except Student.DoesNotExist:
+                usr = Tutor.objects.get(user=user)
+                context['user_type'] = 'Tutor'
+            records = usr.bookingrecord_set.all()
+            context['records'] = []
+            for r in records:
+                one_month_before_now = timezone.now() - timedelta(days=30)
+                if r.entry_date > one_month_before_now:
+                    context['records'].append(r)
+            transactions = []
+            for rec in context['records']:
+                transactions.append(rec.transaction)
+            context['transactions'] = transactions
+            context['zipped'] = zip(records, transactions)
+            context['balance'] = usr.wallet_balance
+            return context
 
 
 class MybookingsView(generic.ListView):
@@ -68,8 +66,8 @@ class MybookingsView(generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super(MybookingsView, self).get_context_data(**kwargs)
-        
-        if self.request.user.is_authenticated == False:
+
+        if not self.request.user.is_authenticated:
             context['records'] = None
             context['not_logged_in'] = 'true'
             return context
@@ -91,7 +89,8 @@ class MybookingsView(generic.ListView):
                 context['is_tutor'] = 'false'
             if 'id' in self.request.GET:
                 context['id'] = 'selected'
-                context['record'] =BookingRecord.objects.filter(id=self.request.GET['id']).first()
+                context['record'] = BookingRecord.objects.filter(
+                    id=self.request.GET['id']).first()
                 if context['is_student'] == 'true':
                     if context['record'].student == stu:
                         context['selected_type'] = 'as_stu'
@@ -125,11 +124,14 @@ class MybookingsView(generic.ListView):
             bkrc.status = BookingRecord.CANCELED
             bkrc.save()
             tut = bkrc.tutor
-            send_mail('Session Canceled', 'Please check on Tutoria, your session with '+ bkrc.tutor.first_name + ' ' + bkrc.tutor.last_name +  ' from ' + str(sess.start_time) + ' to ' + str(sess.end_time) +  ' has been canceled.', 'nonereplay@hola-inc.top', [usr.email], False)
-            send_mail('Session Canceled', 'Please check on Tutoria, your session with '+ bkrc.student.first_name + ' ' + bkrc.student.last_name +  ' from ' + str(sess.start_time) + ' to ' + str(sess.end_time) +  ' has been canceled.', 'nonereplay@hola-inc.top', [tut.email], False)
+            send_mail('Session Canceled', 'Please check on Tutoria, your session with ' + bkrc.tutor.first_name + ' ' + bkrc.tutor.last_name +  # Ignore PycodestyleBear (E501)
+                      ' from ' + str(sess.start_time) + ' to ' + str(sess.end_time) + ' has been canceled.', 'nonereplay@hola-inc.top', [usr.email], False)  # Ignore PycodestyleBear (E501)
+            send_mail('Session Canceled', 'Please check on Tutoria, your session with ' + bkrc.student.first_name + ' ' + bkrc.student.last_name +  # Ignore PycodestyleBear (E501)
+                      ' from ' + str(sess.start_time) + ' to ' + str(sess.end_time) + ' has been canceled.', 'nonereplay@hola-inc.top', [tut.email], False)  # Ignore PycodestyleBear (E501)
             return redirect('dashboard/mybookings/')
         else:
             return HttpResponse("This session is within 24 hours and can't be canceled!")
+
 
 class MytimetableView(generic.ListView):
     model = BookingRecord
@@ -137,11 +139,11 @@ class MytimetableView(generic.ListView):
     context_object_name = 'my_timetable'
 
     def get_context_data(self, **kwargs):
-        """Get context data."""
+        '""Get context data.""'
         context = super(MytimetableView, self).get_context_data(**kwargs)
         isStudent = False
         isTutor = False
-        if self.request.user.is_authenticated == False:
+        if not self.request.user.is_authenticated:
             context['timetable'] = None
             return context
 
@@ -151,7 +153,7 @@ class MytimetableView(generic.ListView):
         else:
             usrn = self.request.session['username']
             user = User.objects.get(username=usrn)
-        
+
         try:
             usr = Tutor.objects.get(user=user)
             isTutor = True
@@ -179,7 +181,7 @@ class MytimetableView(generic.ListView):
             for i in range(days_to_display * slots_per_day):
                 # add all timeslots that are not in database as CLOSED session
                 # TODO this part might be dirty, we should create all sessions in advance
-                d = today + timedelta(days = i // slots_per_day)
+                d = today + timedelta(days=i // slots_per_day)
                 if is_contracted_tutor:
                     hour = (i % slots_per_day) // 2
                     minute = 0 if i % 2 == 0 else 30
@@ -188,25 +190,26 @@ class MytimetableView(generic.ListView):
                     minute = 0
                 start_time = datetime.combine(d, time(hour, minute))
                 if is_contracted_tutor:
-                    end_time = start_time + timedelta(minutes = 30)
+                    end_time = start_time + timedelta(minutes=30)
                 else:
-                    end_time = start_time + timedelta(hours = 1)
+                    end_time = start_time + timedelta(hours=1)
                 session, _ = Session.objects.get_or_create(
                     start_time=timezone.make_aware(start_time),
                     end_time=timezone.make_aware(end_time),
                     tutor=usr)
-                elem = {'status' : session.status, 'date' : str(today + timedelta(days=i // slots_per_day)), 'id': session.id}
-                #print("elem = ", elem)
-                timetable.append(elem) # closed
+                elem = {'status': session.status, 'date': str(
+                    today + timedelta(days=i // slots_per_day)), 'id': session.id}
+                # print("elem = ", elem)
+                timetable.append(elem)  # closed
 
             # print("tot: " + str(days_to_display * slots_per_day))
             # convert "date" of today to "datetime" of today's 0 'o clock
             # init_time = datetime.combine(today, datetime.min.time())
             for session in usr.session_set.all():
                 start_time = session.start_time
-                hour_diff = start_time.hour - 0 # if timetable starts from 0
-                hour_diff += 8 # timezone issue (todo)
-                #print(start_time, " hour ", start_time.hour)
+                hour_diff = start_time.hour - 0  # if timetable starts from 0
+                hour_diff += 8  # timezone issue (todo)
+                # print(start_time, " hour ", start_time.hour)
                 minute_diff = start_time.minute
                 date_diff = (start_time.date() - today).days
                 # filter date within days_to_display
@@ -218,10 +221,10 @@ class MytimetableView(generic.ListView):
                         index += hour_diff
                     # print("date_diff = ", date_diff, "hour_diff = ", hour_diff,
                     #        "minute_diff = ", minute_diff, "index = ", index)
-                    #print(index)
+                    # print(index)
                     timetable[index]['status'] = str(session.status)
                     timetable[index]['id'] = session.id
-                    #print("index = ", index, " session id = ", session.id)
+                    # print("index = ", index, " session id = ", session.id)
                     if session.status == session.BOOKED:
                         # logic is a bit tricky here
                         # note we won't pass session id but booking_record id here
@@ -234,10 +237,10 @@ class MytimetableView(generic.ListView):
                                 break
             for i in range(days_to_display * slots_per_day):
                 if i <= now_index:
-                    timetable[i]['status'] = "PASSED"
+                    timetable[i]['status'] = 'PASSED'
 
             context['tutor_timetable'] = timetable
-            #print(timetable)
+            # print(timetable)
 
         try:
             usr = Student.objects.get(user=user)
@@ -258,14 +261,15 @@ class MytimetableView(generic.ListView):
             now = datetime.now()
             now_index = now.hour * 2 + now.minute // 30
             for i in range(days_to_display * slots_per_day):
-                elem = {'status' : 'X', 'date' : str(today + timedelta(days=i // slots_per_day)), 'id': ''}
-                timetable.append(elem) # closed
+                elem = {'status': 'X', 'date': str(
+                    today + timedelta(days=i // slots_per_day)), 'id': ''}
+                timetable.append(elem)  # closed
 
             for record in usr.bookingrecord_set.all():
                 start_time = record.session.start_time
-                hour_diff = start_time.hour - 0 # if timetable starts from 0
-                hour_diff += 8 # timezone issue (todo)
-                #print(start_time, " hour ", start_time.hour)
+                hour_diff = start_time.hour - 0  # if timetable starts from 0
+                hour_diff += 8  # timezone issue (todo)
+                # print(start_time, " hour ", start_time.hour)
                 minute_diff = start_time.minute
                 date_diff = (start_time.date() - today).days
                 # filter date within days_to_display
@@ -274,10 +278,11 @@ class MytimetableView(generic.ListView):
                     index += hour_diff * 2 + minute_diff // 30
                     # print("date_diff = ", date_diff, "hour_diff = ", hour_diff,
                     #        "minute_diff = ", minute_diff, "index = ", index)
-                    #print(index)
+                    # print(index)
                     if record.status == record.INCOMING or record.status == record.ONGOING:
                         # TODO what about other states?
-                        timetable[index]['status'] = 'A' # use 'A' to represent this record has detail to be referred
+                        # use 'A' to represent this record has detail to be referred
+                        timetable[index]['status'] = 'A'
                         timetable[index]['id'] = record.id
                         if record.tutor.tutor_type == record.tutor.PRIVATE_TUTOR:
                             timetable[index + 1]['status'] = 'A'
@@ -285,9 +290,9 @@ class MytimetableView(generic.ListView):
 
             for i in range(days_to_display * slots_per_day):
                 if i <= now_index:
-                    timetable[i]['status'] = "PASSED"
+                    timetable[i]['status'] = 'PASSED'
             context['student_timetable'] = timetable
-            #print(timetable)
+            # print(timetable)
 
         return context
 
@@ -296,34 +301,34 @@ class MytimetableView(generic.ListView):
         session = Session.objects.get(id=session_id)
         start_time = session.start_time
         now = timezone.make_aware(datetime.now())
-        if (now + timedelta(days = 1) > start_time):
-            return HttpResponse("Session within 24 hours before start time is locked!")
-        #print("before update, session = ", session, " status = ", session.status)
+        if (now + timedelta(days=1) > start_time):
+            return HttpResponse('Session within 24 hours before start time is locked!')
+        # print("before update, session = ", session, " status = ", session.status)
         if session.status == session.CLOSED:
             session.status = session.BOOKABLE
         elif session.status == session.BOOKABLE:
             session.status = session.CLOSED
         session.save()
-        #print("after update, session = ", session, " status = ", session.status)
+        # print("after update, session = ", session, " status = ", session.status)
         return redirect('/dashboard/mytimetable/')
 
 
 class MyWalletView(generic.TemplateView):
     template_name = 'my_wallet.html'
-        
+
     def get_context_data(self, **kwargs):
         context = super(MyWalletView, self).get_context_data(**kwargs)
-        if self.request.user.is_authenticated == False:
-           context['not_logged_in'] = 'true'
-           return context
+        if not self.request.user.is_authenticated:
+            context['not_logged_in'] = 'true'
+            return context
         if self.request.session['username'] is None:
-           return context
+            return context
         else:
-           context['status'] = 1
-           usrn = self.request.session['username']
-           user = User.objects.get(username=usrn)
-           context['balance'] = user.wallet_balance
-           return context
+            context['status'] = 1
+            usrn = self.request.session['username']
+            user = User.objects.get(username=usrn)
+            context['balance'] = user.wallet_balance
+            return context
 
     def post(self, req, *args, **kwargs):
         usrn = self.request.session['username']
@@ -333,13 +338,13 @@ class MyWalletView(generic.TemplateView):
         amount = float(req.POST['amount'])
         print(op)
         if op == 'topup':
-            user.wallet_balance += amount;
+            user.wallet_balance += amount
             user.save()
             return render(req, self.template_name, {'status': 2, 'balance': user.wallet_balance})
         else:
             if amount > balance:
                 return render(req, self.template_name, {'status': 0, 'balance': user.wallet_balance})
             else:
-                user.wallet_balance -= amount;
+                user.wallet_balance -= amount
                 user.save()
                 return render(req, self.template_name, {'status': 2, 'balance': user.wallet_balance})

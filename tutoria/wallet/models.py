@@ -9,7 +9,7 @@ from django.db import models
 
 
 class Transaction(models.Model):
-    """Models a transaction."""
+    '""Models a transaction.""'
     issuer = models.ForeignKey('account.Student', on_delete=models.CASCADE,
                                related_name='issuer')
     receiver = models.ForeignKey('account.Tutor', on_delete=models.CASCADE,
@@ -19,11 +19,11 @@ class Transaction(models.Model):
     commission = models.FloatField()
 
     def __str__(self):
-        return "{} -> {} :: ${}".format(issuer, receiver, amount)
+        return '{} -> {} :: ${}'.format(self.issuer, self.receiver, self.amount)
 
 
 class Coupon(models.Model):
-    """Models a coupon."""
+    '""Models a coupon.""'
     import uuid
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()

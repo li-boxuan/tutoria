@@ -16,6 +16,7 @@ script:
   - make rebuild
   - cd ..
   - python ./tutoria/manage.py check
+  - coala --non-interactive -V
 
 notifications:
   email:
