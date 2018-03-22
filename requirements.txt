@@ -1,4 +1,2 @@
 django
-coala
-coala-bears
 pillow
